@@ -27,8 +27,12 @@
       </nav>
 
       <section id="reviewView" class="view" role="tabpanel">
-        <div class="session" aria-live="polite"><span><strong id="sessionCount">0</strong> lượt ôn hôm nay</span><span id="dueCount">Đang chuẩn bị lượt ôn…</span></div>
         <div class="progress" id="progressTrack" role="progressbar" aria-label="Tiến độ lượt ôn" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div id="progressBar"></div></div>
+        <div class="review-status">
+          <span class="status-left"><strong id="sessionCount">0</strong> lượt ôn hôm nay</span>
+          <span class="status-right" id="dueCount">Đang chuẩn bị lượt ôn…</span>
+        </div>
+        
         <article id="studyCard" class="study-card">
           <div class="card-head"><span id="trackBadge" class="badge">—</span><button id="sourceChip" class="source-chip hidden" type="button" aria-expanded="false" aria-controls="sourcePanel">Nguồn</button></div>
           <div class="prompt-wrap"><p id="instruction" class="instruction"></p><div id="prompt" class="prompt"></div><button id="audioPrimary" class="audio-primary hidden" type="button" aria-label="Nghe âm thanh"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4z"></path><path d="M15.5 8.5a5 5 0 0 1 0 7"></path><path d="M19 5a10 10 0 0 1 0 14"></path></svg></button></div>
@@ -94,24 +98,26 @@
           <summary>Tạo Unit thủ công <span>dành cho nội dung chưa có trong lộ trình / source</span></summary>
           <form id="captureForm" class="capture-form manual-unit-form">
             <div class="form-section">
-              <div class="field"><label for="targetInput">English target / unit</label><input id="targetInput" required placeholder="e.g. end up doing something"></div>
-              <div class="field"><label for="meaningInput">Nghĩa / intent ngắn</label><input id="meaningInput" required placeholder="cuối cùng lại làm gì đó"></div>
-              <div class="field"><label for="typeInput">Loại</label><select id="typeInput"><option value="chunk">chunk</option><option value="collocation">collocation</option><option value="expression">expression</option><option value="phrasal_verb">phrasal verb</option><option value="grammar_pattern">grammar pattern</option><option value="word_sense">word sense</option></select></div>
-              <div class="field"><label for="intentInput">Ý định giao tiếp</label><input id="intentInput" placeholder="e.g. báo với ai đó tôi sẽ tới muộn"></div>
-              <div class="field"><label for="canDoInput">Tôi có thể…</label><textarea id="canDoInput" placeholder="e.g. Tôi có thể báo người đang chờ rằng tôi sẽ tới muộn."></textarea></div>
+              <div class="field"><label for="targetInput">Expression</label><input id="targetInput" required placeholder="e.g. I ended up staying there"></div>
+              <div class="field"><label for="meaningInput">Meaning</label><input id="meaningInput" required placeholder="cuối cùng lại ở đó"></div>
+              <div class="field"><label for="contextInput">Context</label><textarea id="contextInput" placeholder="Nơi bạn gặp cụm này... (Tùy chọn)"></textarea></div>
             </div>
+            
             <details class="capture-details">
-              <summary>Ngữ cảnh và nguồn <span>(tùy chọn)</span></summary>
+              <summary>+ Thêm chi tiết / Mở rộng</summary>
               <div class="capture-details-body">
-                <div class="field"><label for="sourceSentenceInput">Câu nguồn English</label><textarea id="sourceSentenceInput" placeholder="I ended up staying home because it was raining."></textarea></div>
+                <div class="field"><label for="typeInput">Phân loại</label><select id="typeInput"><option value="chunk">chunk</option><option value="collocation">collocation</option><option value="expression">expression</option><option value="phrasal_verb">phrasal verb</option><option value="grammar_pattern">grammar pattern</option><option value="word_sense">word sense</option></select></div>
+                <div class="field"><label for="intentInput">Ý định giao tiếp</label><input id="intentInput" placeholder="e.g. báo với ai đó tôi sẽ tới muộn"></div>
+                <div class="field"><label for="canDoInput">Tôi có thể…</label><textarea id="canDoInput" placeholder="e.g. Tôi có thể báo người đang chờ rằng tôi sẽ tới muộn."></textarea></div>
+                
+                <div class="field" style="margin-top: 16px;"><label for="sourceSentenceInput">Câu nguồn nguyên bản</label><textarea id="sourceSentenceInput" placeholder="I ended up staying home because it was raining."></textarea></div>
                 <div class="field"><label for="sourceTranslationInput">Bản dịch câu nguồn</label><textarea id="sourceTranslationInput" placeholder="Cuối cùng tôi ở nhà vì trời mưa."></textarea></div>
-                <div class="field"><label for="sourceUrlInput">URL nguồn</label><input id="sourceUrlInput" type="url" placeholder="https://..."></div>
+                <div class="field"><label for="sourceUrlInput">Nguồn URL / YouTube</label><input id="sourceUrlInput" type="url" placeholder="https://youtube.com/..."></div>
                 <div class="field"><label for="sourceTimeInput">Timestamp (giây)</label><input id="sourceTimeInput" type="number" min="0" step="0.001" placeholder="83.4"></div>
                 <div class="field"><label for="sourceFileInput">Tên subtitle / file nguồn</label><input id="sourceFileInput" placeholder="video-en.srt / lesson.mp4"></div>
-                <div class="field"><label for="contextInput">Tình huống / ghi chú</label><textarea id="contextInput" placeholder="Nơi bạn gặp cụm này..."></textarea></div>
               </div>
             </details>
-            <button class="primary-btn" type="submit">Lưu unit</button>
+            <button class="primary-btn" type="submit" style="margin-top: 16px;">Lưu unit</button>
           </form>
         </details>
       </section>
