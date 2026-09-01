@@ -113,6 +113,14 @@
     return Array.from(merged.values());
   }
 
+  function mergeLearningProfile(localProfile, remoteProfile) {
+    if (!remoteProfile) return clone(localProfile || null);
+    if (!localProfile) return clone(remoteProfile);
+    const localAt = Number(localProfile.updatedAt || 0);
+    const remoteAt = Number(remoteProfile.updatedAt || 0);
+    return clone(remoteAt >= localAt ? remoteProfile : localProfile);
+  }
+
   function mergeLearnerDb(localDb = {}, remote = {}, progressPayload = {}) {
     const remoteItems = (remote.units || []).map(itemFromRow);
     const remoteCards = (remote.cards || []).map((row) => row?.payload).filter(Boolean);
@@ -128,6 +136,7 @@
       bespokeCards: mergeById(remoteCards, localDb.bespokeCards || []),
       captures: mergeById(remoteCaptures, localDb.captures || []),
       events,
+      learningProfile: mergeLearningProfile(localDb.learningProfile, progressPayload.learningProfile),
       // Review events are durable history. Both scheduler objects are caches and
       // must be rebuilt after a multi-device merge whenever history exists.
       bespokeProgress: events.length ? null : clone(progressPayload.bespokeProgress || localDb.bespokeProgress || null),
@@ -172,6 +181,7 @@
     eventFromRow,
     remoteHasLearnerData,
     mergeById,
+    mergeLearningProfile,
     mergeLearnerDb,
     knownIds,
     emptyKnownIds,

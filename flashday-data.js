@@ -28,7 +28,7 @@
   function createInitialDb(items=SEED_ITEMS,now=Date.now()){
     return {
       version:'repo-driven-2',createdAt:now,items:clone(items),events:[],captures:[],bespokeCards:[],
-      bespokeProgress:null,fsrsProgress:null,
+      bespokeProgress:null,fsrsProgress:null,learningProfile:null,
       scheduler:HYBRID_SCHEDULER,schedulerSource:HYBRID_SOURCE
     };
   }
@@ -42,6 +42,7 @@
       bespokeCards:Array.isArray(raw.bespokeCards)?clone(raw.bespokeCards):[],
       bespokeProgress:raw.bespokeProgress?clone(raw.bespokeProgress):null,
       fsrsProgress:raw.fsrsProgress?clone(raw.fsrsProgress):null,
+      learningProfile:raw.learningProfile?clone(raw.learningProfile):null,
       scheduler:raw.scheduler||HYBRID_SCHEDULER,
       schedulerSource:raw.schedulerSource||HYBRID_SOURCE
     };
