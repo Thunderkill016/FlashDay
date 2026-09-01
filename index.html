@@ -347,31 +347,31 @@
 
     <script>
       function playNativeAudio(element) {
-        // Prevent spam clicking
         if (element.classList.contains('playing')) return;
         
-        // Add visual playing state
         element.classList.add('playing');
         element.querySelector('.play-btn').textContent = '■';
         
-        // Speak using built-in browser TTS
-        const msg = new SpeechSynthesisUtterance("I'm running late.");
-        msg.lang = 'en-US';
-        msg.rate = 1.2; // slightly faster for native feel
-        msg.pitch = 1.0;
+        // Use a real audio file via TTS API for cross-browser/OS reliability
+        const audio = new Audio("https://translate.google.com/translate_tts?ie=UTF-8&tl=en-US&client=tw-ob&q=Sorry,+I'm+running+late.");
         
-        msg.onend = () => {
+        audio.onended = () => {
           element.classList.remove('playing');
           element.querySelector('.play-btn').textContent = '▶';
         };
         
-        // Fallback cleanup after 2 seconds in case onend fails
-        setTimeout(() => {
+        audio.onerror = () => {
+          // Fallback if audio fails to load
           element.classList.remove('playing');
           element.querySelector('.play-btn').textContent = '▶';
-        }, 2000);
+          console.error("Audio playback failed");
+        };
         
-        window.speechSynthesis.speak(msg);
+        audio.play().catch(e => {
+          element.classList.remove('playing');
+          element.querySelector('.play-btn').textContent = '▶';
+          console.error(e);
+        });
       }
     </script>
   </body>
