@@ -42,6 +42,7 @@ const C=require('../flashday-cloud.js');
   assert.equal(first.reused.length,1, 'seed say-again should be reused');
   assert.equal(first.added.length,3);
   assert.equal(db.items.length,before+3);
+  assert(first.added.every(item=>item.origin==='curated'), 'guided units must stay compatible with cloud origin constraint');
   const second=L.installGuidedModule(db,'a1-communication-repair',D);
   assert.equal(second.added.length,0, 'guided install must be idempotent');
   assert.equal(second.state.installed,4);
@@ -73,6 +74,14 @@ const C=require('../flashday-cloud.js');
 }
 
 {
+  assert.equal(SC.normalizeCapture({sentence:'Hello.',nativeSentence:'Xin chào.'}).sourceKind,'manual');
+  assert.equal(SC.normalizeCapture({sentence:'Hello.',nativeSentence:'Xin chào.',url:'https://youtu.be/demo'}).sourceKind,'youtube');
+  assert.equal(SC.normalizeCapture({sentence:'Hello.',nativeSentence:'Xin chào.',subtitleFileName:'demo.srt'}).sourceKind,'transcript');
+  assert.equal(SC.normalizeCapture({sentence:'Hello.',nativeSentence:'Xin chào.',audio:{ref:'hello.mp3'}}).sourceKind,'audio');
+  assert.equal(SC.normalizeCapture({sentence:'Hello.',nativeSentence:'Xin chào.',sourceKind:'article',url:'https://example.com/post'}).sourceKind,'article');
+}
+
+{
   const local={learningProfile:{updatedAt:2000,skills:{read:{level:'A2'}}}};
   const remote={learningProfile:{updatedAt:1000,skills:{read:{level:'A1'}}}};
   assert.equal(C.mergeLearningProfile(local.learningProfile,remote.learningProfile).skills.read.level,'A2');
@@ -87,4 +96,4 @@ const C=require('../flashday-cloud.js');
   assert.equal(migrated.learningProfile.overallLevel,'A1');
 }
 
-console.log('FlashDay learning entry: 25 guided/personal bridge checks passed');
+console.log('FlashDay learning entry: 31 guided/personal bridge checks passed');
