@@ -423,7 +423,7 @@ a { text-decoration: none; color: inherit; }
 /* 07 PROOF NOT STREAKS */
 .proof-not-streaks { background: var(--ink-950); color: var(--paper-50); padding: 160px 40px; }
 .proof-container { max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 64px; }
-.proof-header { max-width: 800px; }
+.proof-header { max-width: 800px; margin: 0 auto; text-align: center; display: flex; flex-direction: column; align-items: center; }
 .proof-header .display-text { font-size: clamp(40px, 5vw, 64px); letter-spacing: -0.04em; line-height: 1.1; margin-bottom: 24px; }
 
 .proof-content-wrapper { display: grid; grid-template-columns: 4fr 8fr; gap: 80px; align-items: center; }
