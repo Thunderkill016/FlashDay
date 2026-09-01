@@ -1,15 +1,17 @@
 /*
- * Minimal FlashDay-owned data/persistence layer for the repo-driven prototype.
+ * Minimal FlashDay-owned data/persistence layer for the repo-driven product.
  *
- * IMPORTANT: no scheduler, learner-model, evidence weighting or probe policy
- * belongs in this file. Scheduling/card selection lives in the google/bespoke
- * port. Source/media contracts live in source-capture/transcript-import.
+ * IMPORTANT: learning algorithms do not belong here. Bespoke language/card
+ * policy lives in its port/adapter; FSRS timing lives in fsrs-scheduler.mjs.
  */
 (function(root,factory){
   if(typeof window==='undefined'&&typeof module==='object'&&module.exports) module.exports=factory();
   else root.FlashDayData=factory();
 })(typeof globalThis!=='undefined'?globalThis:this,function(){
   'use strict';
+
+  const HYBRID_SCHEDULER='bespoke-language-policy+fsrs6';
+  const HYBRID_SOURCE='open-spaced-repetition/ts-fsrs@v5.4.2 + google/bespoke@67b1eda5b28f7a69be20561014255cdc81110a3e';
 
   const SEED_ITEMS=[
     {id:'pick-up-order',type:'collocation',target:'pick up an order',meaning:'nhận / lấy một đơn hàng',forms:[],accepted:['pick up the order','pick up my order'],contexts:['Bạn tới quầy của nhà hàng để nhận đơn đã chuẩn bị xong.'],tags:['delivery','work'],intent:'Nhận đơn đã đặt trước.',canDo:'Tôi có thể nói với nhân viên rằng mình tới nhận đơn.',exampleSentence:'I need to pick up an order before six.',exampleTranslation:'Tôi cần nhận một đơn hàng trước sáu giờ.',origin:'curated'},
@@ -25,21 +27,23 @@
 
   function createInitialDb(items=SEED_ITEMS,now=Date.now()){
     return {
-      version:'repo-driven-1',createdAt:now,items:clone(items),events:[],captures:[],bespokeCards:[],bespokeProgress:null,
-      scheduler:'google-bespoke-port',schedulerSource:'google/bespoke@67b1eda5b28f7a69be20561014255cdc81110a3e'
+      version:'repo-driven-2',createdAt:now,items:clone(items),events:[],captures:[],bespokeCards:[],
+      bespokeProgress:null,fsrsProgress:null,
+      scheduler:HYBRID_SCHEDULER,schedulerSource:HYBRID_SOURCE
     };
   }
 
   function migrateDb(raw,now=Date.now()){
     if(!raw||!Array.isArray(raw.items))return createInitialDb(undefined,now);
     return {
-      version:'repo-driven-1',createdAt:Number(raw.createdAt||now),items:clone(raw.items),
+      version:'repo-driven-2',createdAt:Number(raw.createdAt||now),items:clone(raw.items),
       events:Array.isArray(raw.events)?clone(raw.events):[],
       captures:Array.isArray(raw.captures)?clone(raw.captures):[],
       bespokeCards:Array.isArray(raw.bespokeCards)?clone(raw.bespokeCards):[],
       bespokeProgress:raw.bespokeProgress?clone(raw.bespokeProgress):null,
-      scheduler:raw.scheduler||'google-bespoke-port',
-      schedulerSource:raw.schedulerSource||'google/bespoke@67b1eda5b28f7a69be20561014255cdc81110a3e'
+      fsrsProgress:raw.fsrsProgress?clone(raw.fsrsProgress):null,
+      scheduler:raw.scheduler||HYBRID_SCHEDULER,
+      schedulerSource:raw.schedulerSource||HYBRID_SOURCE
     };
   }
 
@@ -65,11 +69,11 @@
 
   function isPristineDb(db){
     if(!db||!Array.isArray(db.items))return true;
-    if((db.events||[]).length||(db.captures||[]).length||(db.bespokeCards||[]).length||db.bespokeProgress)return false;
+    if((db.events||[]).length||(db.captures||[]).length||(db.bespokeCards||[]).length||db.bespokeProgress||db.fsrsProgress)return false;
     if(db.items.length!==SEED_ITEMS.length)return false;
     const expected=new Map(SEED_ITEMS.map(item=>[item.id,normalizeKey(item.target)]));
     return db.items.every(item=>expected.get(item.id)===normalizeKey(item.target));
   }
 
-  return {SEED_ITEMS,createInitialDb,migrateDb,addItem,isPristineDb,normalizeKey,uid,clone};
+  return {SEED_ITEMS,HYBRID_SCHEDULER,HYBRID_SOURCE,createInitialDb,migrateDb,addItem,isPristineDb,normalizeKey,uid,clone};
 });
