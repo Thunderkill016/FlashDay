@@ -50,8 +50,6 @@
     const item={
       id:String(raw.id||uid('unit')),target,meaning,type:String(raw.type||'chunk'),
       forms:Array.isArray(raw.forms)?raw.forms.filter(Boolean).map(String):[],
-      // Retained only for legacy answer/grader compatibility. CardIndex never uses
-      // accepted[] to decide Unit identity; see bespoke-card-index.js.
       accepted:Array.isArray(raw.accepted)?raw.accepted.filter(Boolean).map(String):[],
       contexts:Array.isArray(raw.contexts)?raw.contexts.filter(Boolean).map(String):[],
       tags:Array.isArray(raw.tags)?raw.tags.filter(Boolean).map(String):[],
@@ -65,5 +63,13 @@
     db.items=db.items||[];db.items.push(item);return item;
   }
 
-  return {SEED_ITEMS,createInitialDb,migrateDb,addItem,normalizeKey,uid,clone};
+  function isPristineDb(db){
+    if(!db||!Array.isArray(db.items))return true;
+    if((db.events||[]).length||(db.captures||[]).length||(db.bespokeCards||[]).length||db.bespokeProgress)return false;
+    if(db.items.length!==SEED_ITEMS.length)return false;
+    const expected=new Map(SEED_ITEMS.map(item=>[item.id,normalizeKey(item.target)]));
+    return db.items.every(item=>expected.get(item.id)===normalizeKey(item.target));
+  }
+
+  return {SEED_ITEMS,createInitialDb,migrateDb,addItem,isPristineDb,normalizeKey,uid,clone};
 });

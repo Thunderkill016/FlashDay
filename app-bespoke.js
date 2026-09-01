@@ -11,6 +11,7 @@
   const KEY = 'flashday-memory-engine-repo-driven';
   const $ = (id) => document.getElementById(id);
   const debugEnabled = new URLSearchParams(window.location.search).has('debug');
+  const CLOUD_PAGE_SIZE = 500;
 
   let db = loadDb();
   let current = null;
@@ -20,6 +21,7 @@
   let isReported = false;
   let sessionReviews = 0;
   let currentAudio = null;
+  let stimulusAudioKind = 'none';
   let toastTimer = null;
   let mediaRecorder = null;
   let recordedChunks = [];
@@ -28,6 +30,7 @@
   let supabaseClient = null;
   let learner = null;
   let activeDeck = null;
+  let cloudKnown = C.emptyKnownIds();
   let syncChain = Promise.resolve();
   let isHydrating = false;
   let authMode = 'signin';
@@ -55,9 +58,13 @@
   }
 
   function esc(value) {
-    return String(value ?? '').replace(/[&<>'"]/g, (char) => ({
-      '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
-    })[char]);
+    return String(value ?? '').replace(/[&<>'"]/g, (char) => {
+      if (char === '&') return '&amp;';
+      if (char === '<') return '&lt;';
+      if (char === '>') return '&gt;';
+      if (char === "'") return '&#39;';
+      return '&quot;';
+    });
   }
 
   function toast(message) {
@@ -127,6 +134,7 @@
     stopAudio();
     releaseRecording();
     clearRecordedAudio();
+    stimulusAudioKind = 'none';
     try {
       current = A.selectNext(db, Date.now());
       ratings = A.initialRatings(current.card);
@@ -393,6 +401,7 @@
     const result = A.finalizeCard(db, current, ratings, {
       isReported,
       response: P.responseForMode(current.mode, attempt),
+      stimulus: { audioKind: current.mode === B.Mode.LISTEN ? stimulusAudioKind : 'none' },
       nowMs: Date.now()
     });
     save();
@@ -428,12 +437,17 @@
     };
   }
 
+  function trackStimulusAudio(kind) {
+    if (current?.mode === B.Mode.LISTEN && !isBack) stimulusAudioKind = kind;
+  }
+
   function speakTarget() {
     if (!current) return;
     stopAudio();
     const ref = current.card.audio?.ref || current.card.audio_filename || '';
     if (ref) {
       try {
+        trackStimulusAudio(current.card.source?.audio?.ref ? 'source-audio' : 'linked-audio');
         currentAudio = new Audio(ref);
         currentAudio.play().catch(fallbackTts);
         return;
@@ -446,7 +460,11 @@
 
   function fallbackTts() {
     currentAudio = null;
-    if (!current || !('speechSynthesis' in window)) return;
+    if (!current || !('speechSynthesis' in window)) {
+      trackStimulusAudio('none');
+      return;
+    }
+    trackStimulusAudio('browser-tts');
     const utterance = new SpeechSynthesisUtterance(current.card.sentence);
     utterance.lang = 'en-US';
     utterance.rate = 0.88;
@@ -501,6 +519,7 @@
       cardIndex: engine.cardIndex.indexObject(),
       captureId: current.card.capture_id || null,
       audioRef: current.card.audio?.ref || null,
+      stimulusAudioKind,
       ratings,
       attempt: P.responseForMode(current.mode, attempt),
       selectedUnitRatings: state ? state.ratings() : [],
@@ -540,19 +559,44 @@
     return rows.map((row) => ({ ...row, owner_id: learner.id }));
   }
 
-  async function persistCurrentDb() {
+  async function fetchAllDeckRows(table, deckId, orderColumn) {
+    const rows = [];
+    for (let from = 0; ; from += CLOUD_PAGE_SIZE) {
+      const { data, error } = await supabaseClient
+        .from(table)
+        .select('*')
+        .eq('deck_id', deckId)
+        .order(orderColumn, { ascending: true })
+        .range(from, from + CLOUD_PAGE_SIZE - 1);
+      if (error) throw new Error(error.message);
+      const page = data || [];
+      rows.push(...page);
+      if (page.length < CLOUD_PAGE_SIZE) break;
+    }
+    return rows;
+  }
+
+  async function persistIncrementalDb() {
     if (!supabaseClient || !learner) return;
     const deck = await ensureDeck();
+    const pending = {
+      units: C.unknownById(db.items || [], cloudKnown.units),
+      cards: C.unknownById(db.bespokeCards || [], cloudKnown.cards),
+      captures: C.unknownById(db.captures || [], cloudKnown.captures),
+      events: C.unknownById(db.events || [], cloudKnown.events)
+    };
+
     const writes = [];
-    const unitRows = withOwner((db.items || []).map((item) => C.unitRow(item, deck.id)));
-    const cardRows = withOwner((db.bespokeCards || []).map((card) => C.cardRow(card, deck.id)));
-    const captureRows = withOwner((db.captures || []).map((capture) => C.captureRow(capture, deck.id)));
-    const reviewRows = withOwner((db.events || []).map((event) => C.reviewRow(event, deck.id)));
-    if (unitRows.length) writes.push(supabaseClient.from('units').upsert(unitRows, { onConflict: 'owner_id,id' }));
-    if (cardRows.length) writes.push(supabaseClient.from('cards').upsert(cardRows, { onConflict: 'owner_id,id' }));
-    if (captureRows.length) writes.push(supabaseClient.from('source_captures').upsert(captureRows, { onConflict: 'owner_id,id' }));
-    if (reviewRows.length) writes.push(supabaseClient.from('review_events').upsert(reviewRows, { onConflict: 'owner_id,id' }));
-    writes.push(supabaseClient.from('learning_progress').upsert({
+    if (pending.units.length) writes.push(supabaseClient.from('units').upsert(withOwner(pending.units.map((item) => C.unitRow(item, deck.id))), { onConflict: 'owner_id,id' }));
+    if (pending.cards.length) writes.push(supabaseClient.from('cards').upsert(withOwner(pending.cards.map((card) => C.cardRow(card, deck.id))), { onConflict: 'owner_id,id' }));
+    if (pending.captures.length) writes.push(supabaseClient.from('source_captures').upsert(withOwner(pending.captures.map((capture) => C.captureRow(capture, deck.id))), { onConflict: 'owner_id,id' }));
+    if (pending.events.length) writes.push(supabaseClient.from('review_events').upsert(withOwner(pending.events.map((event) => C.reviewRow(event, deck.id))), { onConflict: 'owner_id,id', ignoreDuplicates: true }));
+
+    const results = await Promise.all(writes);
+    const failed = results.find((result) => result.error);
+    if (failed?.error) throw new Error(failed.error.message);
+
+    const { error: progressError } = await supabaseClient.from('learning_progress').upsert({
       owner_id: learner.id,
       deck_id: deck.id,
       payload: {
@@ -562,10 +606,13 @@
         schedulerSource: db.schedulerSource
       },
       updated_at: new Date().toISOString()
-    }, { onConflict: 'owner_id' }));
-    const results = await Promise.all(writes);
-    const failed = results.find((result) => result.error);
-    if (failed?.error) throw new Error(failed.error.message);
+    }, { onConflict: 'owner_id' });
+    if (progressError) throw new Error(progressError.message);
+
+    C.rememberIds(cloudKnown, 'units', pending.units);
+    C.rememberIds(cloudKnown, 'cards', pending.cards);
+    C.rememberIds(cloudKnown, 'captures', pending.captures);
+    C.rememberIds(cloudKnown, 'events', pending.events);
     setCloudStatus('Đã lưu vào tài khoản', 'ready');
   }
 
@@ -574,7 +621,7 @@
     setCloudStatus('Đang lưu…', 'saving');
     syncChain = syncChain
       .catch(() => undefined)
-      .then(persistCurrentDb)
+      .then(persistIncrementalDb)
       .catch((error) => {
         setCloudStatus('Chưa đồng bộ', 'error');
         toast(`Không đồng bộ được: ${error.message}`);
@@ -588,37 +635,24 @@
     setCloudStatus('Đang tải bộ nhớ…', 'saving');
     try {
       const deck = await ensureDeck();
-      const [units, cards, captures, events, progress] = await Promise.all([
-        supabaseClient.from('units').select('*').eq('deck_id', deck.id).order('created_at', { ascending: true }),
-        supabaseClient.from('cards').select('*').eq('deck_id', deck.id).order('created_at', { ascending: true }),
-        supabaseClient.from('source_captures').select('*').eq('deck_id', deck.id).order('created_at', { ascending: true }),
-        supabaseClient.from('review_events').select('*').eq('deck_id', deck.id).order('answered_at', { ascending: true }),
+      const [unitRows, cardRows, captureRows, eventRows, progress] = await Promise.all([
+        fetchAllDeckRows('units', deck.id, 'created_at'),
+        fetchAllDeckRows('cards', deck.id, 'created_at'),
+        fetchAllDeckRows('source_captures', deck.id, 'created_at'),
+        fetchAllDeckRows('review_events', deck.id, 'answered_at'),
         supabaseClient.from('learning_progress').select('*').eq('owner_id', learner.id).maybeSingle()
       ]);
-      const failed = [units, cards, captures, events, progress].find((result) => result.error);
-      if (failed?.error) throw new Error(failed.error.message);
-      const remote = {
-        units: units.data || [],
-        cards: cards.data || [],
-        captures: captures.data || [],
-        events: events.data || []
-      };
-      if (C.remoteHasLearnerData(remote)) {
-        db = D.migrateDb({
-          version: 'repo-driven-1',
-          createdAt: Date.now(),
-          items: remote.units.map(C.itemFromRow),
-          bespokeCards: remote.cards.map((row) => row.payload).filter(Boolean),
-          captures: remote.captures.map((row) => row.payload).filter(Boolean),
-          events: remote.events.map(C.eventFromRow),
-          bespokeProgress: progress.data?.payload?.bespokeProgress || null,
-          scheduler: progress.data?.payload?.scheduler || 'google-bespoke-port',
-          schedulerSource: progress.data?.payload?.schedulerSource || 'google/bespoke@67b1eda5b28f7a69be20561014255cdc81110a3e'
-        });
-        save();
-      } else {
-        await persistCurrentDb();
-      }
+      if (progress.error) throw new Error(progress.error.message);
+
+      const remote = { units: unitRows, cards: cardRows, captures: captureRows, events: eventRows };
+      cloudKnown = C.knownIds(remote);
+      const hasRemote = C.remoteHasLearnerData(remote);
+      const localForMerge = hasRemote && D.isPristineDb(db) ? { ...db, items: [] } : db;
+      db = D.migrateDb(C.mergeLearnerDb(localForMerge, remote, progress.data?.payload || {}));
+      if ((db.events || []).length) A.rebuildProgressFromEvents(db);
+      save();
+
+      await persistIncrementalDb();
       current = null;
       renderMemory();
       nextCard();
@@ -721,6 +755,7 @@
       window.setTimeout(() => {
         learner = session?.user || null;
         activeDeck = null;
+        cloudKnown = C.emptyKnownIds();
         renderAuth();
         if (learner) hydrateCloud();
       }, 0);
@@ -742,6 +777,7 @@
         return;
       }
       activeDeck = null;
+      cloudKnown = C.emptyKnownIds();
     }
     localStorage.removeItem(KEY);
     db = D.createInitialDb();
