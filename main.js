@@ -14,4 +14,5 @@ import './bespoke-adapter.js';
 import './flashday-product.js';
 import './flashday-cloud.js';
 import './app-bespoke.js';
+import './learning-hub.js';
 import './product-bootstrap.js';
