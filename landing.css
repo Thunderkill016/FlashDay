@@ -111,7 +111,15 @@ a { text-decoration: none; color: inherit; }
 
 /* The orbits lie flat on the tilted plane */
 .orbit { position: absolute; top: 50%; left: 50%; border: 1px solid rgba(255,255,255,0.06); border-radius: 50%; transform-style: preserve-3d; transition: border-color 0.4s, background 0.4s; cursor: crosshair; }
-.satellite { position: absolute; top: 0; left: 50%; display: flex; flex-direction: column; align-items: center; gap: 8px; transform-style: preserve-3d; }
+.satellite { position: absolute; top: 0; left: 50%; transform-style: preserve-3d; }
+
+.sat-billboard {
+  position: relative;
+  display: flex; flex-direction: column; align-items: center; gap: 8px;
+  transform-style: preserve-3d;
+  transform: rotateY(15deg) rotateX(-65deg);
+}
+
 .sat-dot { width: 10px; height: 10px; border-radius: 50%; box-shadow: 0 0 20px currentColor, 0 0 40px currentColor; transition: 0.4s; }
 
 /* The label is placed relative to the satellite */
@@ -145,12 +153,10 @@ a { text-decoration: none; color: inherit; }
 @keyframes spin-rev { 100% { transform: rotateZ(-360deg); } }
 
 /* BILLBOARDING ANIMATIONS: Undo Z spin, then undo Y tilt, then undo X tilt */
-@keyframes counter-spin {
-  0% { transform: translate(-50%, -50%) rotateZ(0deg) rotateY(15deg) rotateX(-65deg); }
+@keyframes counter-spin { 0% { transform: translate(-50%, -50%) rotateZ(0deg); } 100% { transform: translate(-50%, -50%) rotateZ(-360deg); } }
   100% { transform: translate(-50%, -50%) rotateZ(-360deg) rotateY(15deg) rotateX(-65deg); }
 }
-@keyframes counter-spin-rev {
-  0% { transform: translate(-50%, -50%) rotateZ(0deg) rotateY(15deg) rotateX(-65deg); }
+@keyframes counter-spin-rev { 0% { transform: translate(-50%, -50%) rotateZ(0deg); } 100% { transform: translate(-50%, -50%) rotateZ(360deg); } }
   100% { transform: translate(-50%, -50%) rotateZ(360deg) rotateY(15deg) rotateX(-65deg); }
 }
 
