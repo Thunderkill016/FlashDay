@@ -12,6 +12,7 @@
   if(!B||!CI||!SC)throw new Error('BespokeSrs, BespokeCardIndex and FlashDaySourceCapture are required');
 
   const ACTIVE_MODES=[B.Mode.LISTEN,B.Mode.SPEAK,B.Mode.READ,B.Mode.WRITE];
+  const VALID_DIFFICULTIES=new Set(Object.values(B.Difficulty));
   const MODE_META={
     listen:{label:'Nghe',front:'Nghe câu rồi thử nhớ nội dung.'},
     speak:{label:'Nói',front:'Nói câu tiếng Anh từ câu tiếng Việt.'},
@@ -19,7 +20,8 @@
     write:{label:'Viết',front:'Viết câu tiếng Anh từ câu tiếng Việt.'},
   };
 
-  function unitFromItem(item){return {id:item.id,name:item.target,definition:item.meaning,difficulty:item.difficulty||'A1'};}
+  function normalizedDifficulty(value){return VALID_DIFFICULTIES.has(value)?value:B.Difficulty.A1;}
+  function unitFromItem(item){return {id:item.id,name:item.target,definition:item.meaning,difficulty:normalizedDifficulty(item.difficulty)};}
 
   function datasetCards(db){
     const explicit=Array.isArray(db.bespokeCards)?db.bespokeCards:[];
@@ -27,7 +29,7 @@
     return [...explicit,...captured];
   }
 
-  function buildEngine(db){
+  function createEngine(db,{loadProgress=true}={}){
     const units=(db.items||[]).map(unitFromItem);
     const unitLookup=Object.fromEntries(units.map(u=>[u.id,u]));
     const cardIndex=CI.importFlashDayItems(db.items||[],datasetCards(db));
@@ -37,17 +39,40 @@
       translations,unitLookup,cardProvider:(unitId,limit)=>cardIndex.cards(unitId,limit)
     });
     engine.setModes(ACTIVE_MODES);
-    if(db.bespokeProgress){
+    if(loadProgress&&db.bespokeProgress){
       try{engine.loadObject(db.bespokeProgress);engine.setModes(ACTIVE_MODES);}catch(_e){}
     }
     engine.cardIndex=cardIndex;
     return engine;
   }
 
+  function buildEngine(db){return createEngine(db,{loadProgress:true});}
+
   function saveEngine(db,engine){
     db.bespokeProgress=engine.saveObject();
     db.scheduler='google-bespoke-port';
     db.schedulerSource='google/bespoke@67b1eda5b28f7a69be20561014255cdc81110a3e';
+  }
+
+  function rebuildProgressFromEvents(db){
+    const engine=createEngine(db,{loadProgress:false});
+    const events=[...(Array.isArray(db.events)?db.events:[])]
+      .filter(event=>ACTIVE_MODES.includes(event?.mode)&&Number.isFinite(Number(event?.answeredAt)))
+      .sort((a,b)=>Number(a.answeredAt)-Number(b.answeredAt));
+
+    for(const event of events){
+      const time=Number(event.answeredAt)/1000;
+      for(const unitId of Array.isArray(event.unitIds)?event.unitIds:[]){
+        const score=Number(event.ratings?.[unitId]??0);
+        if(score!==1&&score!==3)continue;
+        const unit=engine.unitLookup[unitId];
+        if(!unit)continue;
+        engine.rate(unit,event.mode,score,time);
+      }
+      if(event.cardId)engine.logUsage(String(event.cardId),Boolean(event.isReported),time);
+    }
+    saveEngine(db,engine);
+    return engine;
   }
 
   function selectNext(db,nowMs=Date.now()){
@@ -70,7 +95,7 @@
     const engine=selection.engine||buildEngine(db);const applied={};
     for(const unitId of B.unitIds(selection.card)){
       const score=Number(ratings?.[unitId]??0);
-      const unit=engine.unitLookup[unitId]||{id:unitId,name:unitId,definition:unitId,difficulty:'A1'};
+      const unit=engine.unitLookup[unitId]||{id:unitId,name:unitId,definition:unitId,difficulty:B.Difficulty.A1};
       engine.rate(unit,selection.mode,score,nowMs/1000);applied[unitId]=score;
     }
     engine.logUsage(selection.card.id,isReported,nowMs/1000);saveEngine(db,engine);
@@ -107,5 +132,5 @@
   function cardParts(card){return CI.splitIntoParts(card);}
   function cardCountForUnit(db,unitId){return buildEngine(db).cardIndex.size(unitId);}
 
-  return {ACTIVE_MODES,MODE_META,buildEngine,saveEngine,selectNext,initialRatings,cycleRating,allSuccess,hasCompleteRatings,finalizeCard,itemStatus,deckStats,cardParts,cardCountForUnit,datasetCards};
+  return {ACTIVE_MODES,MODE_META,normalizedDifficulty,buildEngine,saveEngine,rebuildProgressFromEvents,selectNext,initialRatings,cycleRating,allSuccess,hasCompleteRatings,finalizeCard,itemStatus,deckStats,cardParts,cardCountForUnit,datasetCards};
 });
