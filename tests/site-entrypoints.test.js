@@ -11,6 +11,7 @@ const productBootstrap = readFileSync(join(root, 'product-bootstrap.js'), 'utf8'
 assert.match(landing, /href="landing\.css"/);
 assert.match(landing, /class="btn-flash mt-8 auth-trigger" href="#" data-auth="signup"/);
 assert.match(landing, /src="\.\/landing-auth\.mjs"/);
+assert.match(landing, /<script type="module" src="\.\/landing-auth\.mjs"><\/script>/);
 assert.match(landing, /id="auth-form" novalidate/);
 [
   'auth-providers', 'auth-tabs', 'auth-divider', 'email-field', 'password-field',
@@ -23,7 +24,6 @@ assert.match(landing, /family=Be\+Vietnam\+Pro/);
 assert.match(landing, /family=Bricolage\+Grotesque/);
 assert.match(landing, /family=IBM\+Plex\+Mono/);
 assert.doesNotMatch(landing, /<script type="module">\s*import \{ createClient \}/);
-assert.match(landing, /<script type="application\/json" data-legacy-auth="superseded">/);
 
 assert.match(app, /href="\.\.\/styles\.css"/);
 assert.match(app, /src="\.\.\/main\.js"/);
