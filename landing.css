@@ -190,7 +190,7 @@ a { text-decoration: none; color: inherit; }
 
 @keyframes letterDecay {
   0%, 10% { opacity: 1; filter: blur(0); transform: translateY(0) rotate(0); }
-  40%, 80% { opacity: 0.05; filter: blur(8px); transform: translateY(10px) rotate(5deg); }
+  40%, 80% { opacity: 0.12; filter: blur(6px); transform: translateY(8px) rotate(3deg); }
   85%, 100% { opacity: 1; filter: blur(0); transform: translateY(0) rotate(0); } /* The Flash Recovery */
 }
 
@@ -198,7 +198,7 @@ a { text-decoration: none; color: inherit; }
 .decay-timeline { position: relative; padding-top: 30px; }
 .timeline-track { height: 4px; background: rgba(255,255,255,0.1); width: 100%; border-radius: 2px; position: relative; }
 .timeline-progress { position: absolute; left: 0; top: 0; height: 100%; background: var(--flash); border-radius: 2px; animation: timeDrain 6s infinite; }
-.timeline-flash-point { position: absolute; right: 20%; top: -30px; font-family: var(--font-mono); font-size: 11px; font-weight: 700; color: var(--flash); letter-spacing: 0.1em; display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+.timeline-flash-point { position: absolute; right: 20%; top: -30px; font-family: var(--font-mono); font-size: 11px; font-weight: 700; color: var(--flash); letter-spacing: 0.1em; display: flex; flex-direction: column; align-items: center; gap: 8px; transform: translateX(50%); }
 .flash-ping { width: 8px; height: 8px; background: var(--flash); border-radius: 50%; position: relative; animation: pingPulse 6s infinite; }
 .flash-ping::after { content: ''; position: absolute; inset: -10px; border: 2px solid var(--flash); border-radius: 50%; animation: pingRing 6s infinite; }
 
