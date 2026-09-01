@@ -2,7 +2,7 @@
  * FlashDay adapter around google/bespoke language/card policy plus FSRS timing.
  *
  * Responsibility boundary:
- * - Bespoke: Unit model, four language modes, CardIndex, card ranking/usage.
+ * - Bespoke: Unit model, four language modes, CardIndex and language/card context policy.
  * - FSRS: due/retrievability/next interval for each Unit x Mode memory.
  * - FlashDay review events: durable history used to rebuild both caches.
  */
@@ -15,6 +15,7 @@
 
   const ACTIVE_MODES=[B.Mode.LISTEN,B.Mode.SPEAK,B.Mode.READ,B.Mode.WRITE];
   const VALID_DIFFICULTIES=new Set(Object.values(B.Difficulty));
+  const DIFFICULTY_ORDER={A1:0,A2:1,B1:2,B2:3,C1:4,C2:5};
   const VALID_AUDIO_KINDS=new Set(['source-audio','linked-audio','browser-tts','none']);
   const BESPOKE_SOURCE='google/bespoke@67b1eda5b28f7a69be20561014255cdc81110a3e';
   const HYBRID_SCHEDULER='bespoke-language-policy+fsrs6';
@@ -27,6 +28,32 @@
 
   function normalizedDifficulty(value){return VALID_DIFFICULTIES.has(value)?value:B.Difficulty.A1;}
   function unitFromItem(item){return {id:item.id,name:item.target,definition:item.meaning,difficulty:normalizedDifficulty(item.difficulty)};}
+  function difficultyOrdinal(value){return DIFFICULTY_ORDER[value]??0;}
+
+  function stepMs(step){
+    const match=String(step||'').trim().match(/^(\d+(?:\.\d+)?)(m|h|d)$/i);
+    if(!match)return 0;
+    const value=Number(match[1]);
+    const unit=match[2].toLowerCase();
+    const multiplier=unit==='m'?60000:unit==='h'?3600000:86400000;
+    return Number.isFinite(value)?value*multiplier:0;
+  }
+
+  // Do not introduce another new memory when an existing short-term FSRS step
+  // is about to come due. The window is derived from the configured FSRS
+  // learning/relearning steps instead of inventing a second timing constant.
+  function introductionGuardMs(){
+    if(!F?.FSRS_PARAMETERS?.enable_short_term)return 0;
+    const steps=[...(F.FSRS_PARAMETERS.learning_steps||[]),...(F.FSRS_PARAMETERS.relearning_steps||[])];
+    return Math.max(0,...steps.map(stepMs));
+  }
+
+  function bespokeScore(score){
+    const value=Number(score);
+    // Bespoke upstream only defines 0..3. If FlashDay later exposes FSRS Easy=4,
+    // record it as a Bespoke success while preserving the original 4 for FSRS.
+    return value===4?3:value;
+  }
 
   function datasetCards(db){
     const explicit=Array.isArray(db.bespokeCards)?db.bespokeCards:[];
@@ -74,7 +101,7 @@
         if(score!==1&&score!==2&&score!==3&&score!==4)continue;
         const unit=engine.unitLookup[unitId];
         if(!unit)continue;
-        engine.rate(unit,event.mode,score,time);
+        engine.rate(unit,event.mode,bespokeScore(score),time);
       }
       if(event.cardId)engine.logUsage(String(event.cardId),Boolean(event.isReported),time);
     }
@@ -92,15 +119,54 @@
     return out;
   }
 
+  // Bespoke's upstream scoreCard mixes card/context quality with its own urgency
+  // scheduler. In hybrid mode FSRS owns memory timing, so this scorer keeps the
+  // non-timing parts only: reported-card penalty, recent-card rotation, avoiding
+  // unknown extra units and content-difficulty compatibility.
+  function hybridCardScore(engine,card,mode,nowMs){
+    const currentTime=Number(nowMs)/1000;
+    let score=0.0;
+    for(const usage of (engine.cardIdUses[card.id]||[])){
+      if(usage.is_reported)score-=B.DeckEngine.REPORT_PENALTY;
+      const days=(currentTime-Number(usage.time))/B.DAY;
+      if(days>=0.0)score-=B.DeckEngine.CARD_USAGE_FACTOR*Math.exp(-B.DeckEngine.CARD_USAGE_DECAY*days);
+    }
+
+    for(const unitId of B.unitIds(card)){
+      const state=engine.ratingStates[unitId]||new B.RatingState();
+      if(!state.isTouched())score-=B.DeckEngine.UNTOUCHED_PENALTY;
+      else if(!state.isIntroduced(mode))score-=B.DeckEngine.UNINTRODUCED_PENALTY;
+      const unit=engine.unitLookup[unitId]||engine.unitsWithCards.find(u=>u.id===unitId);
+      const unitDiff=unit?.difficulty||B.Difficulty.A1;
+      if(unitDiff===engine.difficulty)score+=B.DeckEngine.DIFFICULTY_MATCH_BONUS;
+      else if(difficultyOrdinal(unitDiff)>difficultyOrdinal(engine.difficulty))score+=B.DeckEngine.DIFFICULTY_PENALTY;
+    }
+    return score;
+  }
+
   function chooseBestCard(engine,unitId,mode,nowMs){
     const cards=engine.getCardsForUnit(unitId,1000);
     if(!cards.length)throw new Error(`Unit ${unitId} chưa có card hợp lệ.`);
-    let best=cards[0],bestScore=engine.scoreCard(best,mode,nowMs/1000);
+    let best=cards[0],bestScore=hybridCardScore(engine,best,mode,nowMs);
     for(let i=1;i<cards.length;i++){
-      const score=engine.scoreCard(cards[i],mode,nowMs/1000);
+      const score=hybridCardScore(engine,cards[i],mode,nowMs);
       if(score>bestScore){best=cards[i];bestScore=score;}
     }
     return best;
+  }
+
+  // Cross-skill knowledge is allowed to influence WHAT to introduce next, but
+  // never mutates another mode's FSRS memory state. Prefer finishing another
+  // skill for a Unit already encountered before opening an entirely new Unit.
+  function chooseIntroductionTask(db,engine,unseen,nowMs){
+    for(const unit of engine.unitsWithCards){
+      const hasAnyMode=ACTIVE_MODES.some(mode=>F.hasState(db,unit.id,mode));
+      if(!hasAnyMode)continue;
+      const match=unseen.find(task=>task.unitId===unit.id);
+      if(match)return {...match,reason:'cross-skill-continuity',memory:F.taskState(db,match.unitId,match.mode,nowMs)};
+    }
+    const fallback=unseen[0];
+    return {...fallback,reason:'ordered-introduction',memory:F.taskState(db,fallback.unitId,fallback.mode,nowMs)};
   }
 
   function chooseHybridTask(db,engine,nowMs){
@@ -111,19 +177,17 @@
     if(due.length)return {unitId:due[0].unitId,mode:due[0].mode,reason:'fsrs-due',memory:due[0]};
 
     const unseen=F.newTasks(db,tasks);
+    const nextDue=F.nextDueAt(db,tasks);
     if(unseen.length){
-      // Bespoke still gets first say over which unseen language task to introduce.
-      // Its long-term urgency is NOT allowed to make a future FSRS task due early.
-      try{
-        const preferred=engine.chooseTask(nowMs/1000);
-        const match=unseen.find(task=>task.unitId===preferred.unitId&&task.mode===preferred.mode);
-        if(match)return {...match,reason:'bespoke-introduction',memory:F.taskState(db,match.unitId,match.mode,nowMs)};
-      }catch(_e){}
-      const fallback=unseen[0];
-      return {...fallback,reason:'ordered-introduction',memory:F.taskState(db,fallback.unitId,fallback.mode,nowMs)};
+      const guardMs=introductionGuardMs();
+      const waitMs=nextDue==null?Infinity:Number(nextDue)-Number(nowMs);
+      if(guardMs>0&&waitMs>0&&waitMs<=guardMs){
+        const minutes=Math.max(1,Math.ceil(waitMs/60000));
+        throw new Error(`FSRS có lượt ôn ngắn hạn sau khoảng ${minutes} phút. FlashDay tạm không mở Unit × kỹ năng mới để tránh dồn bài.`);
+      }
+      return chooseIntroductionTask(db,engine,unseen,nowMs);
     }
 
-    const nextDue=F.nextDueAt(db,tasks);
     if(nextDue!=null){
       const waitMs=Math.max(0,nextDue-nowMs);
       const minutes=Math.max(1,Math.ceil(waitMs/60000));
@@ -165,7 +229,7 @@
     for(const unitId of B.unitIds(selection.card)){
       const score=Number(ratings?.[unitId]??0);
       const unit=engine.unitLookup[unitId]||{id:unitId,name:unitId,definition:unitId,difficulty:B.Difficulty.A1};
-      engine.rate(unit,selection.mode,score,nowMs/1000);applied[unitId]=score;
+      engine.rate(unit,selection.mode,bespokeScore(score),nowMs/1000);applied[unitId]=score;
     }
     engine.logUsage(selection.card.id,isReported,nowMs/1000);saveEngine(db,engine);
     const fsrsUpdates=F?F.applyRatings(db,selection.mode,applied,nowMs):[];
@@ -225,5 +289,5 @@
   function cardParts(card){return CI.splitIntoParts(card);}
   function cardCountForUnit(db,unitId){return buildEngine(db).cardIndex.size(unitId);}
 
-  return {ACTIVE_MODES,MODE_META,normalizedDifficulty,normalizeStimulus,buildEngine,saveEngine,rebuildProgressFromEvents,selectNext,initialRatings,cycleRating,allSuccess,hasCompleteRatings,finalizeCard,itemStatus,deckStats,cardParts,cardCountForUnit,datasetCards,taskPairs,chooseHybridTask,HYBRID_SCHEDULER,BESPOKE_SOURCE,hasFsrs:Boolean(F)};
+  return {ACTIVE_MODES,MODE_META,normalizedDifficulty,normalizeStimulus,buildEngine,saveEngine,rebuildProgressFromEvents,selectNext,initialRatings,cycleRating,allSuccess,hasCompleteRatings,finalizeCard,itemStatus,deckStats,cardParts,cardCountForUnit,datasetCards,taskPairs,chooseHybridTask,chooseIntroductionTask,hybridCardScore,introductionGuardMs,bespokeScore,HYBRID_SCHEDULER,BESPOKE_SOURCE,hasFsrs:Boolean(F)};
 });
