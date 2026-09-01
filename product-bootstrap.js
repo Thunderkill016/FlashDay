@@ -16,22 +16,20 @@ if (!url || !publishableKey) {
     }
   });
 
-  // --- AUTH GUARD ---
-  client.auth.getSession().then(({ data: { session } }) => {
-    if (!session && !window.location.pathname.endsWith('/')) {
-      // If we are in /app/ and not logged in, redirect to landing
-      if (window.location.pathname.includes('/app/')) {
-        window.location.href = '/';
-      }
+  // Wait for Supabase to finish recovering an OAuth/email-confirmation session.
+  // Redirecting after a raw getSession() can race with detectSessionInUrl.
+  let initialSessionResolved = false;
+  client.auth.onAuthStateChange((event, session) => {
+    if (event === 'INITIAL_SESSION') {
+      initialSessionResolved = true;
+      if (!session && window.location.pathname.includes('/app/')) window.location.replace('/');
+      return;
+    }
+    if (event === 'SIGNED_OUT' && initialSessionResolved && window.location.pathname.includes('/app/')) {
+      window.location.replace('/');
     }
   });
 
-  client.auth.onAuthStateChange((event, session) => {
-    if (event === 'SIGNED_OUT') {
-      window.location.href = '/';
-    }
-  });
-  // ------------------
   window.dispatchEvent(new CustomEvent('flashday:supabase-ready', {
     detail: { client, error: null }
   }));
