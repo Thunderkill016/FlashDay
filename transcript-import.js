@@ -99,6 +99,12 @@
     return out;
   }
 
+  function resolvedUnitIds(meta,sentence){
+    if(typeof meta.resolveUnitIds!=='function')return [];
+    const values=meta.resolveUnitIds(sentence);
+    return [...new Set((Array.isArray(values)?values:[]).map(value=>String(value||'').trim()).filter(Boolean))];
+  }
+
   function segmentsToCaptures(rawSegments,meta={}){
     const segments=(rawSegments||[]).map(normalizeSegment).filter(s=>s.text);
     return segments.map((segment,index)=>{
@@ -117,18 +123,24 @@
         audio:audioRef?{ref:audioRef,start:clip.startMs/1000,end:clip.endMs/1000,paddingStart:clip.paddingStart,paddingEnd:clip.paddingEnd}:undefined,
         file:meta.fileName?{name:clean(meta.fileName)}:undefined,
         note:clean(meta.note)||undefined,
+        sourceKind:meta.sourceKind||'transcript',
+        sourceTitle:clean(meta.sourceTitle||meta.fileName||meta.subtitleFileName),
+        estimatedLevel:meta.estimatedLevel,
+        linkedUnitIds:resolvedUnitIds(meta,segment.text),
       });
     });
   }
 
   function importIntoDb(db,segments,meta={}){
-    const captures=segmentsToCaptures(segments,meta);let added=0,ready=0;
+    const captures=segmentsToCaptures(segments,meta);let added=0,ready=0,linked=0;
+    const linkedUnits=new Set();
     for(const capture of captures){
       const before=(db.captures||[]).length;SC.addCapture(db,capture);
       const after=(db.captures||[]).length;if(after>before)added++;
       if(SC.isCardReady(capture))ready++;
+      if(capture.linkedUnitIds.length){linked++;for(const id of capture.linkedUnitIds)linkedUnits.add(id);}
     }
-    return {captures,added,ready,total:captures.length};
+    return {captures,added,ready,linkedSegments:linked,linkedUnitIds:[...linkedUnits],total:captures.length};
   }
 
   return {normalizeSegment,timestampToSeconds,formatTimestamp,parseSrt,parseJson,clipWindow,surrounding,segmentsToCaptures,importIntoDb};
