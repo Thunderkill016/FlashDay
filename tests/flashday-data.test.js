@@ -3,11 +3,12 @@ const D=require('../flashday-data.js');
 
 {
   const db=D.createInitialDb(undefined,1000);
-  assert.strictEqual(db.version,'repo-driven-1');
+  assert.strictEqual(db.version,'repo-driven-2');
   assert.strictEqual(db.items.length,5);
   assert.deepStrictEqual(db.events,[]);
   assert.deepStrictEqual(db.captures,[]);
-  assert.strictEqual(db.scheduler,'google-bespoke-port');
+  assert.strictEqual(db.scheduler,'bespoke-language-policy+fsrs6');
+  assert.strictEqual(db.fsrsProgress,null);
 }
 
 {
@@ -19,12 +20,13 @@ const D=require('../flashday-data.js');
     bespokeCards:[{id:'b1'}],bespokeProgress:{ratings:{x:[]}},scheduler:'google-bespoke-port'
   };
   const db=D.migrateDb(legacy,2000);
-  assert.strictEqual(db.version,'repo-driven-1');
+  assert.strictEqual(db.version,'repo-driven-2');
   assert.strictEqual(db.items[0].id,'x');
   assert.strictEqual(db.events[0].id,'e1');
   assert.strictEqual(db.captures[0].id,'c1');
   assert.strictEqual(db.bespokeCards[0].id,'b1');
   assert.deepStrictEqual(db.bespokeProgress,{ratings:{x:[]}});
+  assert.strictEqual(db.fsrsProgress,null);
   assert.strictEqual(Object.prototype.hasOwnProperty.call(db,'states'),false,'legacy custom learner state must not enter active runtime schema');
 }
 
