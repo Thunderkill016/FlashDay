@@ -313,7 +313,7 @@ a { text-decoration: none; color: inherit; }
 .bento-card {
   background: #ffffff;
   border-radius: 32px;
-  padding: 40px;
+  padding: 48px 40px;
   box-shadow: 0 10px 40px rgba(0,0,0,0.04);
   border: 1px solid rgba(0,0,0,0.05);
   display: flex;
@@ -498,7 +498,7 @@ a { text-decoration: none; color: inherit; }
   -webkit-text-fill-color: transparent;
 }
 .storage-label {
-  font-size: 18px;
+  font-size: 20px;
   font-weight: 500;
   color: rgba(255,255,255,0.8);
   line-height: 1.4;
@@ -506,6 +506,7 @@ a { text-decoration: none; color: inherit; }
 .storage-blocks {
   display: flex;
   gap: 12px;
+  align-items: center;
 }
 .s-block {
   width: 24px;
