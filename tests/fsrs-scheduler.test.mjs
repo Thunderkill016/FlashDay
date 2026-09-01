@@ -4,6 +4,7 @@ import {
   FSRS_SOURCE,
   Rating,
   applyRatings,
+  ensureProgress,
   rebuildProgressFromEvents,
   taskKey,
   taskState,
@@ -53,4 +54,22 @@ assert.notEqual(taskKey('u1', 'listen'), taskKey('u1', 'speak'));
   assert.equal(due[0].mode, 'read');
 }
 
-console.log('FlashDay FSRS v6: 10 Unit-mode scheduling checks passed');
+{
+  const legacyDb = {
+    events: [],
+    fsrsProgress: null,
+    bespokeProgress: {
+      ratings: {
+        u1: [
+          { mode: 'listen', time: 1000, score: 3 },
+          { mode: 'listen', time: 2000, score: 1 }
+        ]
+      }
+    }
+  };
+  const progress = ensureProgress(legacyDb);
+  assert.equal(progress.cards['u1::listen'].reps, 2, 'legacy Bespoke rating history must seed FSRS instead of resetting progress');
+  assert.equal(Boolean(progress.cards['u1::write']), false);
+}
+
+console.log('FlashDay FSRS v6: 12 Unit-mode scheduling checks passed');
