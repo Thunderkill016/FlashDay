@@ -154,11 +154,9 @@ a { text-decoration: none; color: inherit; }
 
 /* BILLBOARDING ANIMATIONS: Undo Z spin, then undo Y tilt, then undo X tilt */
 @keyframes counter-spin { 0% { transform: translate(-50%, -50%) rotateZ(0deg); } 100% { transform: translate(-50%, -50%) rotateZ(-360deg); } }
-  100% { transform: translate(-50%, -50%) rotateZ(-360deg) rotateY(15deg) rotateX(-65deg); }
-}
+  
 @keyframes counter-spin-rev { 0% { transform: translate(-50%, -50%) rotateZ(0deg); } 100% { transform: translate(-50%, -50%) rotateZ(360deg); } }
-  100% { transform: translate(-50%, -50%) rotateZ(360deg) rotateY(15deg) rotateX(-65deg); }
-}
+  
 
 /* HOVER EFFECTS */
 .orbit:hover { border-color: rgba(255,255,255,0.5); box-shadow: 0 0 30px rgba(255,255,255,0.05); background: radial-gradient(circle at center, rgba(255,255,255,0.03), transparent); }
