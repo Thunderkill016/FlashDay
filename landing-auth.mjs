@@ -91,9 +91,17 @@ function setMode(nextMode) {
   $('forgot-password').classList.toggle('hidden', mode !== AUTH_MODE.SIGN_IN);
   $('return-to-signin').classList.toggle('hidden', !isRecovery);
   $('auth-tabs').classList.toggle('hidden', isRecovery || isPasswordUpdate);
-  $('auth-sub').textContent = isPasswordUpdate
-    ? 'Chọn một mật khẩu mới cho tài khoản của bạn.'
-    : 'Đồng bộ tiến độ học của bạn trên mọi thiết bị.';
+  
+  if (isPasswordUpdate) {
+    $('auth-sub').textContent = 'Chọn một mật khẩu mới cho tài khoản của bạn.';
+  } else if (mode === AUTH_MODE.SIGN_UP) {
+    $('auth-sub').textContent = 'Tạo tài khoản để đồng bộ đa nền tảng. Không quảng cáo. Không bullshit.';
+  } else if (mode === AUTH_MODE.SIGN_IN) {
+    $('auth-sub').textContent = 'Đăng nhập để tiếp tục quá trình ôn tập hôm nay.';
+  } else if (mode === AUTH_MODE.RECOVERY) {
+    $('auth-sub').textContent = 'Nhập email của bạn để nhận liên kết đặt lại mật khẩu.';
+  }
+
 
   tabs.forEach((tab) => tab.classList.toggle('active', tab.dataset.tab === mode));
   clearStatus();
