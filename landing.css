@@ -94,50 +94,56 @@ a { text-decoration: none; color: inherit; }
   100% { clip-path: inset(0); transform: translateY(0); }
 }
 
-/* RECALL CORE (ORBITS) - CLEANED UP */
-.recall-core-wrapper { position: relative; height: 420px; display: flex; justify-content: center; align-items: center; }
-.recall-core { position: relative; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; animation: breathe 6s ease-in-out infinite; }
-@keyframes breathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.025); } }
 
-.memory-node { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); font-family: var(--font-mono); font-size: 16px; font-weight: 700; color: var(--ink-950); background: var(--paper-50); padding: 12px 24px; border-radius: var(--radius-pill); z-index: 10; box-shadow: 0 20px 40px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.1); white-space: nowrap; transition: 0.3s; }
+/* RECALL CORE (3D ORBITS) */
+.recall-core-wrapper { position: relative; height: 420px; display: flex; justify-content: center; align-items: center; perspective: 1200px; }
+.recall-core { position: relative; width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; transform-style: preserve-3d; animation: coreFloat 6s ease-in-out infinite; }
+@keyframes coreFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
 
-.orbit { position: absolute; top: 50%; left: 50%; border: 1px dashed rgba(255,255,255,0.08); border-radius: 50%; transform: translate(-50%, -50%); transition: border-color 0.3s, background 0.3s; cursor: crosshair; }
-.satellite { position: absolute; top: 0; left: 50%; transform: translate(-50%, -50%); display: flex; flex-direction: column; align-items: center; gap: 8px; }
-.sat-dot { width: 12px; height: 12px; border-radius: 50%; box-shadow: 0 0 20px currentColor; transition: 0.3s; }
+.orbit-system { position: absolute; top: 50%; left: 50%; width: 0; height: 0; transform-style: preserve-3d; transform: translate(-50%, -50%) rotateX(65deg) rotateY(-15deg); }
 
-/* The label is hidden by default to keep the UI ultra clean */
-.sat-label { position: absolute; top: 20px; font-family: var(--font-mono); font-size: 12px; font-weight: 700; letter-spacing: 0.1em; opacity: 0; transform: translateY(-10px); transition: 0.3s; pointer-events: none; white-space: nowrap; background: var(--ink-900); padding: 4px 8px; border: 1px solid var(--line-dark); border-radius: 6px; }
+.core-glow { position: absolute; top: 50%; left: 50%; width: 120px; height: 120px; background: var(--flash); border-radius: 50%; filter: blur(60px); opacity: 0.15; transform: translate(-50%, -50%); pointer-events: none; }
+
+.memory-node { position: absolute; top: 50%; left: 50%; transform: translate3d(-50%, -50%, 0); font-family: var(--font-mono); font-size: 16px; font-weight: 700; color: var(--ink-950); background: var(--paper-50); padding: 14px 32px; border-radius: var(--radius-pill); z-index: 10; box-shadow: 0 20px 40px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(255,255,255,0.5); white-space: nowrap; transition: 0.4s cubic-bezier(.22,1,.36,1); cursor: pointer; }
+
+.orbit { position: absolute; top: 50%; left: 50%; border: 1px solid rgba(255,255,255,0.06); border-radius: 50%; transform-style: preserve-3d; transition: border-color 0.4s, background 0.4s; cursor: crosshair; }
+.satellite { position: absolute; top: 0; left: 50%; display: flex; flex-direction: column; align-items: center; gap: 8px; transform-style: preserve-3d; }
+.sat-dot { width: 10px; height: 10px; border-radius: 50%; box-shadow: 0 0 20px currentColor, 0 0 40px currentColor; transition: 0.4s; }
+
+/* The label lies flat on the 3D plane (HUD style) */
+.sat-label { position: absolute; top: 20px; font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: 0.15em; opacity: 0; transform: translateY(-10px); transition: 0.4s; pointer-events: none; white-space: nowrap; color: currentColor; text-shadow: 0 0 10px currentColor; }
 
 /* Orbit Sizes and Animations */
-.orbit--listen { width: 200px; height: 200px; animation: spin 20s linear infinite; }
+.orbit--listen { width: 260px; height: 260px; margin: -130px 0 0 -130px; animation: spin 24s linear infinite; }
 .orbit--listen .sat-dot { background: var(--listen); color: var(--listen); }
 .orbit--listen .sat-label { color: var(--listen); }
 
-.orbit--speak { width: 280px; height: 280px; animation: spin 30s linear infinite reverse; }
+.orbit--speak { width: 380px; height: 380px; margin: -190px 0 0 -190px; animation: spin 32s linear infinite reverse; }
 .orbit--speak .sat-dot { background: var(--speak); color: var(--speak); }
 .orbit--speak .sat-label { color: var(--speak); }
 
-.orbit--read { width: 360px; height: 360px; animation: spin 40s linear infinite; }
+.orbit--read { width: 500px; height: 500px; margin: -250px 0 0 -250px; animation: spin 40s linear infinite; }
 .orbit--read .sat-dot { background: var(--read); color: var(--read); }
 .orbit--read .sat-label { color: var(--read); }
 
-.orbit--write { width: 440px; height: 440px; animation: spin 50s linear infinite reverse; }
+.orbit--write { width: 620px; height: 620px; margin: -310px 0 0 -310px; animation: spin 50s linear infinite reverse; }
 .orbit--write .sat-dot { background: var(--write); color: var(--write); }
 .orbit--write .sat-label { color: var(--write); }
 
-/* Counter-rotate the satellites */
-.orbit--listen .satellite { animation: spin 20s linear infinite reverse; }
-.orbit--speak .satellite { animation: spin 30s linear infinite; }
-.orbit--read .satellite { animation: spin 40s linear infinite reverse; }
-.orbit--write .satellite { animation: spin 50s linear infinite; }
+/* Counter-rotate the satellites so they stay upright on the tilted plane */
+.orbit--listen .satellite { margin-top: -5px; animation: spin 24s linear infinite reverse; }
+.orbit--speak .satellite { margin-top: -5px; animation: spin 32s linear infinite; }
+.orbit--read .satellite { margin-top: -5px; animation: spin 40s linear infinite reverse; }
+.orbit--write .satellite { margin-top: -5px; animation: spin 50s linear infinite; }
 
-@keyframes spin { 100% { transform: translate(-50%, -50%) rotate(360deg); } }
+@keyframes spin { 100% { transform: rotate(360deg); } }
 
 /* HOVER EFFECTS */
-.orbit:hover { border-color: rgba(255,255,255,0.2); z-index: 20; border-style: solid; background: radial-gradient(circle at center, rgba(255,255,255,0.02), transparent); }
-.orbit:hover .sat-dot { transform: scale(1.5); }
+.orbit:hover { border-color: rgba(255,255,255,0.3); background: radial-gradient(circle at center, rgba(255,255,255,0.03), transparent); }
+.orbit:hover .sat-dot { transform: scale(1.8); }
 .orbit:hover .sat-label { opacity: 1; transform: translateY(0); }
-.recall-core:hover .memory-node { border: 1px solid var(--flash); color: var(--flash); background: var(--ink-950); box-shadow: 0 0 40px rgba(232,255,101,0.2); }
+.recall-core:hover .memory-node { border: 1px solid var(--flash); color: var(--flash); background: var(--ink-950); box-shadow: 0 0 60px rgba(232,255,101,0.25); transform: translate3d(-50%, -50%, 40px) scale(1.05); }
+.recall-core:hover .core-glow { opacity: 0.4; }
 
 /* 02 MEMORY DECAY */
 .decay-story { background: var(--paper-50); color: var(--ink-950); padding: 120px 40px; position: relative; }
