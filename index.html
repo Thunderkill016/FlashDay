@@ -114,8 +114,8 @@
           <div class="path-card p-listen">
             <div class="path-icon">01 / LISTEN</div>
             <div class="card-content">
-              <p class="card-desc">Bắt tín hiệu âm thanh tốc độ thực tế.</p>
-              <div class="audio-player card-ui-stage">
+              <p class="card-desc">Nghe hiểu câu nói ở tốc độ bản ngữ (Native Speed) bị nhiễu.</p>
+              <div class="audio-player card-ui-stage" onclick="playNativeAudio(this)">
                 <div class="play-btn">▶</div>
                 <div class="waveform-large"></div>
               </div>
@@ -128,7 +128,7 @@
             <div class="card-content">
               <p class="card-desc">Phản xạ khẩu hình trong môi trường áp lực thời gian.</p>
               <div class="speak-scenario card-ui-stage">
-                <p class="path-prompt">"Bạn không nghe rõ người kia vừa nói gì. Bạn phản hồi thế nào?"</p>
+                <p class="path-prompt">"Đang kẹt xe cứng ngắc. Hãy gọi điện thoại báo cho người đợi biết bạn sẽ đến trễ."</p>
                 <div class="btn-hold"><span class="rec-dot"></span> HOLD TO SPEAK</div>
               </div>
             </div>
@@ -138,7 +138,7 @@
           <div class="path-card p-read">
             <div class="path-icon">03 / READ</div>
             <div class="card-content">
-              <p class="card-desc">Nhận diện mặt chữ và ngữ pháp hình ảnh.</p>
+              <p class="card-desc">Đọc lướt (Skimming) để nhận diện nhanh cụm từ khóa trong tin nhắn.</p>
               <div class="read-ui card-ui-stage">
                 <div class="message-bubble">
                   Sorry, I'm <span class="cloze">running late</span>. Can we meet at 6:30?
@@ -151,9 +151,9 @@
           <div class="path-card p-write">
             <div class="path-icon">04 / WRITE</div>
             <div class="card-content">
-              <p class="card-desc">Tự xâu chuỗi cấu trúc câu mà không có gợi ý.</p>
+              <p class="card-desc">Tự tái tạo lại chính tả và cấu trúc ngữ pháp từ con số 0.</p>
               <div class="write-ui card-ui-stage">
-                <p class="path-prompt">"Bạn đang kẹt xe và sẽ đến trễ. Nhắn tin báo cho sếp."</p>
+                <p class="path-prompt">"Đang trong rạp phim không tiện nghe máy. Hãy nhắn tin báo bạn sẽ đến trễ."</p>
                 <div class="input-fake">
                   <span class="typed">I'm run</span><span class="cursor"></span>
                 </div>
@@ -343,6 +343,36 @@
           card.classList.add('run-anim');
         }
       }, 8000);
+    </script>
+
+    <script>
+      function playNativeAudio(element) {
+        // Prevent spam clicking
+        if (element.classList.contains('playing')) return;
+        
+        // Add visual playing state
+        element.classList.add('playing');
+        element.querySelector('.play-btn').textContent = '■';
+        
+        // Speak using built-in browser TTS
+        const msg = new SpeechSynthesisUtterance("I'm running late.");
+        msg.lang = 'en-US';
+        msg.rate = 1.2; // slightly faster for native feel
+        msg.pitch = 1.0;
+        
+        msg.onend = () => {
+          element.classList.remove('playing');
+          element.querySelector('.play-btn').textContent = '▶';
+        };
+        
+        // Fallback cleanup after 2 seconds in case onend fails
+        setTimeout(() => {
+          element.classList.remove('playing');
+          element.querySelector('.play-btn').textContent = '▶';
+        }, 2000);
+        
+        window.speechSynthesis.speak(msg);
+      }
     </script>
   </body>
 </html>
