@@ -137,15 +137,50 @@ export function rebuildProgressFromEvents(events = []) {
   return progress;
 }
 
+// Older FlashDay/Bespoke snapshots can contain RatingState history even when the
+// append-only event log was not yet available. Use those ratings once as a
+// migration source rather than silently resetting every Unit x Mode to New.
+export function eventsFromBespokeProgress(bespokeProgress) {
+  const synthetic = [];
+  const ratingsByUnit = bespokeProgress?.ratings && typeof bespokeProgress.ratings === 'object'
+    ? bespokeProgress.ratings
+    : {};
+  let index = 0;
+  for (const [unitId, ratings] of Object.entries(ratingsByUnit)) {
+    for (const rating of Array.isArray(ratings) ? ratings : []) {
+      const mode = String(rating?.mode || '');
+      const score = Number(rating?.score);
+      const seconds = Number(rating?.time);
+      if (!VALID_MODES.has(mode) || ratingFromBespokeScore(score) == null || !Number.isFinite(seconds)) continue;
+      synthetic.push({
+        id: `legacy-bespoke-${index++}`,
+        mode,
+        unitIds: [String(unitId)],
+        ratings: { [unitId]: score },
+        answeredAt: seconds * 1000
+      });
+    }
+  }
+  return synthetic.sort((a, b) => a.answeredAt - b.answeredAt);
+}
+
+function sourceEventsForDb(db) {
+  const events = Array.isArray(db?.events) ? db.events : [];
+  if (events.length) return events;
+  return eventsFromBespokeProgress(db?.bespokeProgress);
+}
+
 export function ensureProgress(db) {
   if (!db || typeof db !== 'object') throw new Error('FlashDay DB is required');
   const hasCache = db.fsrsProgress && typeof db.fsrsProgress === 'object';
-  db.fsrsProgress = hasCache ? normalizeProgress(db.fsrsProgress) : rebuildProgressFromEvents(db.events || []);
+  db.fsrsProgress = hasCache ? normalizeProgress(db.fsrsProgress) : rebuildProgressFromEvents(sourceEventsForDb(db));
+  db.scheduler = 'bespoke-language-policy+fsrs6';
+  db.schedulerSource = `${FSRS_SOURCE} + google/bespoke@67b1eda5b28f7a69be20561014255cdc81110a3e`;
   return db.fsrsProgress;
 }
 
 export function rebuildDbProgress(db) {
-  db.fsrsProgress = rebuildProgressFromEvents(db?.events || []);
+  db.fsrsProgress = rebuildProgressFromEvents(sourceEventsForDb(db));
   db.scheduler = 'bespoke-language-policy+fsrs6';
   db.schedulerSource = `${FSRS_SOURCE} + google/bespoke@67b1eda5b28f7a69be20561014255cdc81110a3e`;
   return db.fsrsProgress;
@@ -251,6 +286,7 @@ globalThis.FlashDayFsrs = {
   deserializeCard,
   normalizeProgress,
   rebuildProgressFromEvents,
+  eventsFromBespokeProgress,
   ensureProgress,
   rebuildDbProgress,
   applyRatings,
