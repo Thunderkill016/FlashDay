@@ -1,0 +1,6 @@
+.vercel
+.env*
+supabase/.temp/
+/.playwright-cli/
+node_modules/
+dist/

@@ -1,0 +1,15 @@
+/*
+ * The legacy ports deliberately publish small browser contracts on window.
+ * Keeping their imports in one entry module makes that dependency order explicit
+ * after Vite bundles the app for deployment.
+ */
+import './flashday-data.js';
+import './bespoke-engine.js';
+import './bespoke-card-index.js';
+import './source-capture.js';
+import './transcript-import.js';
+import './bespoke-adapter.js';
+import './flashday-product.js';
+import './flashday-cloud.js';
+import './app-bespoke.js';
+import './product-bootstrap.js';

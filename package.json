@@ -1,0 +1,18 @@
+{
+  "name": "flashday",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "typecheck": "node --check flashday-data.js && node --check flashday-product.js && node --check flashday-cloud.js && node --check bespoke-engine.js && node --check bespoke-card-index.js && node --check source-capture.js && node --check transcript-import.js && node --check bespoke-adapter.js && node --check app-bespoke.js && node --check product-bootstrap.js && node --check main.js && node --check vite.config.mjs",
+    "test": "node tests/bespoke-engine.test.js && node tests/bespoke-card-index.test.js && node tests/transcript-import.test.js && node tests/flashday-data.test.js && node tests/flashday-product.test.js && node tests/flashday-cloud.test.js && node tests/core.test.js",
+    "verify": "npm run typecheck && npm test && npm run build"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "2.112.4"
+  },
+  "devDependencies": {
+    "vite": "8.2.2"
+  }
+}
