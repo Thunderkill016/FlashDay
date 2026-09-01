@@ -253,3 +253,20 @@ a { text-decoration: none; color: inherit; }
   .footer-inner { flex-direction: column; gap: 24px; text-align: center; }
 }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; } }
+
+
+/* 06 MEMORY MAP */
+.memory-map-section { background: var(--ink-950); padding: 160px 24px; overflow: hidden; }
+.map-container { max-width: 1200px; margin: 0 auto; position: relative; }
+.map-visual { position: relative; height: 400px; width: 100%; max-width: 800px; margin: 0 auto; }
+.map-lines { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
+.m-node { position: absolute; padding: 12px 24px; background: var(--ink-900); border: 1px solid var(--line-dark); border-radius: var(--radius-pill); font-family: var(--font-mono); font-size: 14px; font-weight: 700; color: var(--paper-50); transform: translate(-50%, -50%); z-index: 2; cursor: pointer; transition: 0.3s; box-shadow: 0 8px 24px rgba(0,0,0,0.2); }
+.m-node:hover { border-color: var(--flash); box-shadow: 0 12px 40px rgba(232,255,101,0.15); transform: translate(-50%, -50%) scale(1.05); }
+.m-center { top: 50%; left: 50%; border-color: rgba(255,255,255,0.3); }
+.m-1 { top: 25%; left: 25%; color: var(--muted-dark); }
+.m-2 { top: 25%; left: 75%; color: var(--muted-dark); }
+.m-3 { top: 80%; left: 50%; color: var(--muted-dark); }
+.node-status { display: flex; gap: 4px; justify-content: center; margin-top: 4px; font-size: 10px; }
+.s-listen { color: var(--listen); } .s-speak { color: var(--speak); } .s-read { color: var(--read); } .s-write { color: var(--write); }
+.map-visual:hover .m-node:not(:hover) { opacity: 0.3; }
+.map-visual:hover .m-node:hover { opacity: 1; z-index: 10; }
