@@ -331,19 +331,6 @@ a { text-decoration: none; color: inherit; }
 .t-desc strong { color: var(--ink-950); font-weight: 700; }
 
 
-/* 05 CONTEXT SHIFT */
-.context-shift { padding: 200px 0; background: var(--ink-950); text-align: center; overflow: hidden; position: relative; }
-.shift-headline, .shift-sub { font-family: var(--font-display); font-size: clamp(44px, 6vw, 96px); font-weight: 800; letter-spacing: -0.05em; line-height: 1; margin: 0; opacity: 0.8; }
-.shift-tunnel { perspective: 1200px; height: 400px; display: flex; justify-content: center; align-items: center; margin: 80px 0; }
-.tunnel-card { position: absolute; background: var(--ink-900); border: 1px solid var(--line-dark); padding: 40px; border-radius: var(--radius-card); box-shadow: 0 30px 90px rgba(0,0,0,.4); transition: transform 0.8s var(--ease-fluid); }
-.tunnel-card.t-1 { transform: translate3d(-200px, -60px, -200px) scale(0.8); opacity: 0.4; }
-.tunnel-card.t-2 { transform: translate3d(0, 0, 0) scale(1); z-index: 10; border-color: rgba(255,255,255,0.3); }
-.tunnel-card.t-3 { transform: translate3d(200px, 80px, -400px) scale(0.6); opacity: 0.2; }
-.context-shift:hover .t-1 { transform: translate3d(-300px, -80px, -100px) scale(0.9); opacity: 0.6; }
-.context-shift:hover .t-2 { transform: translate3d(0, 20px, 100px) scale(1.05); }
-.t-context { font-family: var(--font-mono); font-size: 14px; color: var(--muted-dark); margin: 0 0 16px; }
-.t-phrase { font-size: 28px; font-weight: 600; font-family: var(--font-display); margin: 0; }
-
 /* 07 PROOF NOT STREAKS */
 .proof-not-streaks { background: var(--paper-50); color: var(--ink-950); padding: 160px 40px; }
 .proof-container { max-width: 1440px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
@@ -401,7 +388,31 @@ a { text-decoration: none; color: inherit; }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; scroll-behavior: auto !important; transition-duration: .01ms !important; } }
 
 
+/* 05 CONTEXT SHIFT */
+.context-shift { padding: 160px 40px; background: var(--ink-950); text-align: center; overflow: hidden; position: relative; color: var(--paper-50); }
+.shift-content { position: relative; z-index: 10; margin-bottom: 40px; }
+.shift-headline { font-family: var(--font-display); font-size: clamp(48px, 6vw, 84px); font-weight: 800; letter-spacing: -0.04em; line-height: 1.1; margin: 0; }
+
+.shift-tunnel { perspective: 1200px; height: 600px; display: flex; justify-content: center; align-items: center; position: relative; transform-style: preserve-3d; margin-bottom: 80px; }
+.shift-tunnel::after { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 50% 50%, transparent 20%, var(--ink-950) 80%); pointer-events: none; z-index: 5; }
+
+.t-card { position: absolute; top: 50%; left: 50%; width: 360px; transform: translate(-50%, -50%) translate3d(var(--x), var(--y), var(--z)); animation: floatCard 8s ease-in-out infinite alternate; animation-delay: var(--delay); z-index: 1; }
+.t-card-inner { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.1); padding: 32px; border-radius: 24px; text-align: left; backdrop-filter: blur(8px); box-shadow: 0 20px 60px rgba(0,0,0,0.5); transition: transform 0.3s, border-color 0.3s; }
+.t-card:hover .t-card-inner { transform: scale(1.05); border-color: rgba(255,255,255,0.3); z-index: 10; background: rgba(255,255,255,0.06); }
+
+.t-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; font-family: var(--font-mono); font-size: 12px; }
+.t-badge { font-weight: 700; color: #f43f5e; border: 1px solid rgba(244,63,94,0.3); background: rgba(244,63,94,0.1); padding: 4px 12px; border-radius: 99px; }
+.t-time { color: rgba(255,255,255,0.4); }
+.t-phrase { font-size: 22px; font-weight: 600; line-height: 1.4; margin: 0 0 16px; color: var(--paper-50); }
+.t-sub { font-size: 14px; color: rgba(255,255,255,0.5); margin: 0; }
+
+@keyframes floatCard {
+  0% { transform: translate(-50%, -50%) translate3d(var(--x), calc(var(--y) - 30px), var(--z)) rotateY(-5deg) rotateX(5deg); }
+  100% { transform: translate(-50%, -50%) translate3d(var(--x), calc(var(--y) + 30px), calc(var(--z) + 200px)) rotateY(5deg) rotateX(-5deg); }
+}
+
 /* 06 MEMORY MAP */
+
 .memory-map-section { background: var(--ink-950); padding: 160px 24px; overflow: hidden; }
 .map-container { max-width: 1200px; margin: 0 auto; position: relative; }
 .map-visual { position: relative; height: 400px; width: 100%; max-width: 800px; margin: 0 auto; }
