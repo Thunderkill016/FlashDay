@@ -233,7 +233,7 @@
       added.push(dataApi.addItem(db,{
         ...draft,
         difficulty:module.level,
-        origin:`guided:${module.id}`,
+        origin:'curated',
         tags:[...(draft.tags||[]),`guided:${module.id}`,`cefr:${module.level}`]
       }));
     }
