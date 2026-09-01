@@ -423,23 +423,6 @@ a { text-decoration: none; color: inherit; }
 .star-node { position: absolute; top: 50%; left: 50%; background: var(--ink-950); border-radius: 50%; transform: translate(calc(-50% + var(--x)), calc(-50% + var(--y))); animation: pulseStar 4s infinite alternate ease-in-out; }
 @keyframes pulseStar { 0% { transform: translate(calc(-50% + var(--x)), calc(-50% + var(--y))) scale(0.8); opacity: 0.3; } 100% { transform: translate(calc(-50% + var(--x)), calc(-50% + var(--y))) scale(1.5); opacity: 0.8; } }
 
-/* 07 PROOF NOT STREAKS */
-.proof-not-streaks { background: var(--paper-50); color: var(--ink-950); padding: 160px 40px; }
-.proof-container { max-width: 1200px; margin: 0 auto; display: flex; flex-direction: column; gap: 80px; }
-.proof-header { max-width: 800px; }
-.proof-header .display-text { font-size: clamp(40px, 5vw, 72px); letter-spacing: -0.04em; line-height: 1.1; }
-
-.proof-content-wrapper { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
-.proof-stats { display: flex; flex-direction: column; gap: 40px; }
-.stat-block { display: flex; flex-direction: column; }
-.stat-big { font-family: var(--font-display); font-size: 80px; font-weight: 800; line-height: 1; letter-spacing: -0.05em; color: rgba(0,0,0,0.1); text-decoration: line-through; }
-.stat-strike { font-family: var(--font-mono); font-size: 18px; color: var(--ink-900); font-weight: 700; margin-top: 8px; text-transform: uppercase; letter-spacing: 0.05em; }
-
-.proof-reveal { display: flex; flex-direction: column; gap: 32px; background: #ffffff; padding: 48px; border-radius: 24px; box-shadow: 0 20px 80px rgba(0,0,0,0.05); border: 1px solid rgba(0,0,0,0.05); }
-.matter-item { display: flex; gap: 20px; align-items: flex-start; }
-.matter-num { font-family: var(--font-mono); font-size: 14px; font-weight: 700; color: #ef4444; background: rgba(239,68,68,0.1); padding: 4px 8px; border-radius: 4px; }
-.matter-item h3 { font-size: 24px; font-weight: 700; line-height: 1.4; margin: 0; color: var(--ink-950); letter-spacing: -0.02em; }
-
 @media (max-width: 1024px) {
   .proof-content-wrapper { grid-template-columns: 1fr; gap: 64px; }
 }
