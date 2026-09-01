@@ -306,7 +306,7 @@ a { text-decoration: none; color: inherit; }
 .eq-bar:nth-child(even) { animation-delay: 0.2s; animation-duration: 1.2s; }
 .eq-bar:nth-child(3n) { animation-delay: 0.4s; animation-duration: 1.8s; }
 @keyframes eqBounce { 0% { transform: scaleY(0.4); } 100% { transform: scaleY(1); } }
-.audio-metrics { display: flex; justify-content: space-between; border-top: 1px solid rgba(94,219,255,0.2); padding-top: 16px; }
+.audio-metrics { display: flex; justify-content: space-between; border-top: 1px solid rgba(94,219,255,0.2); padding-top: 16px; margin-top: auto; }
 .demo-audio-text { font-family: var(--font-mono); font-size: 13px; color: var(--listen); }
 
 /* BENTO C: Context Provenance (5 cols) */
