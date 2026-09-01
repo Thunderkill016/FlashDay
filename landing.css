@@ -178,7 +178,7 @@ a { text-decoration: none; color: inherit; }
 
 /* The fading text */
 .memory-word { font-family: var(--font-display); font-size: clamp(40px, 5vw, 72px); font-weight: 600; letter-spacing: -0.02em; margin: 40px 0 80px; display: flex; flex-wrap: wrap; }
-.memory-word span { transition: opacity 0.5s, filter 0.5s, transform 0.5s; display: inline-block; }
+.memory-word span { display: inline-block; }
 .memory-word .space { width: 0.3em; }
 
 .memory-word span { display: inline-block; }
