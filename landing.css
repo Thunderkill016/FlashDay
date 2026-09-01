@@ -386,12 +386,12 @@ a { text-decoration: none; color: inherit; }
 /* A sweeping light effect on recovery */
 .recovery-sweep { position: absolute; inset: 0; background: linear-gradient(90deg, transparent, rgba(232,255,101,0.2), transparent); transform: translateX(-100%) skewX(-15deg); pointer-events: none; }
 
-.run-anim .delay-1 { animation: decay1 10s forwards; }
-.run-anim .delay-2 { animation: decay2 10s forwards; }
-.run-anim .delay-3 { animation: decay3 10s forwards; }
-.run-anim .delay-4 { animation: decay4 10s forwards; }
-.run-anim .memory-word span:not([class*="delay"]) { animation: decay0 10s forwards; }
-.run-anim .timeline-progress { animation: timeDrain 10s forwards; }
-.run-anim .flash-ping { animation: pingPulse 10s forwards; }
-.run-anim .flash-ping::after { animation: pingRing 10s forwards; }
-.run-anim .recovery-sweep { animation: sweep 10s forwards; }
+.run-anim .delay-1 { animation: decay1 8s forwards; }
+.run-anim .delay-2 { animation: decay2 8s forwards; }
+.run-anim .delay-3 { animation: decay3 8s forwards; }
+.run-anim .delay-4 { animation: decay4 8s forwards; }
+.run-anim .memory-word span:not([class*="delay"]) { animation: decay0 8s forwards; }
+.run-anim .timeline-progress { animation: timeDrain 8s forwards; }
+.run-anim .flash-ping { animation: pingPulse 8s forwards; }
+.run-anim .flash-ping::after { animation: pingRing 8s forwards; }
+.run-anim .recovery-sweep { animation: sweep 8s forwards; }
