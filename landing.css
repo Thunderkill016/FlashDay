@@ -162,8 +162,9 @@ a { text-decoration: none; color: inherit; }
 
 /* HOVER EFFECTS */
 .orbit:hover { border-color: rgba(255,255,255,0.5); box-shadow: 0 0 30px rgba(255,255,255,0.05); background: radial-gradient(circle at center, rgba(255,255,255,0.03), transparent); }
-.orbit:hover .sat-dot { transform: scale(1.8); }
-.orbit:hover .sat-label { opacity: 1; transform: translateY(0); }
+.orbit:hover .sat-dot { transform: scale(2.2); }
+.orbit-system:hover .sat-dot { transform: scale(1.5); }
+.orbit-system:hover .sat-label { opacity: 1; transform: translateY(0); }
 .orbit-system:hover .memory-node { border: 1px solid var(--flash); color: var(--flash); background: var(--ink-950); box-shadow: 0 0 60px rgba(232,255,101,0.25); transform: translate(-50%, -50%) rotateY(15deg) rotateX(-65deg) translateZ(40px) scale(1.05); }
 .orbit-system:hover .core-glow { opacity: 0.4; }
 
