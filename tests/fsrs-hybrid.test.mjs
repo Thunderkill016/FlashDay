@@ -4,6 +4,7 @@ import '../fsrs-scheduler.mjs';
 
 const require = createRequire(import.meta.url);
 const A = require('../bespoke-adapter.js');
+const F = globalThis.FlashDayFsrs;
 
 function fixture() {
   return {
@@ -16,6 +17,8 @@ function fixture() {
 }
 
 assert.equal(A.hasFsrs, true, 'production adapter must see the FSRS module');
+assert.equal(A.introductionGuardMs(), 10 * 60 * 1000, 'new-memory guard must derive from the longest configured short-term FSRS step');
+assert.equal(A.bespokeScore(4), 3, 'future FSRS Easy must remain a Bespoke success instead of becoming an unknown score');
 
 {
   const db = fixture();
@@ -33,8 +36,38 @@ assert.equal(A.hasFsrs, true, 'production adapter must see the FSRS module');
   const untouchedMode = first.mode === 'listen' ? 'speak' : 'listen';
   assert.equal(Boolean(db.fsrsProgress.cards[`u1::${untouchedMode}`]), false, 'other skills must not receive fake FSRS reviews');
 
-  const next = A.selectNext(db, 1_000_001);
-  assert.notEqual(`${next.unitId}::${next.mode}`, `${first.unitId}::${first.mode}`, 'future FSRS task must not be pulled early by Bespoke urgency');
+  assert.throws(
+    () => A.selectNext(db, 1_000_001),
+    /tạm không mở Unit × kỹ năng mới/,
+    'a short-term FSRS review must block immediate flooding of new memories'
+  );
+
+  const memory = F.taskState(db, first.unitId, first.mode, 1_000_000);
+  const due = A.selectNext(db, memory.dueAt);
+  assert.equal(due.selectionReason, 'fsrs-due');
+  assert.equal(`${due.unitId}::${due.mode}`, `${first.unitId}::${first.mode}`, 'the scheduled FSRS task must return when due');
+
+  const engine = A.buildEngine(db);
+  const unseen = F.newTasks(db, A.taskPairs(engine));
+  const continuity = A.chooseIntroductionTask(db, engine, unseen, 1_000_001);
+  assert.equal(continuity.unitId, first.unitId, 'cross-skill evidence may guide WHAT to introduce next');
+  assert.notEqual(continuity.mode, first.mode, 'cross-skill continuity must choose an unseen mode, not fabricate a review');
+}
+
+{
+  const db = fixture();
+  const engine = A.buildEngine(db);
+  const unit = engine.unitLookup.u1;
+  const card = engine.getCardsForUnit('u1', 1)[0];
+  engine.rate(unit, 'write', 3, 1000);
+
+  const upstreamSoon = engine.scoreCard(card, 'write', 1001);
+  const upstreamLate = engine.scoreCard(card, 'write', 1000 + 30 * 24 * 60 * 60);
+  assert.notEqual(upstreamSoon, upstreamLate, 'upstream Bespoke score includes time-based urgency');
+
+  const hybridSoon = A.hybridCardScore(engine, card, 'write', 1001 * 1000);
+  const hybridLate = A.hybridCardScore(engine, card, 'write', (1000 + 30 * 24 * 60 * 60) * 1000);
+  assert.equal(hybridSoon, hybridLate, 'hybrid card ranking must not leak Bespoke memory urgency back into FSRS timing');
 }
 
 {
@@ -49,4 +82,17 @@ assert.equal(A.hasFsrs, true, 'production adapter must see the FSRS module');
   assert.equal(db.fsrsProgress.cards['u1::write'].reps, 2);
 }
 
-console.log('FlashDay hybrid: 9 Bespoke + FSRS boundary checks passed');
+{
+  const db = fixture();
+  const selection = A.selectNext(db, 1_000_000);
+  const ratings = Object.fromEntries(selection.card.unit_tags.map((tag) => [tag.unit_id, 4]));
+  const result = A.finalizeCard(db, selection, ratings, { nowMs: 1_000_000 });
+  assert(Object.values(result.event.ratings).every((score) => score === 4), 'review event must preserve FSRS Easy');
+  for (const unitId of result.event.unitIds) {
+    const bespokeRatings = result.engine.ratingStates[unitId].ratings().filter((rating) => rating.mode === selection.mode);
+    assert.equal(bespokeRatings.at(-1).score, 3, 'Bespoke cache must translate Easy to its upstream success score');
+    assert.equal(result.event.fsrsGrades[unitId], F.Rating.Easy, 'FSRS must receive the original Easy grade');
+  }
+}
+
+console.log('FlashDay hybrid policy: corrected Bespoke + FSRS boundary checks passed');
