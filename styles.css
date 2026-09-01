@@ -304,7 +304,9 @@ svg { display: block; }
 }
 
 
-/* MONASTIC REVIEW CHAMBER */
+
+
+/* MONASTIC REVIEW CHAMBER - FIXED */
 .app {
   max-width: 100%;
   padding: 0;
@@ -323,16 +325,7 @@ svg { display: block; }
   margin: 0 auto 16px;
 }
 
-/* Hide navigation during active focus if needed, or keep it muted */
-.review-shell {
-  width: min(100% - 32px, 720px);
-  margin-inline: auto;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-
-#reviewView {
+.review-shell, #reviewView {
   width: min(100% - 32px, 720px);
   margin-inline: auto;
   display: flex;
@@ -340,7 +333,7 @@ svg { display: block; }
   flex: 1;
 }
 
-/* Progress Bar at the absolute top of the study surface */
+/* Progress Bar at the absolute top */
 .progress {
   height: 4px;
   margin-top: 16px;
@@ -349,6 +342,7 @@ svg { display: block; }
   background: rgba(255, 255, 255, 0.08);
   overflow: hidden;
   width: 100%;
+  border: none;
 }
 @media (max-width: 768px) {
   .progress { height: 3px; margin-top: 8px; }
@@ -360,7 +354,6 @@ svg { display: block; }
   transition: width 0.3s ease;
 }
 
-/* Status layer */
 .review-status {
   display: flex;
   justify-content: space-between;
@@ -374,19 +367,16 @@ svg { display: block; }
 
 /* The Card */
 .study-card {
-  background: transparent;
-  border: none;
-  box-shadow: none;
-  padding: 0 0 32px 0;
-  border-radius: 0;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  min-height: 40vh;
+  position: relative;
+  background: var(--fd-surface); /* Subtly distinct from canvas */
+  border: 1px solid var(--fd-border);
+  box-shadow: none; 
+  border-radius: var(--fd-radius-lg);
+  overflow: hidden;
+  margin-bottom: 24px;
+  flex-shrink: 0;
 }
 
-/* Typography for prompt */
 .prompt {
   font-family: var(--fd-font-body);
   font-size: clamp(1.75rem, 4vw, 2.5rem);
@@ -398,7 +388,6 @@ svg { display: block; }
   text-align: center;
 }
 
-/* Typography overrides for metadata to avoid excessive bold */
 .instruction {
   font-weight: 500;
   color: var(--fd-text-secondary);
@@ -406,13 +395,39 @@ svg { display: block; }
   text-align: center;
   margin-bottom: 12px;
 }
+
 .answer-area {
   font-weight: 400;
   color: var(--fd-text-primary);
   font-size: 18px;
   line-height: 1.5;
-  max-width: 65ch;
   margin: 0 auto;
+}
+
+/* Fix Audio button so it doesn't float weirdly */
+.audio-primary {
+  position: static;
+  margin: 24px auto 0;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--fd-surface-2);
+  color: var(--fd-text-primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: 0.15s;
+  border: 1px solid var(--fd-border);
+  cursor: pointer;
+}
+.audio-primary:hover {
+  background: var(--fd-primary);
+  color: var(--fd-primary-text);
+  transform: scale(1.05);
+}
+.audio-primary svg {
+  width: 24px;
+  height: 24px;
 }
 
 /* The Rating Dock (Action Layer) */
@@ -420,13 +435,13 @@ svg { display: block; }
   position: sticky;
   bottom: 0;
   padding: 16px 0 calc(16px + env(safe-area-inset-bottom));
-  background: var(--fd-canvas);
-  border-top: 1px solid var(--fd-border);
+  background: var(--fd-canvas); /* match background to avoid seam */
   display: flex;
   gap: 12px;
   align-items: center;
   justify-content: center;
   z-index: 10;
+  margin-top: auto;
 }
 
 .secondary-actions button {
@@ -439,19 +454,35 @@ svg { display: block; }
   background: var(--fd-primary);
   color: var(--fd-primary-text);
   border: none;
-  box-shadow: none; /* Monastic, no brutalist shadow inside review */
+  box-shadow: none; 
   font-weight: 700;
 }
 #nextCardBtn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(232, 255, 101, 0.2);
+  background: #d9f041;
 }
 #nextCardBtn:active {
   transform: translate(0, 2px);
   transition: 60ms;
 }
 
-/* Rating Chips inside bespoke grading */
+/* Capabilities (Info panel below card) */
+.cap-title {
+  font-size: 14px;
+  color: var(--fd-text-secondary);
+  margin-bottom: 12px;
+  display: flex;
+  justify-content: space-between;
+}
+.cap-cell {
+  background: var(--fd-surface-2);
+  border-color: var(--fd-border);
+}
+.cap-cell label {
+  color: var(--fd-text-primary);
+}
+
+/* Rating Chips */
 .word-bank {
   display: flex;
   flex-wrap: wrap;
@@ -463,7 +494,7 @@ svg { display: block; }
   min-width: 120px;
   padding: 12px 16px;
   border-radius: var(--fd-radius-md);
-  background: var(--fd-surface);
+  background: var(--fd-surface-2);
   border: 1px solid var(--fd-border);
 }
 .word-chip[aria-pressed="true"] {
@@ -479,56 +510,39 @@ svg { display: block; }
 }
 .word-chip b {
   font-size: 18px;
+  color: var(--fd-text-primary);
+}
+.word-chip small {
+  color: var(--fd-text-secondary);
 }
 
-/* Form Inputs Dark Mode styling */
-input, textarea, select {
+
+/* Fix .card-head */
+.card-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  padding: 24px 24px 0;
+}
+.badge {
   background: var(--fd-surface-2);
-  color: var(--fd-text-primary);
-  border: 1px solid var(--fd-border);
-  border-radius: var(--fd-radius-sm);
-  padding: 12px 16px;
-  width: 100%;
-  font-family: var(--fd-font-body);
-  transition: 0.2s;
-}
-input:focus, textarea:focus, select:focus {
-  outline: none;
-  border-color: var(--fd-primary);
-  box-shadow: 0 0 0 1px var(--fd-primary);
-}
-label {
-  display: block;
-  font-size: 13px;
-  font-weight: 600;
   color: var(--fd-text-secondary);
-  margin-bottom: 8px;
+  border-color: var(--fd-border);
 }
-.field {
-  margin-bottom: 20px;
+.source-chip {
+  background: transparent;
+  color: var(--fd-text-tertiary);
+  border-color: var(--fd-border);
 }
-.page-title h2 {
-  font-family: var(--fd-font-display);
-  font-weight: 700;
-  margin-bottom: 8px;
+
+/* Fix .prompt-wrap padding */
+.prompt-wrap {
+  padding: 32px 24px 24px;
+  min-height: auto;
 }
-.page-title p {
-  color: var(--fd-text-secondary);
-  margin-top: 0;
-}
-summary {
-  cursor: pointer;
-  padding: 16px;
-  background: var(--fd-surface-2);
-  border-radius: var(--fd-radius-sm);
-  font-weight: 600;
-  user-select: none;
-}
-.capture-details-body {
-  padding: 24px 16px;
-  border: 1px solid var(--fd-border);
-  border-top: none;
-  border-bottom-left-radius: var(--fd-radius-sm);
-  border-bottom-right-radius: var(--fd-radius-sm);
+
+/* Fix .answer-area padding */
+.answer-area {
+  padding: 0 24px 24px;
 }
 
