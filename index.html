@@ -76,7 +76,7 @@
             <a class="text-link-flash mt-4" href="/app/">Tìm hiểu Spaced Repetition →</a>
           </div>
           
-          <div class="decay-demo-card">
+          <div class="decay-demo-card run-anim" id="decay-card">
             <div class="recovery-sweep"></div>
             <p class="mono-label" style="color: var(--muted-dark); letter-spacing: 0.1em; font-size: 12px;">MEMORY TRACE / FORGETTING CURVE</p>
             
@@ -297,6 +297,20 @@
           nav.classList.remove('scrolled');
         }
       });
+    </script>
+
+    <script>
+      // Sync engine for Chapter 2 Memory Decay
+      // Browsers throttle heavy animations (like blur) differently than layout animations.
+      // To prevent desync over time, we use a JS heartbeat to force a hard reset every 10 seconds.
+      setInterval(() => {
+        const card = document.getElementById('decay-card');
+        if (card) {
+          card.classList.remove('run-anim');
+          void card.offsetWidth; // Force DOM reflow to flush animation state
+          card.classList.add('run-anim');
+        }
+      }, 10000);
     </script>
   </body>
 </html>

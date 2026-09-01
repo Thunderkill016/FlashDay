@@ -182,11 +182,11 @@ a { text-decoration: none; color: inherit; }
 .memory-word .space { width: 0.3em; }
 
 .memory-word span { display: inline-block; }
-.memory-word .delay-1 { animation: decay1 10s infinite; }
-.memory-word .delay-2 { animation: decay2 10s infinite; }
-.memory-word .delay-3 { animation: decay3 10s infinite; }
-.memory-word .delay-4 { animation: decay4 10s infinite; }
-.memory-word span:not([class*="delay"]) { animation: decay0 10s infinite; }
+.memory-word .delay-1 {  }
+.memory-word .delay-2 {  }
+.memory-word .delay-3 {  }
+.memory-word .delay-4 {  }
+.memory-word span:not([class*="delay"]) {  }
 
 
 @keyframes decay1 {
@@ -373,3 +373,14 @@ a { text-decoration: none; color: inherit; }
 .btn-flash:hover { transform: translateY(-4px); box-shadow: 0 20px 60px rgba(232,255,101,.3); }
 .btn-flash .arrow { transition: transform 0.3s; display: inline-block; }
 .btn-flash:hover .arrow { transform: translate(4px, -4px) rotate(10deg); }
+
+
+.run-anim .delay-1 { animation: decay1 10s forwards; }
+.run-anim .delay-2 { animation: decay2 10s forwards; }
+.run-anim .delay-3 { animation: decay3 10s forwards; }
+.run-anim .delay-4 { animation: decay4 10s forwards; }
+.run-anim .memory-word span:not([class*="delay"]) { animation: decay0 10s forwards; }
+.run-anim .timeline-progress { animation: timeDrain 10s forwards; }
+.run-anim .flash-ping { animation: pingPulse 10s forwards; }
+.run-anim .flash-ping::after { animation: pingRing 10s forwards; }
+.run-anim .recovery-sweep { animation: sweep 10s forwards; }
