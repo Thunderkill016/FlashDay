@@ -165,45 +165,82 @@
 
       <!-- 04 THE RECALL LAB (Bento) -->
       <section class="recall-lab">
+        <div class="paths-header" style="margin-bottom: 64px;">
+          <p class="mono-label">THE RECALL LAB</p>
+          <h2 class="display-text text-center" style="margin-bottom: 24px;">Thu thập dữ liệu Nhận thức.</h2>
+          <p class="body-text text-center" style="max-width: 600px;">Mọi thao tác của bạn đều là dữ liệu. Thuật toán phân tích thời gian phản xạ, độ trễ và số lần sai để vẽ ra bản đồ phần cứng của não bộ.</p>
+        </div>
+        
         <div class="bento-wrapper">
+          <!-- BENTO A: Active Recall -->
           <div class="bento-lab bento-a">
-            <p class="mono-label">ACTIVE RECALL CARD</p>
+            <div class="bento-header">
+              <p class="mono-label">ACTIVE RECALL CARD</p>
+              <div class="lab-status"><span class="status-dot"></span> TESTING</div>
+            </div>
             <div class="card-demo">
-              <p class="c-prompt">Bạn đang đến muộn. Hãy báo người đang chờ.</p>
-              <div class="c-input">I'm running|</div>
-              <div class="c-btn disabled">XEM ĐÁP ÁN</div>
+              <div class="c-progress-bar"></div>
+              <p class="c-prompt">"Đang kẹt xe cứng ngắc. Báo cho người đợi biết bạn sẽ đến trễ."</p>
+              <div class="c-input-wrapper">
+                <span class="c-input-text">I'm run</span><span class="c-cursor"></span>
+              </div>
+              <div class="c-footer">
+                <span class="c-timer">00:03.4</span>
+                <div class="c-btn disabled">XEM ĐÁP ÁN</div>
+              </div>
             </div>
           </div>
+          
+          <!-- BENTO B: Audio Trace -->
           <div class="bento-lab bento-b">
-             <p class="mono-label">AUDIO TRACE</p>
+             <div class="bento-header">
+               <p class="mono-label">AUDIO TRACE</p>
+               <span class="lab-badge listen-badge">01</span>
+             </div>
              <div class="wave-demo">
-               <div class="wave-bar" style="height:20%"></div>
-               <div class="wave-bar" style="height:60%"></div>
-               <div class="wave-bar" style="height:40%"></div>
-               <div class="wave-bar" style="height:90%"></div>
-               <div class="wave-bar" style="height:30%"></div>
+               <!-- Generating equalizer bars -->
+               <div class="eq-bar" style="height: 78%"></div><div class="eq-bar" style="height: 74%"></div><div class="eq-bar" style="height: 75%"></div><div class="eq-bar" style="height: 33%"></div><div class="eq-bar" style="height: 25%"></div><div class="eq-bar" style="height: 37%"></div><div class="eq-bar" style="height: 41%"></div><div class="eq-bar" style="height: 58%"></div><div class="eq-bar" style="height: 69%"></div><div class="eq-bar" style="height: 97%"></div><div class="eq-bar" style="height: 73%"></div><div class="eq-bar" style="height: 59%"></div><div class="eq-bar" style="height: 29%"></div><div class="eq-bar" style="height: 89%"></div><div class="eq-bar" style="height: 64%"></div><div class="eq-bar" style="height: 30%"></div>%"></div>`).join('')}
              </div>
-             <p class="demo-audio-text">DEMO AUDIO 00:01.8</p>
+             <div class="audio-metrics">
+               <p class="demo-audio-text">PITCH: 142Hz</p>
+               <p class="demo-audio-text">SPEED: 1.2x</p>
+             </div>
           </div>
+          
+          <!-- BENTO C: Context Provenance -->
           <div class="bento-lab bento-c">
-             <p class="mono-label">CONTEXT PROVENANCE</p>
+             <div class="bento-header">
+               <p class="mono-label">CONTEXT PROVENANCE</p>
+             </div>
              <div class="citation">
-               <p class="cit-source">SOURCE Podcast / episode 42 01:24:08</p>
-               <p class="cit-before">before: The traffic was terrible...</p>
-               <p class="cit-target">TARGET: I'm running late.</p>
+               <p class="cit-source"><span class="src-icon">🎙</span> Podcast / Ep. 42 / 01:24:08</p>
+               <div class="cit-code-block">
+                 <p class="cit-before"><span class="line-num">1</span> <span class="speaker">Alex:</span> The traffic was terrible...</p>
+                 <p class="cit-target"><span class="line-num">2</span> <span class="speaker">Alex:</span> Sorry, <span class="highlight-target">I'm running late.</span></p>
+                 <p class="cit-after"><span class="line-num">3</span> <span class="speaker">Sam:</span> No worries, take your time.</p>
+               </div>
              </div>
           </div>
+          
+          <!-- BENTO D: Memory Timeline -->
           <div class="bento-lab bento-d">
-             <p class="mono-label">MEMORY TIMELINE</p>
+             <div class="bento-header">
+               <p class="mono-label">RETRIEVAL PREDICTION</p>
+               <span class="t-confidence">92% CONFIDENCE</span>
+             </div>
              <div class="timeline-nodes">
                <span class="t-node past">TODAY</span>
-               <div class="t-line"></div>
+               <div class="t-line past-line"></div>
                <span class="t-node past">+1D</span>
-               <div class="t-line"></div>
-               <span class="t-node active">+4D</span>
-               <div class="t-line"></div>
+               <div class="t-line past-line"></div>
+               <div class="t-node-active-wrapper">
+                 <span class="t-node active">+4D</span>
+                 <div class="t-pulse-ring"></div>
+               </div>
+               <div class="t-line future-line"></div>
                <span class="t-node future">+11D</span>
              </div>
+             <p class="t-desc">Lịch ôn tập tối ưu tiếp theo: <strong>Trong vòng 4 ngày tới.</strong></p>
           </div>
         </div>
       </section>
