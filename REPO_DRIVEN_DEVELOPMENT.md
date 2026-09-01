@@ -117,6 +117,14 @@ evidence from product activity.
 
 ## Active runtime boundary
 
+### Web entrypoints
+
+FlashDay uses the conventional product split below: a public landing page at
+`/` explains the learning loop, while `/app/` is the real learner runtime.
+Landing CTAs always lead to `/app/`; the learner shell, review state and source
+data never run on the marketing route. Vite builds both HTML entrypoints so a
+deployment serves the same structure in development and production.
+
 The browser runtime is now deliberately small:
 
 ```text

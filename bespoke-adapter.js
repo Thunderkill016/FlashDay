@@ -62,6 +62,10 @@
 
   function allSuccess(card){return Object.fromEntries(B.unitIds(card).map(id=>[id,3]));}
 
+  function hasCompleteRatings(card,ratings){
+    return B.unitIds(card).every((unitId)=>Number(ratings?.[unitId]??0)!==0);
+  }
+
   function finalizeCard(db,selection,ratings,{isReported=false,response={},nowMs=Date.now()}={}){
     const engine=selection.engine||buildEngine(db);const applied={};
     for(const unitId of B.unitIds(selection.card)){
@@ -103,5 +107,5 @@
   function cardParts(card){return CI.splitIntoParts(card);}
   function cardCountForUnit(db,unitId){return buildEngine(db).cardIndex.size(unitId);}
 
-  return {ACTIVE_MODES,MODE_META,buildEngine,saveEngine,selectNext,initialRatings,cycleRating,allSuccess,finalizeCard,itemStatus,deckStats,cardParts,cardCountForUnit,datasetCards};
+  return {ACTIVE_MODES,MODE_META,buildEngine,saveEngine,selectNext,initialRatings,cycleRating,allSuccess,hasCompleteRatings,finalizeCard,itemStatus,deckStats,cardParts,cardCountForUnit,datasetCards};
 });

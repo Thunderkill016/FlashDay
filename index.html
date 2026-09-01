@@ -2,99 +2,133 @@
 <html lang="vi">
   <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-    <meta name="theme-color" content="#F7F7F3">
-    <title>FlashDay — English flashcards for real use</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+    <meta name="theme-color" content="#f7f7f3">
+    <meta name="description" content="FlashDay là flashcard tiếng Anh để luyện nghe, nói, đọc và viết bằng những lần nhớ lại có chủ đích.">
+    <title>FlashDay — Học tiếng Anh để dùng được</title>
     <link rel="icon" href="data:,">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="landing.css">
   </head>
   <body>
-    <main class="app">
-      <header class="topbar">
-        <div class="brand"><b>FlashDay</b><span>Ôn để dùng được</span></div>
-        <div class="header-actions">
-          <span id="cloudStatus" class="cloud-status" data-tone="local">Lưu trên thiết bị</span>
-          <button id="authBtn" class="ghost-btn" type="button">Đăng nhập</button>
-          <button id="signOutBtn" class="icon-btn hidden" type="button" title="Đăng xuất" aria-label="Đăng xuất">↪</button>
-          <button id="resetBtn" class="icon-btn" type="button" title="Xóa dữ liệu học" aria-label="Xóa dữ liệu học">↻</button>
+    <header class="site-header">
+      <div class="site-header__inner">
+        <a class="wordmark" href="/" aria-label="FlashDay trang chủ">FlashDay</a>
+        <a class="header-cta" href="/app/">Mở FlashDay <span aria-hidden="true">→</span></a>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero" aria-labelledby="hero-title">
+        <p class="eyebrow">English flashcards for real use</p>
+        <h1 id="hero-title">Học tiếng Anh để dùng được.</h1>
+        <p class="hero__lede">Ôn bằng nghe, nói, đọc và viết. Mỗi thẻ buộc bạn cố gắng nhớ lại trước khi đối chiếu đáp án.</p>
+        <div class="hero__actions">
+          <a class="button button--primary" href="/app/">Bắt đầu học <span aria-hidden="true">→</span></a>
+          <a class="button button--secondary" href="#cach-hoat-dong">Xem cách hoạt động</a>
         </div>
-      </header>
 
-      <nav class="tabs" aria-label="Khu vực FlashDay" role="tablist">
-        <button class="tab active" type="button" role="tab" aria-selected="true" aria-controls="reviewView" data-view="review">Ôn</button>
-        <button class="tab" type="button" role="tab" aria-selected="false" aria-controls="memoryView" data-view="memory">Bộ nhớ</button>
-        <button class="tab" type="button" role="tab" aria-selected="false" aria-controls="captureView" data-view="capture">Thêm</button>
-      </nav>
-
-      <section id="reviewView" class="view" role="tabpanel">
-        <div class="session" aria-live="polite"><span><strong id="sessionCount">0</strong> lượt ôn hôm nay</span><span id="dueCount">Đang chuẩn bị lượt ôn…</span></div>
-        <div class="progress" id="progressTrack" role="progressbar" aria-label="Tiến độ lượt ôn" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div id="progressBar"></div></div>
-        <article id="studyCard" class="study-card">
-          <div class="card-head"><span id="trackBadge" class="badge">—</span><button id="sourceChip" class="source-chip hidden" type="button" aria-expanded="false" aria-controls="sourcePanel">Nguồn</button></div>
-          <div class="prompt-wrap"><p id="instruction" class="instruction"></p><div id="prompt" class="prompt"></div><button id="audioPrimary" class="audio-primary hidden" type="button" aria-label="Nghe âm thanh"><svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5 6 9H2v6h4l5 4z"></path><path d="M15.5 8.5a5 5 0 0 1 0 7"></path><path d="M19 5a10 10 0 0 1 0 14"></path></svg></button></div>
-          <div id="answerArea" class="answer-area"></div>
-          <section id="sourcePanel" class="source-panel hidden" aria-live="polite"></section>
-          <section id="feedback" class="feedback hidden" aria-live="polite"></section>
-        </article>
-        <section id="capabilities" class="capabilities" aria-live="polite"></section>
-        <details id="debugPanel" class="debug hidden"><summary>Engine state</summary><pre id="debugPre"></pre></details>
-      </section>
-
-      <section id="memoryView" class="view hidden" role="tabpanel">
-        <div class="page-title"><h2>Bộ nhớ</h2><p>Tiến độ ghi nhận riêng cho nghe, nói, đọc và viết.</p></div>
-        <div id="memoryList" class="memory-list"></div>
-      </section>
-
-      <section id="captureView" class="view hidden" role="tabpanel">
-        <div class="page-title"><h2>Thêm điều bạn muốn dùng được</h2><p>Bắt đầu với English target và ý nghĩa. Thêm nguồn khi bạn có câu thật để dùng.</p></div>
-        <form id="captureForm" class="capture-form">
-          <div class="form-section">
-            <div class="field"><label for="targetInput">English target / unit</label><input id="targetInput" required placeholder="e.g. end up doing something"></div>
-            <div class="field"><label for="meaningInput">Nghĩa / intent ngắn</label><input id="meaningInput" required placeholder="cuối cùng lại làm gì đó"></div>
-            <div class="field"><label for="typeInput">Loại</label><select id="typeInput"><option value="chunk">chunk</option><option value="collocation">collocation</option><option value="expression">expression</option><option value="phrasal_verb">phrasal verb</option><option value="grammar_pattern">grammar pattern</option><option value="word_sense">word sense</option></select></div>
-            <div class="field"><label for="intentInput">Ý định giao tiếp</label><input id="intentInput" placeholder="e.g. báo với ai đó tôi sẽ tới muộn"></div>
-            <div class="field"><label for="canDoInput">Tôi có thể…</label><textarea id="canDoInput" placeholder="e.g. Tôi có thể báo người đang chờ rằng tôi sẽ tới muộn."></textarea></div>
+        <div class="study-preview" aria-label="Minh họa một thẻ viết trong FlashDay">
+          <div class="study-preview__bar">
+            <span class="mode-badge">Viết</span>
+            <span class="preview-progress">Lần ôn 3 · Hôm nay</span>
           </div>
-          <details class="capture-details">
-            <summary>Ngữ cảnh và nguồn <span>(tùy chọn)</span></summary>
-            <div class="capture-details-body">
-              <div class="field"><label for="sourceSentenceInput">Câu nguồn English</label><textarea id="sourceSentenceInput" placeholder="I ended up staying home because it was raining."></textarea></div>
-              <div class="field"><label for="sourceTranslationInput">Bản dịch câu nguồn</label><textarea id="sourceTranslationInput" placeholder="Cuối cùng tôi ở nhà vì trời mưa."></textarea></div>
-              <div class="field"><label for="sourceUrlInput">URL nguồn</label><input id="sourceUrlInput" type="url" placeholder="https://..."></div>
-              <div class="field"><label for="sourceTimeInput">Timestamp (giây)</label><input id="sourceTimeInput" type="number" min="0" step="0.001" placeholder="83.4"></div>
-              <div class="field"><label for="sourceFileInput">Tên subtitle / file nguồn</label><input id="sourceFileInput" placeholder="video-en.srt / lesson.mp4"></div>
-              <div class="field"><label for="contextInput">Tình huống / ghi chú</label><textarea id="contextInput" placeholder="Nơi bạn gặp cụm này..."></textarea></div>
+          <p class="preview-instruction">Viết câu tiếng Anh phù hợp với ý này.</p>
+          <p class="preview-prompt">Tôi sẽ gửi báo cáo cho bạn trước 5 giờ chiều.</p>
+          <div class="preview-answer" aria-hidden="true">Viết câu của bạn trước khi xem đáp án…</div>
+          <div class="preview-footer">
+            <span>Chủ động nhớ lại trước.</span>
+            <span class="preview-button">Xem đáp án</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="problem-section" aria-labelledby="problem-title">
+        <div class="section-shell">
+          <p class="eyebrow">Vấn đề cần giải</p>
+          <h2 id="problem-title">Biết nghĩa chưa chắc đã dùng được.</h2>
+          <div class="problem-grid">
+            <article class="problem-card">
+              <span class="problem-card__number" aria-hidden="true">01</span>
+              <h3>Nhận ra không phải nhớ lại</h3>
+              <p>Nhìn đáp án rồi gật đầu tạo cảm giác quen. Giao tiếp lại đòi bạn tự kéo câu ra đúng lúc.</p>
+            </article>
+            <article class="problem-card">
+              <span class="problem-card__number" aria-hidden="true">02</span>
+              <h3>Từ rời thiếu tình huống</h3>
+              <p>Một cụm từ sẽ hữu ích hơn khi đi cùng ý nghĩa, câu mẫu và lúc bạn có thể dùng nó.</p>
+            </article>
+            <article class="problem-card">
+              <span class="problem-card__number" aria-hidden="true">03</span>
+              <h3>Hoạt động không là tiến bộ</h3>
+              <p>FlashDay ghi nhận lần thử và lịch ôn; không biến số lượt học thành lời hứa về thành thạo.</p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="cach-hoat-dong" class="method-section" aria-labelledby="method-title">
+        <div class="section-shell">
+          <div class="section-heading">
+            <div>
+              <p class="eyebrow">Cách hoạt động</p>
+              <h2 id="method-title">Một nguyên tắc xuyên suốt: cố gắng trước.</h2>
             </div>
-          </details>
-          <button class="primary-btn" type="submit">Lưu unit</button>
-        </form>
-
-        <section class="import-section" aria-labelledby="importTitle">
-          <div class="page-title"><h2 id="importTitle">Import transcript</h2><p>Thêm transcript JSON hoặc SRT có sẵn; FlashDay giữ segment làm nguồn trước khi biến nó thành card học.</p></div>
-          <div class="capture-form import-form">
-            <div class="field file-field"><label for="transcriptFileInput">Transcript JSON / SRT</label><input id="transcriptFileInput" type="file" accept=".json,.srt,application/json,text/plain"></div>
-            <div class="field"><label for="importUrlInput">URL media</label><input id="importUrlInput" type="url" placeholder="https://..."></div>
-            <div class="field"><label for="importMediaNameInput">Tên media</label><input id="importMediaNameInput" placeholder="lesson.mp4"></div>
-            <div class="field"><label for="importAudioBaseInput">Thư mục audio đã cắt</label><input id="importAudioBaseInput" placeholder="media"></div>
-            <button id="importTranscriptBtn" class="primary-btn" type="button">Import transcript</button>
-            <p id="importSummary" class="footer-note" aria-live="polite"></p>
+            <p>FlashDay chọn mode phù hợp với từng lần ôn, giữ một nhiệm vụ rõ ràng trên mỗi thẻ.</p>
           </div>
-        </section>
+          <ol class="skill-grid">
+            <li class="skill-card">
+              <span class="skill-card__index">01</span>
+              <h3>Nghe</h3>
+              <p>Nghe câu trước, ghi điều bạn hiểu, rồi mới mở phần đối chiếu.</p>
+            </li>
+            <li class="skill-card">
+              <span class="skill-card__index">02</span>
+              <h3>Nói</h3>
+              <p>Nhìn ý định giao tiếp, nói thành tiếng và tự xác nhận bạn đã thử.</p>
+            </li>
+            <li class="skill-card">
+              <span class="skill-card__index">03</span>
+              <h3>Đọc</h3>
+              <p>Đọc câu tiếng Anh, diễn giải ý của mình trước khi xem nghĩa.</p>
+            </li>
+            <li class="skill-card">
+              <span class="skill-card__index">04</span>
+              <h3>Viết</h3>
+              <p>Biến ý tiếng Việt hoặc tình huống thành câu tiếng Anh bạn thực sự muốn dùng.</p>
+            </li>
+          </ol>
+        </div>
+      </section>
+
+      <section class="evidence-section" aria-labelledby="evidence-title">
+        <div class="section-shell evidence-layout">
+          <div>
+            <p class="eyebrow">Bộ nhớ có ngữ cảnh</p>
+            <h2 id="evidence-title">Học cả câu, không chỉ đánh dấu đã biết một từ.</h2>
+          </div>
+          <div class="evidence-copy">
+            <p>Mỗi Unit có thể đi kèm nghĩa, ý định giao tiếp, câu nguồn và ngữ cảnh. Khi nguồn hoặc audio câu mẫu có sẵn, FlashDay giữ chúng cùng thẻ học.</p>
+            <p>Lịch ôn bám theo từng Unit, kể cả khi một câu chứa nhiều điều bạn đang học.</p>
+            <a class="text-link" href="/app/">Tạo Unit đầu tiên <span aria-hidden="true">→</span></a>
+          </div>
+        </div>
+      </section>
+
+      <section class="closing-section" aria-labelledby="closing-title">
+        <div class="closing-card">
+          <p class="eyebrow">Bắt đầu từ điều bạn cần nói</p>
+          <h2 id="closing-title">Xây một bộ nhớ tiếng Anh dùng được mỗi ngày.</h2>
+          <p>Thêm câu của riêng bạn hoặc bắt đầu với thẻ có sẵn. Khi đến lượt ôn, hãy thử trước.</p>
+          <a class="button button--light" href="/app/">Mở FlashDay <span aria-hidden="true">→</span></a>
+        </div>
       </section>
     </main>
 
-    <dialog id="authDialog" class="auth-dialog" aria-labelledby="authTitle">
-      <form id="authForm" method="dialog">
-        <div class="dialog-head"><div><h2 id="authTitle">Lưu bộ nhớ học</h2><p id="authHint">Đăng nhập để đồng bộ bộ thẻ và lịch ôn của riêng bạn.</p></div><button id="closeAuthBtn" class="icon-btn" type="button" aria-label="Đóng">×</button></div>
-        <div class="auth-modes"><button id="signInMode" class="auth-mode active" type="button">Đăng nhập</button><button id="signUpMode" class="auth-mode" type="button">Tạo tài khoản</button></div>
-        <div class="field"><label for="authEmail">Email</label><input id="authEmail" type="email" autocomplete="email" required placeholder="you@example.com"></div>
-        <div class="field"><label for="authPassword">Mật khẩu</label><input id="authPassword" type="password" autocomplete="current-password" minlength="8" required placeholder="Ít nhất 8 ký tự"></div>
-        <p id="authError" class="auth-error hidden" role="alert"></p>
-        <button id="authSubmit" class="primary-btn" type="submit">Đăng nhập</button>
-        <p class="dialog-note">FlashDay chỉ dùng dữ liệu học để đồng bộ cho chính tài khoản này.</p>
-      </form>
-    </dialog>
-    <div id="toast" class="toast hidden" role="status"></div>
-    <script type="module" src="main.js"></script>
+    <footer class="site-footer">
+      <div class="site-footer__inner">
+        <span>FlashDay</span>
+        <span>Flashcards tiếng Anh để dùng trong đời thật.</span>
+      </div>
+    </footer>
   </body>
 </html>

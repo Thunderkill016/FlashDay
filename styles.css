@@ -249,6 +249,16 @@ summary:focus-visible {
   box-shadow: var(--fd-shadow-card);
 }
 
+.study-card.is-revealed .feedback,
+.study-card.is-revealed .answer-area {
+  animation: fd-reveal-answer var(--fd-duration-base) ease-out both;
+}
+
+@keyframes fd-reveal-answer {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 .card-head {
   display: flex;
   align-items: center;
@@ -530,6 +540,14 @@ summary:focus-visible {
   color: var(--fd-text-secondary);
   font-size: 14px;
   line-height: 20px;
+}
+
+.rating-status {
+  margin: 0 0 12px;
+  color: var(--fd-text-secondary);
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 16px;
 }
 
 .word-bank {

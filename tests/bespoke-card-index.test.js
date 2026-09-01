@@ -91,6 +91,8 @@ function ok(){checks++;}
   assert.strictEqual(db.bespokeProgress.ratings['on-way'][0].score,3);
   assert.strictEqual(db.bespokeProgress.ratings.late[0].score,1);
   assert.strictEqual(db.events[0].unitIds.length,2);
+  assert.strictEqual(A.hasCompleteRatings(card,{'on-way':3,late:1}),true);
+  assert.strictEqual(A.hasCompleteRatings(card,{'on-way':3,late:0}),false);
   ok();
 }
 

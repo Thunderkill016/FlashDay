@@ -133,6 +133,7 @@
       attempt = blankAttempt();
       isBack = false;
       isReported = false;
+      $('studyCard').classList.remove('is-revealed');
       renderFront();
       if (current.mode === B.Mode.LISTEN) window.setTimeout(speakTarget, 220);
     } catch (error) {
@@ -153,6 +154,7 @@
     $('answerArea').innerHTML = '<button class="primary-btn" style="width:100%" id="switchMemory">Xem trạng thái</button>';
     $('feedback').classList.add('hidden');
     $('sourcePanel').classList.add('hidden');
+    $('studyCard').classList.remove('is-revealed');
     $('switchMemory').onclick = () => setView('memory');
     $('capabilities').innerHTML = '';
     updateHeader();
@@ -250,6 +252,11 @@
         attempt.text = event.target.value.slice(0, 1200);
         $('flipBtn').disabled = !P.hasObservableAttempt(current.mode, attempt);
       };
+      $('attemptText').onkeydown = (event) => {
+        if (!P.isRevealShortcut(event)) return;
+        event.preventDefault();
+        if (P.hasObservableAttempt(current.mode, attempt)) flipCard();
+      };
     }
     $('flipBtn').onclick = flipCard;
   }
@@ -305,6 +312,7 @@
     }
     isBack = true;
     renderBack();
+    window.requestAnimationFrame(() => $('ratingParts')?.querySelector('[data-unit]')?.focus());
     if (current.mode !== B.Mode.LISTEN) window.setTimeout(speakTarget, 120);
   }
 
@@ -317,6 +325,7 @@
 
   function renderBack() {
     const card = current.card;
+    $('studyCard').classList.add('is-revealed');
     $('instruction').textContent = 'Đáp án và tự chấm';
     $('prompt').textContent = card.sentence;
     $('audioPrimary').classList.remove('hidden');
@@ -327,9 +336,10 @@
     renderDebug();
   }
 
-  function renderRatingArea() {
+  function renderRatingArea(focusUnitId = '') {
     const card = current.card;
     const parts = A.cardParts(card);
+    const ratingsComplete = A.hasCompleteRatings(card, ratings);
     const partsHtml = parts.map((part) => {
       if (!part.unit_id) return `<span class="rating-plain">${esc(part.occurance)}</span>`;
       const score = ratings[part.unit_id] ?? 0;
@@ -337,13 +347,16 @@
       const isRated = score !== 0;
       return `<button class="word-chip rating-chip" type="button" aria-pressed="${isRated}" data-unit="${esc(part.unit_id)}" title="${esc(item?.meaning || part.unit_id)}"><b>${esc(part.occurance)}</b><small>${scoreGlyph(score)} ${scoreText(score)} · chạm để đổi</small></button>`;
     }).join('');
-    $('answerArea').innerHTML = `<div class="rating-intro">Chấm từng phần cần học dựa trên lần thử vừa rồi. “Nhớ” là trạng thái lịch ôn, không phải đánh giá thành thạo.</div><div class="word-bank" id="ratingParts">${partsHtml}</div><div id="selectedDefinition" class="selected-definition hidden"></div><div class="secondary-actions"><button id="allSuccessBtn" type="button">Tất cả nhớ</button><label class="report-label"><input id="reportError" type="checkbox"> Card lỗi</label></div><button id="nextCardBtn" class="primary-btn" type="button">Lưu lần ôn</button>`;
+    const ratingStatus = ratingsComplete
+      ? 'Đã chấm tất cả Unit. Bạn có thể lưu lần ôn.'
+      : 'Chấm từng Unit trước khi lưu lần ôn.';
+    $('answerArea').innerHTML = `<div class="rating-intro">Chấm từng phần cần học dựa trên lần thử vừa rồi. “Nhớ” là trạng thái lịch ôn, không phải đánh giá thành thạo.</div><p class="rating-status" aria-live="polite">${ratingStatus}</p><div class="word-bank" id="ratingParts">${partsHtml}</div><div id="selectedDefinition" class="selected-definition hidden"></div><div class="secondary-actions"><button id="allSuccessBtn" type="button">Tất cả nhớ</button><label class="report-label"><input id="reportError" type="checkbox"> Card lỗi</label></div><button id="nextCardBtn" class="primary-btn" type="button" ${ratingsComplete ? '' : 'disabled'}>Lưu lần ôn</button>`;
     $('ratingParts').querySelectorAll('[data-unit]').forEach((button) => {
       button.onclick = () => {
         const id = button.dataset.unit;
         ratings[id] = A.cycleRating(ratings[id] ?? 0);
         const item = itemById(id);
-        renderRatingArea();
+        renderRatingArea(id);
         const box = $('selectedDefinition');
         if (box) {
           box.textContent = item?.meaning || id;
@@ -360,10 +373,22 @@
       isReported = event.target.checked;
     };
     $('nextCardBtn').onclick = finalizeCard;
+    if (focusUnitId) {
+      Array.from($('ratingParts').querySelectorAll('[data-unit]'))
+        .find((button) => button.dataset.unit === focusUnitId)
+        ?.focus();
+    }
   }
 
   function finalizeCard() {
     if (!current) return;
+    if (!A.hasCompleteRatings(current.card, ratings)) {
+      toast('Hãy chấm từng Unit trước khi lưu lần ôn.');
+      Array.from($('ratingParts')?.querySelectorAll('[data-unit]') || [])
+        .find((button) => (ratings[button.dataset.unit] ?? 0) === 0)
+        ?.focus();
+      return;
+    }
     stopAudio();
     const result = A.finalizeCard(db, current, ratings, {
       isReported,

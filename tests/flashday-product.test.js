@@ -23,6 +23,10 @@ const P=require('../flashday-product.js');
   assert.strictEqual(P.hasObservableAttempt('write',{text:'I am on my way.'}),true);
   assert.strictEqual(P.hasObservableAttempt('speak',{spoke:false,recordedLocally:true}),false);
   assert.strictEqual(P.hasObservableAttempt('speak',{spoke:true}),true);
+  assert.strictEqual(P.isRevealShortcut({key:'Enter',ctrlKey:true}),true);
+  assert.strictEqual(P.isRevealShortcut({key:'Enter',metaKey:true}),true);
+  assert.strictEqual(P.isRevealShortcut({key:'Enter',ctrlKey:true,isComposing:true}),false);
+  assert.strictEqual(P.isRevealShortcut({key:'Space',ctrlKey:true}),false);
 }
 
 {

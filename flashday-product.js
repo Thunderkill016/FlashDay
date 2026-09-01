@@ -55,6 +55,14 @@
     return mode === 'speak' ? response.spoke : Boolean(response.text);
   }
 
+  function isRevealShortcut(event = {}) {
+    return Boolean(
+      !event.isComposing &&
+      event.key === 'Enter' &&
+      (event.ctrlKey || event.metaKey)
+    );
+  }
+
   function reviewPayload(event, response) {
     return {
       id: clean(event?.id, 200),
@@ -68,5 +76,5 @@
     };
   }
 
-  return { MODES, normalizeUnitDraft, responseForMode, hasObservableAttempt, reviewPayload };
+  return { MODES, normalizeUnitDraft, responseForMode, hasObservableAttempt, isRevealShortcut, reviewPayload };
 });
