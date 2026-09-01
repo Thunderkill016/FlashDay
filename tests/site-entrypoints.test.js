@@ -15,10 +15,12 @@ assert.doesNotMatch(landing, /cdn\.tailwindcss\.com/);
 assert.match(landing, /family=Be\+Vietnam\+Pro/);
 assert.match(landing, /family=Bricolage\+Grotesque/);
 assert.match(landing, /family=IBM\+Plex\+Mono/);
+// Keep malformed "<1m" markup from slipping through even if Vite still emits a build.
+assert.doesNotMatch(landing, />\s*<1m/);
 
 assert.match(app, /href="\.\.\/styles\.css"/);
 assert.match(app, /src="\.\.\/main\.js"/);
 assert.match(viteConfig, /landing: resolve\(import\.meta\.dirname, 'index\.html'\)/);
 assert.match(viteConfig, /app: resolve\(import\.meta\.dirname, 'app\/index\.html'\)/);
 
-console.log('FlashDay entrypoint contract: 10 checks passed');
+console.log('FlashDay entrypoint contract: 11 checks passed');
