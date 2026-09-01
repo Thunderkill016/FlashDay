@@ -79,7 +79,17 @@
 
   function normalizeSourceKind(value){
     const kind=text(value).toLowerCase();
-    return SOURCE_KINDS.has(kind)?kind:'transcript';
+    return SOURCE_KINDS.has(kind)?kind:null;
+  }
+
+  function inferSourceKind(raw={}){
+    const explicit=normalizeSourceKind(raw.sourceKind||raw.kind);
+    if(explicit)return explicit;
+    const url=text(raw.url||raw.sourceUrl).toLowerCase();
+    if(url.includes('youtube.com')||url.includes('youtu.be'))return 'youtube';
+    if(raw.subtitleFileName||raw.subtitle?.index!=null||Array.isArray(raw.surroundingSubtitles)&&raw.surroundingSubtitles.length)return 'transcript';
+    if(raw.audio||/\.(mp3|m4a|wav|ogg|webm)$/i.test(text(raw.file?.name)))return 'audio';
+    return 'manual';
   }
 
   function normalizeLevel(value){
@@ -104,7 +114,7 @@
       subtitleFileName,url:sourceUrl,mediaTimestamp,
       audio:normalizeAudio(raw.audio),image:normalizeImage(raw.image),file:normalizeFile(raw.file),
       word:text(raw.word)||undefined,definition:text(raw.definition)||undefined,note:text(raw.note)||undefined,capturedAt,
-      sourceKind:normalizeSourceKind(raw.sourceKind||raw.kind),
+      sourceKind:inferSourceKind(raw),
       sourceTitle:text(raw.sourceTitle||raw.title)||undefined,
       estimatedLevel:normalizeLevel(raw.estimatedLevel||raw.contentLevel),
       linkedUnitIds:uniqueStrings(raw.linkedUnitIds||raw.unitIds),
@@ -160,5 +170,5 @@
     db.captures.push(capture);return capture;
   }
 
-  return {normalizeSubtitle,normalizeCapture,isCardReady,toBespokeCard,cardsFromCaptures,addCapture,sourceSnapshot,stableId,normalizeSourceKind,normalizeLevel};
+  return {normalizeSubtitle,normalizeCapture,isCardReady,toBespokeCard,cardsFromCaptures,addCapture,sourceSnapshot,stableId,normalizeSourceKind,inferSourceKind,normalizeLevel};
 });
