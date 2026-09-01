@@ -15,6 +15,23 @@ if (!url || !publishableKey) {
       detectSessionInUrl: true
     }
   });
+
+  // --- AUTH GUARD ---
+  client.auth.getSession().then(({ data: { session } }) => {
+    if (!session && !window.location.pathname.endsWith('/')) {
+      // If we are in /app/ and not logged in, redirect to landing
+      if (window.location.pathname.includes('/app/')) {
+        window.location.href = '/';
+      }
+    }
+  });
+
+  client.auth.onAuthStateChange((event, session) => {
+    if (event === 'SIGNED_OUT') {
+      window.location.href = '/';
+    }
+  });
+  // ------------------
   window.dispatchEvent(new CustomEvent('flashday:supabase-ready', {
     detail: { client, error: null }
   }));
