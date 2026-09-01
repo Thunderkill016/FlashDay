@@ -8,6 +8,10 @@
 })(typeof globalThis !== 'undefined' ? globalThis : this, function() {
   'use strict';
 
+  function clone(value) {
+    return value == null ? value : JSON.parse(JSON.stringify(value));
+  }
+
   function unitRow(item, deckId) {
     return {
       id: String(item.id),
@@ -23,7 +27,8 @@
       forms: Array.isArray(item.forms) ? item.forms : [],
       accepted: Array.isArray(item.accepted) ? item.accepted : [],
       tags: Array.isArray(item.tags) ? item.tags : [],
-      origin: String(item.origin || (item.source ? 'source-captured' : 'learner-created'))
+      origin: String(item.origin || (item.source ? 'source-captured' : 'learner-created')),
+      difficulty: item.difficulty ? String(item.difficulty) : null
     };
   }
 
@@ -41,7 +46,8 @@
       canDo: String(row.can_do || ''),
       exampleSentence: String(row.example_sentence || ''),
       exampleTranslation: String(row.example_translation || ''),
-      origin: String(row.origin || 'learner-created')
+      origin: String(row.origin || 'learner-created'),
+      difficulty: row.difficulty ? String(row.difficulty) : undefined
     };
   }
 
@@ -67,6 +73,7 @@
       mode: String(event.mode || ''),
       ratings: event.ratings && typeof event.ratings === 'object' ? event.ratings : {},
       response: event.response && typeof event.response === 'object' ? event.response : {},
+      stimulus: event.stimulus && typeof event.stimulus === 'object' ? event.stimulus : {},
       is_reported: Boolean(event.isReported),
       answered_at: new Date(Number(event.answeredAt) || Date.now()).toISOString()
     };
@@ -80,6 +87,7 @@
       unitIds: Array.isArray(row.unit_ids) ? row.unit_ids : [],
       ratings: row.ratings && typeof row.ratings === 'object' ? row.ratings : {},
       response: row.response && typeof row.response === 'object' ? row.response : {},
+      stimulus: row.stimulus && typeof row.stimulus === 'object' ? row.stimulus : {},
       isReported: Boolean(row.is_reported),
       answeredAt: Date.parse(row.answered_at) || Date.now()
     };
@@ -89,5 +97,81 @@
     return units.length > 0 || captures.length > 0 || cards.length > 0 || events.length > 0;
   }
 
-  return { unitRow, itemFromRow, cardRow, captureRow, reviewRow, eventFromRow, remoteHasLearnerData };
+  function mergeById(remoteValues, localValues) {
+    const merged = new Map();
+    for (const value of Array.isArray(localValues) ? localValues : []) {
+      if (value?.id != null) merged.set(String(value.id), clone(value));
+    }
+    // Remote wins an ID collision. Offline work is represented by new IDs in the
+    // current product; in-place offline editing is intentionally not supported yet.
+    for (const value of Array.isArray(remoteValues) ? remoteValues : []) {
+      if (value?.id != null) merged.set(String(value.id), clone(value));
+    }
+    return Array.from(merged.values());
+  }
+
+  function mergeLearnerDb(localDb = {}, remote = {}, progressPayload = {}) {
+    const remoteItems = (remote.units || []).map(itemFromRow);
+    const remoteCards = (remote.cards || []).map((row) => row?.payload).filter(Boolean);
+    const remoteCaptures = (remote.captures || []).map((row) => row?.payload).filter(Boolean);
+    const remoteEvents = (remote.events || []).map(eventFromRow);
+    const events = mergeById(remoteEvents, localDb.events || [])
+      .sort((a, b) => Number(a.answeredAt || 0) - Number(b.answeredAt || 0));
+
+    return {
+      version: String(localDb.version || progressPayload.version || 'repo-driven-1'),
+      createdAt: Number(localDb.createdAt || Date.now()),
+      items: mergeById(remoteItems, localDb.items || []),
+      bespokeCards: mergeById(remoteCards, localDb.bespokeCards || []),
+      captures: mergeById(remoteCaptures, localDb.captures || []),
+      events,
+      // Review events are the durable history. Progress is only a cache; rebuild
+      // it after a merge. Preserve a legacy cache only when there is no history.
+      bespokeProgress: events.length ? null : clone(progressPayload.bespokeProgress || localDb.bespokeProgress || null),
+      scheduler: String(progressPayload.scheduler || localDb.scheduler || 'google-bespoke-port'),
+      schedulerSource: String(progressPayload.schedulerSource || localDb.schedulerSource || 'google/bespoke@67b1eda5b28f7a69be20561014255cdc81110a3e')
+    };
+  }
+
+  function knownIds(remote = {}) {
+    const ids = (values, selector) => new Set((Array.isArray(values) ? values : []).map(selector).filter(Boolean).map(String));
+    return {
+      units: ids(remote.units, (row) => row?.id),
+      cards: ids(remote.cards, (row) => row?.id),
+      captures: ids(remote.captures, (row) => row?.id),
+      events: ids(remote.events, (row) => row?.id)
+    };
+  }
+
+  function emptyKnownIds() {
+    return { units: new Set(), cards: new Set(), captures: new Set(), events: new Set() };
+  }
+
+  function unknownById(values, known) {
+    const set = known instanceof Set ? known : new Set();
+    return (Array.isArray(values) ? values : []).filter((value) => value?.id != null && !set.has(String(value.id)));
+  }
+
+  function rememberIds(known, key, values) {
+    if (!known?.[key]) return;
+    for (const value of Array.isArray(values) ? values : []) {
+      if (value?.id != null) known[key].add(String(value.id));
+    }
+  }
+
+  return {
+    unitRow,
+    itemFromRow,
+    cardRow,
+    captureRow,
+    reviewRow,
+    eventFromRow,
+    remoteHasLearnerData,
+    mergeById,
+    mergeLearnerDb,
+    knownIds,
+    emptyKnownIds,
+    unknownById,
+    rememberIds
+  };
 });

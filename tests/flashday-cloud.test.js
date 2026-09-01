@@ -1,27 +1,66 @@
-const assert=require('assert');
-const C=require('../flashday-cloud.js');
+const assert = require('assert');
+const C = require('../flashday-cloud.js');
 
 {
-  const row=C.unitRow({
-    id:'on-way',target:"I'm on my way.",meaning:'Tôi đang trên đường.',type:'chunk',
-    intent:'báo đang tới',canDo:'Tôi có thể báo người đang chờ.',contexts:['nhắn tin'],
-    exampleSentence:"I'm on my way.",exampleTranslation:'Tôi đang trên đường.',forms:['I am on my way.'],tags:['daily'],origin:'curated'
-  },'deck-1');
-  assert.strictEqual(row.deck_id,'deck-1');
-  assert.strictEqual(row.intent,'báo đang tới');
-  assert.deepStrictEqual(C.itemFromRow(row).contexts,['nhắn tin']);
+  const row = C.unitRow({
+    id: 'on-way', target: "I'm on my way.", meaning: 'Tôi đang trên đường.', type: 'chunk',
+    intent: 'báo đang tới', canDo: 'Tôi có thể báo người đang chờ.', contexts: ['nhắn tin'],
+    exampleSentence: "I'm on my way.", exampleTranslation: 'Tôi đang trên đường.',
+    forms: ['I am on my way.'], tags: ['daily'], origin: 'curated', difficulty: 'A2'
+  }, 'deck-1');
+  assert.strictEqual(row.deck_id, 'deck-1');
+  assert.strictEqual(row.difficulty, 'A2');
+  const item = C.itemFromRow(row);
+  assert.deepStrictEqual(item.contexts, ['nhắn tin']);
+  assert.strictEqual(item.difficulty, 'A2');
 }
 
 {
-  const event=C.eventFromRow(C.reviewRow({
-    id:'review-1',mode:'write',cardId:'card-1',unitIds:['unit-1'],ratings:{'unit-1':3},
-    response:{text:'hello',spoke:false,recordedLocally:false},isReported:false,answeredAt:1000
-  },'deck-1'));
-  assert.strictEqual(event.mode,'write');
-  assert.strictEqual(event.response.text,'hello');
-  assert.strictEqual(event.answeredAt,1000);
+  const event = C.eventFromRow(C.reviewRow({
+    id: 'review-1', mode: 'listen', cardId: 'card-1', unitIds: ['unit-1'], ratings: { 'unit-1': 3 },
+    response: { text: 'hello', spoke: false, recordedLocally: false },
+    stimulus: { audioKind: 'source-audio' }, isReported: false, answeredAt: 1000
+  }, 'deck-1'));
+  assert.strictEqual(event.mode, 'listen');
+  assert.strictEqual(event.response.text, 'hello');
+  assert.strictEqual(event.stimulus.audioKind, 'source-audio');
+  assert.strictEqual(event.answeredAt, 1000);
 }
 
-assert.strictEqual(C.remoteHasLearnerData({}),false);
-assert.strictEqual(C.remoteHasLearnerData({units:[{id:'u'}]}),true);
-console.log('FlashDay cloud mapping: 3 checks passed');
+{
+  const local = {
+    version: 'repo-driven-1', createdAt: 1,
+    items: [
+      { id: 'same', target: 'local stale', meaning: 'local', type: 'chunk' },
+      { id: 'local-only', target: 'offline unit', meaning: 'offline', type: 'chunk' }
+    ],
+    bespokeCards: [], captures: [],
+    events: [{ id: 'local-event', answeredAt: 2000, mode: 'write', cardId: 'c2', unitIds: [], ratings: {} }],
+    bespokeProgress: { stale: true }
+  };
+  const remote = {
+    units: [{ id: 'same', target: 'remote canonical', meaning: 'remote', unit_type: 'chunk', forms: [], accepted: [], tags: [], origin: 'curated' }],
+    cards: [], captures: [],
+    events: [{ id: 'remote-event', answered_at: new Date(1000).toISOString(), mode: 'read', card_id: 'c1', unit_ids: [], ratings: {}, response: {}, stimulus: {}, is_reported: false }]
+  };
+  const merged = C.mergeLearnerDb(local, remote, {});
+  assert.strictEqual(merged.items.length, 2, 'remote and local-only unit should both survive');
+  assert.strictEqual(merged.items.find((item) => item.id === 'same').target, 'remote canonical', 'remote must win same-id collision');
+  assert(merged.items.some((item) => item.id === 'local-only'), 'offline local-only unit must survive');
+  assert.deepStrictEqual(merged.events.map((event) => event.id), ['remote-event', 'local-event'], 'event union must be time ordered');
+  assert.strictEqual(merged.bespokeProgress, null, 'merged history invalidates scheduler cache');
+}
+
+{
+  const remote = { units: [{ id: 'u1' }], cards: [{ id: 'c1' }], captures: [], events: [{ id: 'e1' }] };
+  const known = C.knownIds(remote);
+  assert.deepStrictEqual(C.unknownById([{ id: 'u1' }, { id: 'u2' }], known.units).map((row) => row.id), ['u2']);
+  C.rememberIds(known, 'units', [{ id: 'u2' }]);
+  assert.strictEqual(known.units.has('u2'), true);
+  const empty = C.emptyKnownIds();
+  assert.strictEqual(empty.events.size, 0);
+}
+
+assert.strictEqual(C.remoteHasLearnerData({}), false);
+assert.strictEqual(C.remoteHasLearnerData({ units: [{ id: 'u' }] }), true);
+console.log('FlashDay cloud P0: 5 checks passed');
