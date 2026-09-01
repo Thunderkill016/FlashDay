@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-    <meta name="theme-color" content="#f7f7f3">
+    <meta name="theme-color" content="#f9fafb">
     <meta name="description" content="FlashDay là flashcard tiếng Anh để luyện nghe, nói, đọc và viết bằng những lần nhớ lại có chủ đích.">
     <title>FlashDay — Học tiếng Anh để dùng được</title>
     <link rel="icon" href="data:,">
@@ -12,122 +12,129 @@
   <body>
     <header class="site-header">
       <div class="site-header__inner">
-        <a class="wordmark" href="/" aria-label="FlashDay trang chủ">FlashDay</a>
-        <a class="header-cta" href="/app/">Mở FlashDay <span aria-hidden="true">→</span></a>
+        <a class="wordmark" href="/" aria-label="FlashDay trang chủ">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+          FlashDay
+        </a>
+        <a class="header-cta" href="/app/">Mở Ứng dụng <span aria-hidden="true">→</span></a>
       </div>
     </header>
 
     <main>
-      <section class="hero" aria-labelledby="hero-title">
-        <p class="eyebrow">English flashcards for real use</p>
-        <h1 id="hero-title">Học tiếng Anh để dùng được.</h1>
-        <p class="hero__lede">Ôn bằng nghe, nói, đọc và viết. Mỗi thẻ buộc bạn cố gắng nhớ lại trước khi đối chiếu đáp án.</p>
-        <div class="hero__actions">
-          <a class="button button--primary" href="/app/">Bắt đầu học <span aria-hidden="true">→</span></a>
-          <a class="button button--secondary" href="#cach-hoat-dong">Xem cách hoạt động</a>
-        </div>
-
-        <div class="study-preview" aria-label="Minh họa một thẻ viết trong FlashDay">
-          <div class="study-preview__bar">
-            <span class="mode-badge">Viết</span>
-            <span class="preview-progress">Lần ôn 3 · Hôm nay</span>
-          </div>
-          <p class="preview-instruction">Viết câu tiếng Anh phù hợp với ý này.</p>
-          <p class="preview-prompt">Tôi sẽ gửi báo cáo cho bạn trước 5 giờ chiều.</p>
-          <div class="preview-answer" aria-hidden="true">Viết câu của bạn trước khi xem đáp án…</div>
-          <div class="preview-footer">
-            <span>Chủ động nhớ lại trước.</span>
-            <span class="preview-button">Xem đáp án</span>
+      <!-- BESPOKE HERO -->
+      <section class="hero-bespoke">
+        <div class="hero-bespoke__content">
+          <div class="tagline">Phương pháp học đảo ngược</div>
+          <h1 class="hero-title">Đừng nhớ từ.<br><span class="highlight">Hãy làm chủ ngữ cảnh.</span></h1>
+          <p class="hero-desc">Khác biệt với flashcard truyền thống, FlashDay rèn luyện bạn qua 4 kỹ năng Nghe - Nói - Đọc - Viết để đảm bảo bạn thực sự sử dụng được tiếng Anh trong đời thực.</p>
+          <div class="hero-actions">
+            <a class="btn-primary" href="/app/">Bắt đầu học ngay</a>
           </div>
         </div>
-      </section>
-
-      <section class="problem-section" aria-labelledby="problem-title">
-        <div class="section-shell">
-          <p class="eyebrow">Vấn đề cần giải</p>
-          <h2 id="problem-title">Biết nghĩa chưa chắc đã dùng được.</h2>
-          <div class="problem-grid">
-            <article class="problem-card">
-              <span class="problem-card__number" aria-hidden="true">01</span>
-              <h3>Nhận ra không phải nhớ lại</h3>
-              <p>Nhìn đáp án rồi gật đầu tạo cảm giác quen. Giao tiếp lại đòi bạn tự kéo câu ra đúng lúc.</p>
-            </article>
-            <article class="problem-card">
-              <span class="problem-card__number" aria-hidden="true">02</span>
-              <h3>Từ rời thiếu tình huống</h3>
-              <p>Một cụm từ sẽ hữu ích hơn khi đi cùng ý nghĩa, câu mẫu và lúc bạn có thể dùng nó.</p>
-            </article>
-            <article class="problem-card">
-              <span class="problem-card__number" aria-hidden="true">03</span>
-              <h3>Hoạt động không là tiến bộ</h3>
-              <p>FlashDay ghi nhận lần thử và lịch ôn; không biến số lượt học thành lời hứa về thành thạo.</p>
-            </article>
-          </div>
+        
+        <!-- Custom Visualization of Spaced Repetition instead of standard mockup -->
+        <div class="hero-bespoke__visual">
+           <div class="sr-visualization">
+             <div class="sr-card sr-card--1">
+               <span class="sr-badge">Ôn tập</span>
+               <div class="sr-text">I will send you the report...</div>
+             </div>
+             <div class="sr-card sr-card--2">
+               <span class="sr-badge">Ghi nhớ</span>
+               <div class="sr-text">I will send you the report...</div>
+             </div>
+             <div class="sr-card sr-card--3">
+               <span class="sr-badge">Phản xạ</span>
+               <div class="sr-text">I will send you the report...</div>
+             </div>
+           </div>
         </div>
       </section>
 
-      <section id="cach-hoat-dong" class="method-section" aria-labelledby="method-title">
-        <div class="section-shell">
-          <div class="section-heading">
-            <div>
-              <p class="eyebrow">Cách hoạt động</p>
-              <h2 id="method-title">Một nguyên tắc xuyên suốt: cố gắng trước.</h2>
+      <!-- STICKY SCROLLYTELLING SECTION -->
+      <section class="story-section">
+        <div class="story-container">
+          <div class="story-sticky">
+            <h2>Học qua sự gợi nhớ, <br>không phải sự nhận diện.</h2>
+            <p>Nhìn đáp án rồi gật đầu tạo cảm giác quen thuộc ảo. Giao tiếp thực tế đòi hỏi bạn tự kéo câu chữ ra khỏi vỏ não đúng lúc.</p>
+          </div>
+          <div class="story-scroll">
+            <div class="story-card">
+              <div class="story-icon">01</div>
+              <h3>Gợi nhớ Chủ động</h3>
+              <p>Hệ thống giấu đi đáp án, ép não bộ bạn phải nỗ lực tư duy trước khi được phép xem kết quả.</p>
             </div>
-            <p>FlashDay chọn mode phù hợp với từng lần ôn, giữ một nhiệm vụ rõ ràng trên mỗi thẻ.</p>
-          </div>
-          <ol class="skill-grid">
-            <li class="skill-card">
-              <span class="skill-card__index">01</span>
-              <h3>Nghe</h3>
-              <p>Nghe câu trước, ghi điều bạn hiểu, rồi mới mở phần đối chiếu.</p>
-            </li>
-            <li class="skill-card">
-              <span class="skill-card__index">02</span>
-              <h3>Nói</h3>
-              <p>Nhìn ý định giao tiếp, nói thành tiếng và tự xác nhận bạn đã thử.</p>
-            </li>
-            <li class="skill-card">
-              <span class="skill-card__index">03</span>
-              <h3>Đọc</h3>
-              <p>Đọc câu tiếng Anh, diễn giải ý của mình trước khi xem nghĩa.</p>
-            </li>
-            <li class="skill-card">
-              <span class="skill-card__index">04</span>
-              <h3>Viết</h3>
-              <p>Biến ý tiếng Việt hoặc tình huống thành câu tiếng Anh bạn thực sự muốn dùng.</p>
-            </li>
-          </ol>
-        </div>
-      </section>
-
-      <section class="evidence-section" aria-labelledby="evidence-title">
-        <div class="section-shell evidence-layout">
-          <div>
-            <p class="eyebrow">Bộ nhớ có ngữ cảnh</p>
-            <h2 id="evidence-title">Học cả câu, không chỉ đánh dấu đã biết một từ.</h2>
-          </div>
-          <div class="evidence-copy">
-            <p>Mỗi Unit có thể đi kèm nghĩa, ý định giao tiếp, câu nguồn và ngữ cảnh. Khi nguồn hoặc audio câu mẫu có sẵn, FlashDay giữ chúng cùng thẻ học.</p>
-            <p>Lịch ôn bám theo từng Unit, kể cả khi một câu chứa nhiều điều bạn đang học.</p>
-            <a class="text-link" href="/app/">Tạo Unit đầu tiên <span aria-hidden="true">→</span></a>
+            <div class="story-card">
+              <div class="story-icon">02</div>
+              <h3>Ngữ cảnh Thực tế</h3>
+              <p>Mỗi từ vựng được gắn chặt vào một câu hoàn chỉnh, đi kèm ý định giao tiếp thực tế.</p>
+            </div>
+            <div class="story-card">
+              <div class="story-icon">03</div>
+              <h3>Thuật toán Bespoke</h3>
+              <p>Không hứa hẹn viển vông. Thuật toán Spaced Repetition cá nhân hóa theo từng kỹ năng Nghe, Nói, Đọc, Viết của riêng bạn.</p>
+            </div>
           </div>
         </div>
       </section>
 
-      <section class="closing-section" aria-labelledby="closing-title">
-        <div class="closing-card">
-          <p class="eyebrow">Bắt đầu từ điều bạn cần nói</p>
-          <h2 id="closing-title">Xây một bộ nhớ tiếng Anh dùng được mỗi ngày.</h2>
-          <p>Thêm câu của riêng bạn hoặc bắt đầu với thẻ có sẵn. Khi đến lượt ôn, hãy thử trước.</p>
-          <a class="button button--light" href="/app/">Mở FlashDay <span aria-hidden="true">→</span></a>
+      <!-- ASYMMETRICAL BENTO GRID FOR SKILLS -->
+      <section class="bento-section">
+        <div class="bento-header">
+          <h2>4 kỹ năng. 1 vòng lặp hoàn hảo.</h2>
+          <p>Thuật toán tự động chọn chế độ ôn tập phù hợp nhất với trí nhớ của bạn.</p>
         </div>
+        <div class="bento-grid">
+          
+          <div class="bento-box bento-large bento-listen">
+            <div class="bento-content">
+              <h3>Kỹ năng Nghe</h3>
+              <p>Luyện đôi tai phản xạ với tốc độ nói thực tế. Nghe hiểu toàn bộ câu trước khi nhìn thấy mặt chữ.</p>
+            </div>
+            <div class="bento-visual">
+              <div class="wave"></div>
+              <div class="wave wave-2"></div>
+              <div class="wave wave-3"></div>
+            </div>
+          </div>
+
+          <div class="bento-box bento-speak">
+            <div class="bento-content">
+              <h3>Kỹ năng Nói</h3>
+              <p>Nhìn ý định giao tiếp, tự phát âm thành tiếng trước khi đối chiếu.</p>
+            </div>
+          </div>
+
+          <div class="bento-box bento-read">
+            <div class="bento-content">
+              <h3>Kỹ năng Đọc</h3>
+              <p>Hiểu sâu ngữ nghĩa qua việc diễn giải ý bằng ngôn ngữ của bạn.</p>
+            </div>
+          </div>
+
+          <div class="bento-box bento-large bento-write">
+            <div class="bento-visual">
+              <div class="cursor-typing">I will send the report by 5PM|</div>
+            </div>
+            <div class="bento-content">
+              <h3>Kỹ năng Viết</h3>
+              <p>Biến ý tưởng tiếng Việt thành câu tiếng Anh chuẩn xác. Rèn luyện cấu trúc ngữ pháp tự nhiên.</p>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <section class="final-cta">
+        <h2>Xây dựng bộ nhớ ngôn ngữ của riêng bạn.</h2>
+        <a class="btn-primary" href="/app/">Mở Ứng dụng ngay</a>
       </section>
     </main>
 
     <footer class="site-footer">
       <div class="site-footer__inner">
-        <span>FlashDay</span>
-        <span>Flashcards tiếng Anh để dùng trong đời thật.</span>
+        <span class="brand">FlashDay</span>
+        <span>Hệ thống Ôn tập Ngắt quãng Đa kỹ năng.</span>
       </div>
     </footer>
   </body>
