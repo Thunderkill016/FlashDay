@@ -166,59 +166,71 @@
       <!-- 04 THE RECALL LAB (Bento) -->
       <section class="recall-lab">
         <div class="paths-header" style="margin-bottom: 64px;">
-          <p class="mono-label">THE RECALL LAB</p>
-          <h2 class="display-text text-center" style="margin-bottom: 24px;">Thu thập dữ liệu Nhận thức.</h2>
-          <p class="body-text text-center" style="max-width: 600px;">Mọi thao tác của bạn đều là dữ liệu. Thuật toán phân tích thời gian phản xạ, độ trễ và số lần sai để vẽ ra bản đồ phần cứng của não bộ.</p>
+          <p class="mono-label" style="color: var(--muted-light);">THE ALGORITHM</p>
+          <h2 class="display-text text-center" style="margin-bottom: 24px; color: var(--ink-950);">Động cơ lặp lại ngắt quãng.</h2>
+          <p class="body-text text-center" style="max-width: 600px; color: var(--ink-900); opacity: 0.8;">FlashDay không dùng AI để lòe bịp. Chúng tôi sử dụng các thuật toán khoa học nhận thức đã được chứng minh (FSRS) để can thiệp đúng vào điểm rơi quên lãng của bạn.</p>
         </div>
         
         <div class="bento-wrapper">
-          <!-- BENTO A: Active Recall -->
+          <!-- BENTO A: Forgetting Curve -->
           <div class="bento-lab bento-a">
             <div class="bento-header">
-              <p class="mono-label">ACTIVE RECALL CARD</p>
-              <div class="lab-status"><span class="status-dot"></span> TESTING</div>
+              <p class="mono-label">THE FORGETTING CURVE</p>
+              <div class="lab-status"><span class="status-dot"></span> OPTIMIZED</div>
             </div>
-            <div class="card-demo">
-              <div class="c-progress-bar"></div>
-              <p class="c-prompt">"Đang kẹt xe cứng ngắc. Báo cho người đợi biết bạn sẽ đến trễ."</p>
-              <div class="c-input-wrapper">
-                <span class="c-input-text">I'm run</span><span class="c-cursor"></span>
+            <div class="curve-demo">
+              <div class="chart-container">
+                <svg viewBox="0 0 400 150" class="curve-svg">
+                  <!-- Trục X, Y -->
+                  <line x1="20" y1="130" x2="380" y2="130" stroke="rgba(0,0,0,0.1)" stroke-width="2" />
+                  <line x1="20" y1="20" x2="20" y2="130" stroke="rgba(0,0,0,0.1)" stroke-width="2" />
+                  <!-- Đường rớt trí nhớ 1 -->
+                  <path d="M 20 30 Q 100 30, 150 120" fill="none" stroke="rgba(0,0,0,0.2)" stroke-width="2" stroke-dasharray="4 4" />
+                  <!-- Review 1 -->
+                  <line x1="150" y1="120" x2="150" y2="30" stroke="var(--listen)" stroke-width="2" />
+                  <circle cx="150" cy="30" r="4" fill="var(--listen)" />
+                  <!-- Đường rớt trí nhớ 2 -->
+                  <path d="M 150 30 Q 250 50, 320 120" fill="none" stroke="rgba(0,0,0,0.2)" stroke-width="2" stroke-dasharray="4 4" />
+                  <!-- Review 2 -->
+                  <line x1="320" y1="120" x2="320" y2="30" stroke="var(--flash)" stroke-width="2" />
+                  <circle cx="320" cy="30" r="4" fill="var(--flash)" />
+                  <!-- Đường rớt trí nhớ 3 (Flat) -->
+                  <path d="M 320 30 Q 380 40, 400 45" fill="none" stroke="var(--ink-950)" stroke-width="3" />
+                </svg>
+                <div class="chart-labels">
+                  <span class="c-label" style="left: 140px;">REVIEW #1</span>
+                  <span class="c-label" style="left: 310px;">REVIEW #2</span>
+                </div>
               </div>
-              <div class="c-footer">
-                <span class="c-timer">00:03.4</span>
-                <div class="c-btn disabled">XEM ĐÁP ÁN</div>
-              </div>
+              <p class="c-desc-text">Mỗi lần ôn tập, đường cong quên lãng sẽ bị là phẳng. Trí nhớ của bạn kéo dài hơn sau mỗi nhịp.</p>
             </div>
           </div>
           
-          <!-- BENTO B: Audio Trace -->
+          <!-- BENTO B: Effort Grading -->
           <div class="bento-lab bento-b">
              <div class="bento-header">
-               <p class="mono-label">AUDIO TRACE</p>
-               <span class="lab-badge listen-badge">01</span>
+               <p class="mono-label">EFFORT GRADING</p>
              </div>
-             <div class="wave-demo">
-               <!-- Generating equalizer bars -->
-               <div class="eq-bar" style="height: 78%"></div><div class="eq-bar" style="height: 74%"></div><div class="eq-bar" style="height: 75%"></div><div class="eq-bar" style="height: 33%"></div><div class="eq-bar" style="height: 25%"></div><div class="eq-bar" style="height: 37%"></div><div class="eq-bar" style="height: 41%"></div><div class="eq-bar" style="height: 58%"></div><div class="eq-bar" style="height: 69%"></div><div class="eq-bar" style="height: 97%"></div><div class="eq-bar" style="height: 73%"></div><div class="eq-bar" style="height: 59%"></div><div class="eq-bar" style="height: 29%"></div><div class="eq-bar" style="height: 89%"></div><div class="eq-bar" style="height: 64%"></div><div class="eq-bar" style="height: 30%"></div>
+             <div class="effort-demo">
+               <p class="e-question">Mức độ khó nhọc khi nhớ ra?</p>
+               <div class="e-buttons">
+                 <div class="e-btn btn-again">AGAIN <span class="e-time"><1m</span></div>
+                 <div class="e-btn btn-hard">HARD <span class="e-time">2d</span></div>
+                 <div class="e-btn btn-good">GOOD <span class="e-time">4d</span></div>
+                 <div class="e-btn btn-easy">EASY <span class="e-time">11d</span></div>
+               </div>
              </div>
-             <div class="audio-metrics">
-               <p class="demo-audio-text">PITCH: 142Hz</p>
-               <p class="demo-audio-text">SPEED: 1.2x</p>
-             </div>
+             <p class="c-desc-text mt-auto">Không chỉ Đúng/Sai. Hệ thống đánh giá nỗ lực (Effort) để phân bổ lịch trình.</p>
           </div>
           
-          <!-- BENTO C: Context Provenance -->
+          <!-- BENTO C: Retention Stats -->
           <div class="bento-lab bento-c">
              <div class="bento-header">
-               <p class="mono-label">CONTEXT PROVENANCE</p>
+               <p class="mono-label">LONG-TERM STORAGE</p>
              </div>
-             <div class="citation">
-               <p class="cit-source"><span class="src-icon">🎙</span> Podcast / Ep. 42 / 01:24:08</p>
-               <div class="cit-code-block">
-                 <p class="cit-before"><span class="line-num">1</span> <span class="speaker">Alex:</span> The traffic was terrible...</p>
-                 <p class="cit-target"><span class="line-num">2</span> <span class="speaker">Alex:</span> Sorry, <span class="highlight-target">I'm running late.</span></p>
-                 <p class="cit-after"><span class="line-num">3</span> <span class="speaker">Sam:</span> No worries, take your time.</p>
-               </div>
+             <div class="stats-demo">
+               <p class="stat-big">1,204</p>
+               <p class="stat-label">Cụm từ đã chuyển hóa thành trí nhớ dài hạn (Hơn 21 ngày).</p>
              </div>
           </div>
           
