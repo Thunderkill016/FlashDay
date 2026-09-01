@@ -10,11 +10,15 @@ const viteConfig = readFileSync(join(root, 'vite.config.mjs'), 'utf8');
 assert.match(landing, /href="landing\.css"/);
 assert.match(landing, /href="\/app\/"/);
 assert.doesNotMatch(landing, /cdn\.tailwindcss\.com/);
-assert.doesNotMatch(landing, /fonts\.googleapis\.com/);
+// The Recall Observatory landing intentionally uses its selected display/body/mono
+// web fonts. The old "no Google Fonts" assertion belonged to the previous landing.
+assert.match(landing, /family=Be\+Vietnam\+Pro/);
+assert.match(landing, /family=Bricolage\+Grotesque/);
+assert.match(landing, /family=IBM\+Plex\+Mono/);
 
 assert.match(app, /href="\.\.\/styles\.css"/);
 assert.match(app, /src="\.\.\/main\.js"/);
 assert.match(viteConfig, /landing: resolve\(import\.meta\.dirname, 'index\.html'\)/);
 assert.match(viteConfig, /app: resolve\(import\.meta\.dirname, 'app\/index\.html'\)/);
 
-console.log('FlashDay entrypoint contract: 8 checks passed');
+console.log('FlashDay entrypoint contract: 10 checks passed');
