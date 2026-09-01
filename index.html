@@ -3,153 +3,255 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-    <meta name="theme-color" content="#000000">
-    <meta name="description" content="FlashDay là flashcard tiếng Anh để luyện nghe, nói, đọc và viết bằng những lần nhớ lại có chủ đích.">
-    <title>FlashDay — Hệ thống Ngôn ngữ Tương lai</title>
+    <meta name="theme-color" content="#090B0D">
+    <meta name="description" content="Đừng học để nhận ra. Học để tự nhớ ra.">
+    <title>FlashDay — The Recall Observatory</title>
     <link rel="icon" href="data:,">
+    
+    <!-- Preconnect for performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=IBM+Plex+Mono:wght@500;700&display=swap" rel="stylesheet">
+    
     <link rel="stylesheet" href="landing.css">
   </head>
   <body>
-    <!-- GLOWING AURAS (Vercel/Linear effect) -->
-    <div class="aura aura-top"></div>
-    <div class="aura aura-bottom"></div>
-    
-    <header class="site-header">
-      <div class="site-header__inner">
-        <a class="wordmark" href="/" aria-label="FlashDay trang chủ">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-          FlashDay
-        </a>
-        <a class="header-cta" href="/app/">Trải nghiệm ngay <span aria-hidden="true">→</span></a>
+    <!-- BACKGROUND TEXTURE -->
+    <div class="noise-overlay"></div>
+
+    <header class="site-nav">
+      <div class="nav-inner">
+        <a class="nav-brand" href="/">FlashDay</a>
+        <div class="nav-links">
+          <a href="#how">How it works</a>
+          <a href="#why">Why recall</a>
+          <a href="/app/">Log in</a>
+          <a class="btn-start" href="/app/">START</a>
+        </div>
       </div>
     </header>
 
     <main>
-      <!-- BESPOKE HERO -->
-      <section class="hero-bespoke">
-        <div class="hero-bespoke__content">
-          <div class="tagline">Kiến trúc Học tập Thế hệ mới</div>
-          <h1 class="hero-title">Đừng nhớ từ.<br><span class="highlight">Hãy làm chủ ngữ cảnh.</span></h1>
-          <p class="hero-desc">Bỏ lại flashcard truyền thống. FlashDay xây dựng hệ thống thần kinh ngôn ngữ qua 4 kỹ năng thực chiến Nghe - Nói - Đọc - Viết.</p>
-          <div class="hero-actions">
-            <a class="btn-primary" href="/app/">Bắt đầu thuật toán</a>
-            <a class="btn-secondary" href="#story">Khám phá công nghệ</a>
+      <!-- 01 IGNITION -->
+      <section class="memory-hero">
+        <div class="hero-container">
+          <div class="hero-copy">
+            <p class="eyebrow-mono">ACTIVE RECALL / ENGLISH MEMORY</p>
+            <h1 class="headline-reveal">
+              <span class="line">Đừng học để</span>
+              <span class="line">nhận ra.</span>
+              <span class="line accent">Học để</span>
+              <span class="line accent">tự nhớ ra.</span>
+            </h1>
+            <p class="hero-sub">FlashDay buộc bạn thử trước. Khơi dậy hệ thống thần kinh ngôn ngữ.</p>
+            <a class="btn-flash mt-8" href="/app/">Start <span class="arrow">↗</span></a>
           </div>
+          
+          <div class="recall-core-wrapper">
+            <div class="recall-core">
+              <div class="memory-node">I'm running late.</div>
+              <!-- Skill Orbits -->
+              <div class="orbit orbit--listen"><div class="satellite sat-listen"></div></div>
+              <div class="orbit orbit--speak"><div class="satellite sat-speak"></div></div>
+              <div class="orbit orbit--read"><div class="satellite sat-read"></div></div>
+              <div class="orbit orbit--write"><div class="satellite sat-write"></div></div>
+              <!-- Hover states -->
+              <div class="core-hover-state">
+                <div class="hover-listen"><div class="wave-mini"></div></div>
+                <div class="hover-speak">"Tôi đang tới muộn."</div>
+                <div class="hover-write">I'm running late|</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 02 MEMORY DECAY -->
+      <section id="why" class="decay-story">
+        <div class="decay-container">
+          <div class="decay-copy">
+            <h2 class="display-text">Quên không phải lỗi.<br>Không quay lại đúng lúc mới là vấn đề.</h2>
+            <p class="body-text">Bạn vừa học câu mới. 3 ngày sau, nó biến mất. FlashDay lên lịch cho sự trở lại của tri thức ngay khoảnh khắc bạn chuẩn bị quên nó đi.</p>
+            <a class="text-link-flash mt-4" href="/app/">FlashDay schedules the return →</a>
+          </div>
+          
+          <div class="decay-stage">
+            <div class="decay-sticky">
+              <p class="mono-label">MEMORY TRACE</p>
+              <div class="memory-word">I'm running late.</div>
+              <div class="decay-progress-bar">
+                <div class="decay-fill"></div>
+                <div class="return-marker">RETURN</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 03 FOUR PATHS -->
+      <section id="how" class="four-paths">
+        <div class="paths-header">
+          <p class="mono-label">ONE EXPRESSION ≠ ONE MEMORY</p>
+          <h2 class="display-text text-center">4 Giao điểm Nhận thức</h2>
+          <p class="body-text text-center">FlashDay cô lập từng kỹ năng. Bạn có thể Nghe giỏi, nhưng Viết chưa chắc đã nhớ.</p>
         </div>
         
-        <!-- Custom Visualization of Spaced Repetition instead of standard mockup -->
-        <div class="hero-bespoke__visual">
-           <div class="sr-visualization">
-             <div class="sr-card sr-card--1 glass-panel">
-               <span class="sr-badge">Ôn tập</span>
-               <div class="sr-text">I will send you the report...</div>
-             </div>
-             <div class="sr-card sr-card--2 glass-panel">
-               <span class="sr-badge">Ghi nhớ</span>
-               <div class="sr-text">I will send you the report...</div>
-             </div>
-             <div class="sr-card sr-card--3 glass-panel">
-               <span class="sr-badge glow-badge">Phản xạ</span>
-               <div class="sr-text">I will send you the report...</div>
-             </div>
-           </div>
-        </div>
-      </section>
-
-      <!-- STICKY SCROLLYTELLING SECTION -->
-      <section id="story" class="story-section">
-        <div class="story-container">
-          <div class="story-sticky">
-            <h2 class="section-title">Học qua sự gợi nhớ, <br>không phải sự nhận diện.</h2>
-            <p>Nhìn đáp án rồi gật đầu tạo cảm giác quen thuộc ảo. Giao tiếp thực tế đòi hỏi bạn tự kéo câu chữ ra khỏi vỏ não đúng lúc.</p>
+        <div class="paths-cross">
+          <div class="path-card p-listen">
+            <div class="path-icon">01 / LISTEN</div>
+            <div class="waveform-large"></div>
           </div>
-          <div class="story-scroll">
-            <div class="story-card glass-panel">
-              <div class="story-icon">01</div>
-              <h3>Gợi nhớ Chủ động</h3>
-              <p>Hệ thống giấu đi đáp án, ép não bộ bạn phải nỗ lực tư duy trước khi được phép xem kết quả.</p>
-            </div>
-            <div class="story-card glass-panel">
-              <div class="story-icon">02</div>
-              <h3>Ngữ cảnh Thực tế</h3>
-              <p>Mỗi từ vựng được gắn chặt vào một câu hoàn chỉnh, đi kèm ý định giao tiếp thực tế.</p>
-            </div>
-            <div class="story-card glass-panel">
-              <div class="story-icon">03</div>
-              <h3>Thuật toán Bespoke</h3>
-              <p>Không hứa hẹn viển vông. Thuật toán Spaced Repetition cá nhân hóa theo từng kỹ năng Nghe, Nói, Đọc, Viết của riêng bạn.</p>
-            </div>
+          <div class="path-card p-speak">
+            <div class="path-icon">02 / SPEAK</div>
+            <p class="path-prompt">Bạn không nghe rõ. Bạn nói gì?</p>
+            <div class="btn-hold">● HOLD TO SPEAK</div>
+          </div>
+          <div class="path-card p-read">
+            <div class="path-icon">03 / READ</div>
+            <div class="message-bubble">Sorry, I'm running late. Can we meet at 6:30?</div>
+          </div>
+          <div class="path-card p-write">
+            <div class="path-icon">04 / WRITE</div>
+            <p class="path-prompt">Bạn đang trên đường tới. Báo người đợi.</p>
+            <div class="input-fake">|________________</div>
           </div>
         </div>
       </section>
 
-      <!-- ASYMMETRICAL BENTO GRID FOR SKILLS -->
-      <section class="bento-section">
-        <div class="bento-header">
-          <h2 class="section-title">Vòng lặp Kỹ năng Hoàn hảo</h2>
-          <p>4 mô-đun được điều phối tự động bởi thuật toán học tập.</p>
+      <!-- 04 THE RECALL LAB (Bento) -->
+      <section class="recall-lab">
+        <div class="bento-wrapper">
+          <div class="bento-lab bento-a">
+            <p class="mono-label">ACTIVE RECALL CARD</p>
+            <div class="card-demo">
+              <p class="c-prompt">Bạn đang đến muộn. Hãy báo người đang chờ.</p>
+              <div class="c-input">I'm running|</div>
+              <div class="c-btn disabled">XEM ĐÁP ÁN</div>
+            </div>
+          </div>
+          <div class="bento-lab bento-b">
+             <p class="mono-label">AUDIO TRACE</p>
+             <div class="wave-demo">
+               <div class="wave-bar" style="height:20%"></div>
+               <div class="wave-bar" style="height:60%"></div>
+               <div class="wave-bar" style="height:40%"></div>
+               <div class="wave-bar" style="height:90%"></div>
+               <div class="wave-bar" style="height:30%"></div>
+             </div>
+             <p class="demo-audio-text">DEMO AUDIO 00:01.8</p>
+          </div>
+          <div class="bento-lab bento-c">
+             <p class="mono-label">CONTEXT PROVENANCE</p>
+             <div class="citation">
+               <p class="cit-source">SOURCE Podcast / episode 42 01:24:08</p>
+               <p class="cit-before">before: The traffic was terrible...</p>
+               <p class="cit-target">TARGET: I'm running late.</p>
+             </div>
+          </div>
+          <div class="bento-lab bento-d">
+             <p class="mono-label">MEMORY TIMELINE</p>
+             <div class="timeline-nodes">
+               <span class="t-node past">TODAY</span>
+               <div class="t-line"></div>
+               <span class="t-node past">+1D</span>
+               <div class="t-line"></div>
+               <span class="t-node active">+4D</span>
+               <div class="t-line"></div>
+               <span class="t-node future">+11D</span>
+             </div>
+          </div>
         </div>
-        <div class="bento-grid">
+      </section>
+
+      <!-- 05 CONTEXT SHIFT -->
+      <section class="context-shift">
+        <h2 class="shift-headline">NHỚ CÂU CHƯA ĐỦ.</h2>
+        <div class="shift-tunnel">
+          <div class="tunnel-card t-1">
+            <p class="t-context">Tình huống 1: Bạn bè nhắn "Where are you?"</p>
+            <p class="t-phrase">→ I'm on my way.</p>
+          </div>
+          <div class="tunnel-card t-2">
+            <p class="t-context">Tình huống 2: Lịch sự trong cuộc họp</p>
+            <p class="t-phrase">→ Sorry, I'm running late.</p>
+          </div>
+          <div class="tunnel-card t-3">
+            <p class="t-context">Tình huống 3: Shipper gọi</p>
+            <p class="t-phrase">→ I'll be there soon.</p>
+          </div>
+        </div>
+        <h2 class="shift-sub">DÙNG ĐƯỢC Ở TÌNH HUỐNG KHÁC MỚI QUAN TRỌNG.</h2>
+      </section>
+
+      <!-- 07 PROOF, NOT STREAKS -->
+      <section class="proof-not-streaks">
+        <div class="proof-container">
+          <div class="proof-header">
+            <h2 class="display-text">FLASHDAY DOESN'T COUNT THE WRONG THINGS.</h2>
+          </div>
+          <div class="proof-stats">
+            <div class="stat-block">
+              <span class="stat-big">365</span>
+              <span class="stat-strike">day streak</span>
+            </div>
+            <div class="stat-block">
+              <span class="stat-big">12,842</span>
+              <span class="stat-strike">cards completed</span>
+            </div>
+          </div>
+          <div class="proof-reveal">
+            <p class="mono-label">WHAT MATTERS</p>
+            <h3>Can you still retrieve it tomorrow?</h3>
+            <h3>Can you use it when the context changes?</h3>
+            <h3>Can you understand it when you hear it?</h3>
+          </div>
           
-          <div class="bento-box bento-large bento-listen glass-panel">
-            <div class="bento-content">
-              <h3>Kỹ năng Nghe</h3>
-              <p>Luyện đôi tai phản xạ với tốc độ nói thực tế. Nghe hiểu toàn bộ câu trước khi nhìn thấy mặt chữ.</p>
+          <div class="chart-demo">
+            <div class="chart-y">
+              <span>100</span>
+              <span>0</span>
             </div>
-            <div class="bento-visual">
-              <div class="wave"></div>
-              <div class="wave wave-2"></div>
-              <div class="wave wave-3"></div>
+            <div class="chart-area">
+              <div class="chart-point p1"></div>
+              <div class="chart-point p2"></div>
+              <div class="chart-point p3"></div>
+              <div class="chart-line"></div>
             </div>
+            <p class="chart-label">Illustrative model: delayed recall vs practice performance</p>
           </div>
-
-          <div class="bento-box bento-speak glass-panel">
-            <div class="bento-content">
-              <div class="icon-glow">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" x2="12" y1="19" y2="22"></line></svg>
-              </div>
-              <h3>Kỹ năng Nói</h3>
-              <p>Phát âm thành tiếng theo ý định giao tiếp.</p>
-            </div>
-          </div>
-
-          <div class="bento-box bento-read glass-panel">
-            <div class="bento-content">
-              <div class="icon-glow icon-glow-alt">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
-              </div>
-              <h3>Kỹ năng Đọc</h3>
-              <p>Giải mã ngữ nghĩa và cú pháp nâng cao.</p>
-            </div>
-          </div>
-
-          <div class="bento-box bento-large bento-write glass-panel">
-            <div class="bento-visual">
-              <div class="cursor-typing">I will send the report by 5PM|</div>
-            </div>
-            <div class="bento-content">
-              <h3>Kỹ năng Viết</h3>
-              <p>Biến ý tưởng thành câu chữ chuẩn xác. Rèn luyện cấu trúc ngữ pháp tự nhiên.</p>
-            </div>
-          </div>
-
         </div>
       </section>
 
-      <section class="final-cta">
-        <h2 class="section-title">Sẵn sàng để bắt đầu?</h2>
-        <p>Xây dựng hệ thống ngôn ngữ không thể phá vỡ.</p>
-        <a class="btn-primary" href="/app/">Mở Ứng dụng ngay</a>
+      <!-- 08 ENTER FLASHDAY -->
+      <section class="final-gateway">
+        <div class="final-card">
+          <p class="mono-label text-center">YOUR NEXT CARD</p>
+          <h2 class="display-text text-center mt-4">Điều gì bạn thực sự muốn nói được bằng tiếng Anh?</h2>
+          <div class="final-input-wrapper">
+            <input type="text" class="final-input" placeholder="Tôi muốn xin người khác nói lại...">
+          </div>
+          <div class="text-center mt-8">
+            <a class="btn-flash-large" href="/app/">Bắt đầu với FlashDay <span class="arrow">↗</span></a>
+          </div>
+        </div>
       </section>
     </main>
 
-    <footer class="site-footer">
-      <div class="site-footer__inner">
-        <span class="brand">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
-          FlashDay
-        </span>
-        <span>Hệ thống Ôn tập Ngắt quãng Đa kỹ năng.</span>
+    <footer class="minimal-footer">
+      <div class="footer-inner">
+        <span class="footer-brand">FLASHDAY</span>
+        <span class="footer-tag">English worth remembering.</span>
+        <div class="footer-links">
+          <a href="#">Product</a>
+          <a href="#">Research</a>
+          <a href="#">Privacy</a>
+        </div>
+        <span class="footer-copy">© 2026</span>
+      </div>
+      <div class="footer-easter-egg">
+        <span class="ee-word">remember</span>
+        <span class="ee-word">forget</span>
+        <span class="ee-word">return</span>
       </div>
     </footer>
   </body>
