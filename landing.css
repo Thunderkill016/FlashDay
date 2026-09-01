@@ -181,15 +181,47 @@ a { text-decoration: none; color: inherit; }
 .memory-word span { transition: opacity 0.5s, filter 0.5s, transform 0.5s; display: inline-block; }
 .memory-word .space { width: 0.3em; }
 
-/* Animation Classes for Letters */
-.memory-word span { animation: letterDecay 6s infinite; }
-.memory-word .delay-1 { animation-delay: 0.5s; }
-.memory-word .delay-2 { animation-delay: 1.2s; }
-.memory-word .delay-3 { animation-delay: 2.1s; }
-.memory-word .delay-4 { animation-delay: 3.0s; }
+.memory-word span { display: inline-block; }
+.memory-word .delay-1 { animation: decay1 6s infinite; }
+.memory-word .delay-2 { animation: decay2 6s infinite; }
+.memory-word .delay-3 { animation: decay3 6s infinite; }
+.memory-word .delay-4 { animation: decay4 6s infinite; }
+.memory-word span:not([class*="delay"]) { animation: decay0 6s infinite; }
 
-@keyframes letterDecay {
-  0%, 10% { opacity: 1; filter: blur(0); transform: translateY(0) rotate(0); }
+@keyframes decay1 {
+  0%, 15% { opacity: 1; filter: blur(0); transform: translateY(0) rotate(0); }
+  25%, 80% { opacity: 0.12; filter: blur(6px); transform: translateY(8px) rotate(3deg); }
+  85%, 100% { opacity: 1; filter: blur(0); transform: translateY(0) rotate(0); }
+}
+@keyframes decay2 {
+  0%, 30% { opacity: 1; filter: blur(0); transform: translateY(0) rotate(0); }
+  40%, 80% { opacity: 0.12; filter: blur(6px); transform: translateY(8px) rotate(-2deg); }
+  85%, 100% { opacity: 1; filter: blur(0); transform: translateY(0) rotate(0); }
+}
+@keyframes decay3 {
+  0%, 45% { opacity: 1; filter: blur(0); transform: translateY(0) rotate(0); }
+  55%, 80% { opacity: 0.12; filter: blur(6px); transform: translateY(6px) rotate(4deg); }
+  85%, 100% { opacity: 1; filter: blur(0); transform: translateY(0) rotate(0); }
+}
+@keyframes decay4 {
+  0%, 60% { opacity: 1; filter: blur(0); transform: translateY(0) rotate(0); }
+  70%, 80% { opacity: 0.12; filter: blur(6px); transform: translateY(10px) rotate(-3deg); }
+  85%, 100% { opacity: 1; filter: blur(0); transform: translateY(0) rotate(0); }
+}
+@keyframes decay0 {
+  0%, 80% { opacity: 1; filter: blur(0); transform: translateY(0) rotate(0); }
+  85%, 100% { opacity: 1; filter: blur(0); transform: translateY(0) rotate(0); }
+}
+
+
+/* Animation Classes for Letters */
+
+
+
+
+
+
+
   40%, 80% { opacity: 0.12; filter: blur(6px); transform: translateY(8px) rotate(3deg); }
   85%, 100% { opacity: 1; filter: blur(0); transform: translateY(0) rotate(0); } /* The Flash Recovery */
 }
