@@ -10,8 +10,6 @@ const productBootstrap = readFileSync(join(root, 'product-bootstrap.js'), 'utf8'
 
 assert.match(landing, /href="landing\.css"/);
 assert.match(landing, /class="btn-flash mt-8 auth-trigger" href="#" data-auth="signup"/);
-assert.match(landing, /src="\.\/landing-auth\.mjs"/);
-assert.match(landing, /<script type="module" src="\.\/landing-auth\.mjs"><\/script>/);
 assert.match(landing, /id="auth-form" novalidate/);
 [
   'auth-providers', 'auth-tabs', 'auth-divider', 'email-field', 'password-field',
@@ -27,9 +25,12 @@ assert.doesNotMatch(landing, /<script type="module">\s*import \{ createClient \}
 
 assert.match(app, /href="\.\.\/styles\.css"/);
 assert.match(app, /src="\.\.\/main\.js"/);
-assert.match(viteConfig, /landing: resolve\(import\.meta\.dirname, 'index\.html'\)/);
+assert.match(viteConfig, /const landingEntry = resolve\(import\.meta\.dirname, 'index\.html'\)/);
+assert.match(viteConfig, /landing: landingEntry/);
 assert.match(viteConfig, /app: resolve\(import\.meta\.dirname, 'app\/index\.html'\)/);
+assert.match(viteConfig, /transformIndexHtml/);
+assert.match(viteConfig, /landing-auth\.mjs/);
 assert.match(productBootstrap, /event === 'INITIAL_SESSION'/);
 assert.doesNotMatch(productBootstrap, /auth\.getSession\(\)/);
 
-console.log('FlashDay entrypoint contract: 16 checks passed');
+console.log('FlashDay entrypoint contract: 26 checks passed');
