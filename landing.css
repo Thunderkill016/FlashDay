@@ -240,11 +240,11 @@ a { text-decoration: none; color: inherit; }
 /* LISTEN CARD */
 .p-listen:hover { box-shadow: 0 20px 80px rgba(94,219,255,.1); }
 .p-listen:hover .path-icon { color: var(--listen); }
-.audio-player { flex-direction: row; align-items: center; gap: 20px; background: rgba(0,0,0,0.4); padding: 24px 32px; border-radius: 100px; border: 1px solid rgba(255,255,255,0.05); flex: 0 0 auto; }
-.play-btn { width: 48px; height: 48px; border-radius: 50%; background: var(--listen); color: var(--ink-950); display: flex; align-items: center; justify-content: center; font-size: 18px; padding-left: 4px; box-shadow: 0 0 20px rgba(94,219,255,.3); transition: transform 0.2s; }
+.audio-player { flex-direction: row; align-items: center; gap: 20px; background: rgba(0,0,0,0.4); padding: 24px 32px; border-radius: 100px; border: 1px solid rgba(255,255,255,0.05); flex: 0 0 auto; cursor: pointer; transition: background 0.3s, border-color 0.3s; }
+.play-btn { width: 48px; height: 48px; border-radius: 50%; background: var(--listen); color: var(--ink-950); display: flex; align-items: center; justify-content: center; font-size: 18px; padding-left: 2px; box-shadow: 0 0 20px rgba(94,219,255,.3); transition: transform 0.2s, background 0.2s; }
 .p-listen:hover .play-btn { transform: scale(1.1); }
 .waveform-large { flex: 1; height: 32px; background: repeating-linear-gradient(90deg, var(--listen) 0px, var(--listen) 4px, transparent 4px, transparent 12px); opacity: 0.3; transition: opacity 0.3s; }
-.p-listen:hover .waveform-large { opacity: 1; animation: slideWave 2s linear infinite; }
+.p-listen:hover .waveform-large, .audio-player.playing .waveform-large { opacity: 1; animation: slideWave 2s linear infinite; }
 @keyframes slideWave { to { background-position: -24px 0; } }
 
 /* SPEAK CARD */
@@ -423,3 +423,5 @@ a { text-decoration: none; color: inherit; }
 .run-anim .flash-ping { animation: pingPulse 8s forwards; }
 .run-anim .flash-ping::after { animation: pingRing 8s forwards; }
 .run-anim .recovery-sweep { animation: sweep 8s forwards; }
+
+.audio-player.playing .play-btn { padding-left: 0; background: #fff; }
