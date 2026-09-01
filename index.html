@@ -353,7 +353,7 @@
         element.querySelector('.play-btn').textContent = '■';
         
         // Use a real audio file via TTS API for cross-browser/OS reliability
-        const audio = new Audio("https://translate.google.com/translate_tts?ie=UTF-8&tl=en-US&client=tw-ob&q=Sorry,+I'm+running+late.");
+        const audio = new Audio("running_late.mp3");
         
         audio.onended = () => {
           element.classList.remove('playing');
