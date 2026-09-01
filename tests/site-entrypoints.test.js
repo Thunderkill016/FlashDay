@@ -11,6 +11,7 @@ const productBootstrap = readFileSync(join(root, 'product-bootstrap.js'), 'utf8'
 assert.match(landing, /href="landing\.css"/);
 assert.match(landing, /class="btn-flash mt-8 auth-trigger" href="#" data-auth="signup"/);
 assert.match(landing, /src="\.\/landing-auth\.mjs"/);
+assert.match(landing, /id="auth-form" novalidate/);
 [
   'auth-providers', 'auth-tabs', 'auth-divider', 'email-field', 'password-field',
   'password-confirm-field', 'forgot-password', 'return-to-signin', 'auth-status'

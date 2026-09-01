@@ -5,7 +5,8 @@ import {
   authErrorMessage,
   authModeCopy,
   authRedirectUrl,
-  isPasswordLongEnough
+  isPasswordLongEnough,
+  requiresNewPasswordPolicy
 } from './flashday-auth.mjs';
 
 const supabaseUrl = __FLASHDAY_SUPABASE_URL__;
@@ -37,6 +38,14 @@ function recoveryUrl() {
   return authRedirectUrl(window.location.origin, '/?auth=recover');
 }
 
+function openAuthenticatedApp(session) {
+  if (!session?.access_token || !session.user?.id) {
+    throw new Error('FlashDay chưa nhận được phiên đăng nhập.');
+  }
+  showStatus('Đăng nhập thành công. Đang mở FlashDay…', 'success');
+  window.location.assign(appUrl());
+}
+
 function showStatus(message, tone = 'info') {
   const node = $('auth-status');
   node.textContent = message;
@@ -64,12 +73,14 @@ function setMode(nextMode) {
   const needsPassword = !isRecovery;
   const needsEmail = !isPasswordUpdate;
   const supportsProvider = mode === AUTH_MODE.SIGN_UP || mode === AUTH_MODE.SIGN_IN;
+  const enforcesNewPasswordPolicy = requiresNewPasswordPolicy(mode);
 
   $('auth-title').textContent = copy.title;
   $('auth-submit-btn').textContent = copy.submit;
   $('password').autocomplete = copy.passwordAutocomplete || 'off';
   $('password').required = needsPassword;
-  $('password').minLength = MIN_PASSWORD_LENGTH;
+  $('password').minLength = enforcesNewPasswordPolicy ? MIN_PASSWORD_LENGTH : 0;
+  $('password').placeholder = enforcesNewPasswordPolicy ? `Ít nhất ${MIN_PASSWORD_LENGTH} ký tự` : 'Mật khẩu của bạn';
   $('email').required = needsEmail;
   $('email-field').classList.toggle('hidden', !needsEmail);
   $('password-field').classList.toggle('hidden', !needsPassword);
@@ -119,7 +130,7 @@ async function submitEmailPassword() {
     return;
   }
 
-  if (!isPasswordLongEnough(password)) {
+  if (requiresNewPasswordPolicy(mode) && !isPasswordLongEnough(password)) {
     showStatus(`Mật khẩu cần ít nhất ${MIN_PASSWORD_LENGTH} ký tự.`, 'error');
     return;
   }
@@ -144,7 +155,7 @@ async function submitEmailPassword() {
     });
     if (error) throw error;
     if (data.session) {
-      window.location.assign(appUrl());
+      openAuthenticatedApp(data.session);
       return;
     }
     setMode(AUTH_MODE.SIGN_IN);
@@ -153,9 +164,26 @@ async function submitEmailPassword() {
     return;
   }
 
-  const { error } = await supabase.auth.signInWithPassword({ email, password });
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
   if (error) throw error;
-  window.location.assign(appUrl());
+  openAuthenticatedApp(data.session);
+}
+
+function validateSubmission() {
+  const email = $('email');
+  const password = $('password');
+
+  if (mode !== AUTH_MODE.UPDATE_PASSWORD && !email.validity.valid) {
+    showStatus('Nhập một địa chỉ email hợp lệ.', 'error');
+    email.focus();
+    return false;
+  }
+  if (mode !== AUTH_MODE.RECOVERY && !password.value) {
+    showStatus('Nhập mật khẩu để tiếp tục.', 'error');
+    password.focus();
+    return false;
+  }
+  return true;
 }
 
 async function submitGoogle() {
@@ -200,6 +228,7 @@ form.addEventListener('submit', async (event) => {
     showStatus('Đăng nhập chưa được cấu hình. Hãy thử lại sau.', 'error');
     return;
   }
+  if (!validateSubmission()) return;
   setBusy(true);
   try {
     await submitEmailPassword();

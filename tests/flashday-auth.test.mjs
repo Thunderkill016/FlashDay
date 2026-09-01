@@ -5,16 +5,21 @@ import {
   authErrorMessage,
   authModeCopy,
   authRedirectUrl,
-  isPasswordLongEnough
+  isPasswordLongEnough,
+  requiresNewPasswordPolicy
 } from '../flashday-auth.mjs';
 
 assert.equal(authRedirectUrl('https://flashdayvn.vercel.app', '/app/'), 'https://flashdayvn.vercel.app/app/');
 assert.equal(authRedirectUrl('http://localhost:5173/', '/?auth=recover'), 'http://localhost:5173/?auth=recover');
 assert.equal(isPasswordLongEnough('x'.repeat(MIN_PASSWORD_LENGTH)), true);
 assert.equal(isPasswordLongEnough('x'.repeat(MIN_PASSWORD_LENGTH - 1)), false);
+assert.equal(requiresNewPasswordPolicy(AUTH_MODE.SIGN_IN), false);
+assert.equal(requiresNewPasswordPolicy(AUTH_MODE.SIGN_UP), true);
+assert.equal(requiresNewPasswordPolicy(AUTH_MODE.UPDATE_PASSWORD), true);
 assert.equal(authErrorMessage({ message: 'Invalid login credentials' }), 'Email hoặc mật khẩu không đúng.');
 assert.equal(authErrorMessage({ message: 'Email not confirmed' }), 'Hãy xác nhận email trước khi đăng nhập.');
+assert.equal(authErrorMessage({ message: 'FlashDay chưa nhận được phiên đăng nhập.' }), 'Đăng nhập đã hoàn tất nhưng FlashDay chưa nhận được phiên. Hãy thử lại.');
 assert.equal(authModeCopy(AUTH_MODE.UPDATE_PASSWORD).passwordAutocomplete, 'new-password');
 assert.equal(authModeCopy(AUTH_MODE.RECOVERY).passwordAutocomplete, null);
 
-console.log('FlashDay auth contract: 8 checks passed');
+console.log('FlashDay auth contract: 12 checks passed');

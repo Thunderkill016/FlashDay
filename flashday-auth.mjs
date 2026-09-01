@@ -15,6 +15,13 @@ export function isPasswordLongEnough(password) {
   return String(password || '').length >= MIN_PASSWORD_LENGTH;
 }
 
+// Signing in must accept the password policy that applied when the account was
+// created. Only creation and password replacement enforce FlashDay's current
+// minimum length.
+export function requiresNewPasswordPolicy(mode) {
+  return mode === AUTH_MODE.SIGN_UP || mode === AUTH_MODE.UPDATE_PASSWORD;
+}
+
 export function authErrorMessage(error) {
   const message = String(error?.message || error || '').toLowerCase();
   if (message.includes('invalid login credentials')) return 'Email hoặc mật khẩu không đúng.';
@@ -24,6 +31,9 @@ export function authErrorMessage(error) {
     return 'Bạn đã thử quá nhiều lần. Hãy đợi ít phút rồi thử lại.';
   }
   if (message.includes('provider is not enabled')) return 'Đăng nhập Google chưa được cấu hình cho FlashDay.';
+  if (message.includes('chưa nhận được phiên đăng nhập')) {
+    return 'Đăng nhập đã hoàn tất nhưng FlashDay chưa nhận được phiên. Hãy thử lại.';
+  }
   return 'Không thể xác thực lúc này. Hãy thử lại sau.';
 }
 
