@@ -231,13 +231,16 @@ a { text-decoration: none; color: inherit; }
 .path-card { background: var(--ink-900); border: 1px solid rgba(255,255,255,0.05); border-radius: var(--radius-stage); padding: 48px; min-height: 400px; display: flex; flex-direction: column; position: relative; overflow: hidden; transition: box-shadow 0.4s var(--ease-fluid), border-color 0.4s, transform 0.4s var(--ease-fluid); cursor: crosshair; }
 .path-card:hover { border-color: rgba(255,255,255,0.2); transform: translateY(-4px); }
 .path-icon { font-family: var(--font-mono); font-size: 13px; font-weight: 700; color: var(--muted-dark); margin-bottom: 24px; letter-spacing: 0.1em; transition: color 0.3s; }
-.card-content { display: flex; flex-direction: column; flex: 1; justify-content: space-between; }
+.card-content { display: flex; flex-direction: column; flex: 1; }
 .card-desc { font-size: 18px; color: var(--paper-50); opacity: 0.8; line-height: 1.5; margin-bottom: 40px; }
+
+
+.card-ui-stage { flex: 1; display: flex; flex-direction: column; justify-content: center; width: 100%; margin-top: 24px; }
 
 /* LISTEN CARD */
 .p-listen:hover { box-shadow: 0 20px 80px rgba(94,219,255,.1); }
 .p-listen:hover .path-icon { color: var(--listen); }
-.audio-player { display: flex; align-items: center; gap: 20px; background: rgba(0,0,0,0.4); padding: 24px; border-radius: 100px; border: 1px solid rgba(255,255,255,0.05); }
+.audio-player { flex-direction: row; align-items: center; gap: 20px; background: rgba(0,0,0,0.4); padding: 24px 32px; border-radius: 100px; border: 1px solid rgba(255,255,255,0.05); flex: 0 0 auto; }
 .play-btn { width: 48px; height: 48px; border-radius: 50%; background: var(--listen); color: var(--ink-950); display: flex; align-items: center; justify-content: center; font-size: 18px; padding-left: 4px; box-shadow: 0 0 20px rgba(94,219,255,.3); transition: transform 0.2s; }
 .p-listen:hover .play-btn { transform: scale(1.1); }
 .waveform-large { flex: 1; height: 32px; background: repeating-linear-gradient(90deg, var(--listen) 0px, var(--listen) 4px, transparent 4px, transparent 12px); opacity: 0.3; transition: opacity 0.3s; }
@@ -247,7 +250,7 @@ a { text-decoration: none; color: inherit; }
 /* SPEAK CARD */
 .p-speak:hover { box-shadow: 0 20px 80px rgba(255,106,94,.1); }
 .p-speak:hover .path-icon { color: var(--speak); }
-.speak-scenario { background: rgba(0,0,0,0.4); border-radius: 24px; padding: 32px; border: 1px solid rgba(255,255,255,0.05); display: flex; flex-direction: column; align-items: flex-start; height: 100%; justify-content: center; }
+.speak-scenario { background: rgba(0,0,0,0.4); border-radius: 24px; padding: 32px; border: 1px solid rgba(255,255,255,0.05); align-items: flex-start; }
 .path-prompt { font-size: 20px; font-weight: 500; font-family: var(--font-display); line-height: 1.4; margin-bottom: 32px; color: var(--paper-50); }
 .btn-hold { display: flex; align-items: center; gap: 12px; padding: 16px 32px; border: 1px solid var(--speak); color: var(--speak); border-radius: var(--radius-pill); font-family: var(--font-mono); font-size: 13px; font-weight: 700; transition: all 0.3s; letter-spacing: 0.05em; }
 .rec-dot { width: 10px; height: 10px; background: var(--speak); border-radius: 50%; }
@@ -258,7 +261,7 @@ a { text-decoration: none; color: inherit; }
 /* READ CARD */
 .p-read:hover { box-shadow: 0 20px 80px rgba(199,244,91,.1); }
 .p-read:hover .path-icon { color: var(--read); }
-.read-ui { flex: 1; display: flex; align-items: center; justify-content: center; }
+.read-ui { align-items: center; }
 .message-bubble { background: rgba(199,244,91,0.1); border: 1px solid rgba(199,244,91,0.2); padding: 24px 32px; border-radius: 24px 24px 24px 4px; font-size: 20px; color: var(--paper-50); line-height: 1.5; font-family: var(--font-body); }
 .cloze { background: var(--read); color: var(--ink-950); padding: 0 8px; border-radius: 4px; font-weight: 600; filter: blur(4px); transition: filter 0.4s, background 0.4s; }
 .p-read:hover .cloze { filter: blur(0); }
@@ -266,7 +269,7 @@ a { text-decoration: none; color: inherit; }
 /* WRITE CARD */
 .p-write:hover { box-shadow: 0 20px 80px rgba(167,139,250,.1); }
 .p-write:hover .path-icon { color: var(--write); }
-.write-ui { flex: 1; display: flex; flex-direction: column; justify-content: center; }
+.write-ui { }
 .input-fake { background: rgba(0,0,0,0.6); padding: 24px; border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); font-family: var(--font-mono); font-size: 18px; color: var(--write); display: flex; align-items: center; margin-top: 24px; }
 .cursor { width: 12px; height: 24px; background: var(--write); margin-left: 4px; animation: blink 1s step-end infinite; }
 @keyframes blink { 50% { opacity: 0; } }
