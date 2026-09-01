@@ -169,7 +169,7 @@ a { text-decoration: none; color: inherit; }
 
 /* 02 MEMORY DECAY REFINED */
 .decay-story { background: var(--paper-50); color: var(--ink-950); padding: 120px 40px; position: relative; overflow: hidden; }
-.decay-container { max-width: 1200px; margin: 0 auto; display: grid; grid-template-columns: 5fr 7fr; gap: 80px; align-items: center; min-height: 80vh; }
+.decay-container { max-width: 1280px; margin: 0 auto; display: grid; grid-template-columns: 5fr 6fr; gap: 100px; align-items: center; min-height: 80vh; }
 .decay-copy .display-text { font-family: var(--font-display); font-size: clamp(32px, 4vw, 56px); line-height: 1.1; font-weight: 700; letter-spacing: -0.04em; margin-bottom: 24px; }
 .decay-copy .body-text { font-size: 18px; line-height: 1.6; color: var(--muted-dark); margin-bottom: 32px; }
 
