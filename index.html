@@ -3,20 +3,24 @@
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-    <meta name="theme-color" content="#f9fafb">
+    <meta name="theme-color" content="#000000">
     <meta name="description" content="FlashDay là flashcard tiếng Anh để luyện nghe, nói, đọc và viết bằng những lần nhớ lại có chủ đích.">
-    <title>FlashDay — Học tiếng Anh để dùng được</title>
+    <title>FlashDay — Hệ thống Ngôn ngữ Tương lai</title>
     <link rel="icon" href="data:,">
     <link rel="stylesheet" href="landing.css">
   </head>
   <body>
+    <!-- GLOWING AURAS (Vercel/Linear effect) -->
+    <div class="aura aura-top"></div>
+    <div class="aura aura-bottom"></div>
+    
     <header class="site-header">
       <div class="site-header__inner">
         <a class="wordmark" href="/" aria-label="FlashDay trang chủ">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
           FlashDay
         </a>
-        <a class="header-cta" href="/app/">Mở Ứng dụng <span aria-hidden="true">→</span></a>
+        <a class="header-cta" href="/app/">Trải nghiệm ngay <span aria-hidden="true">→</span></a>
       </div>
     </header>
 
@@ -24,27 +28,28 @@
       <!-- BESPOKE HERO -->
       <section class="hero-bespoke">
         <div class="hero-bespoke__content">
-          <div class="tagline">Phương pháp học đảo ngược</div>
+          <div class="tagline">Kiến trúc Học tập Thế hệ mới</div>
           <h1 class="hero-title">Đừng nhớ từ.<br><span class="highlight">Hãy làm chủ ngữ cảnh.</span></h1>
-          <p class="hero-desc">Khác biệt với flashcard truyền thống, FlashDay rèn luyện bạn qua 4 kỹ năng Nghe - Nói - Đọc - Viết để đảm bảo bạn thực sự sử dụng được tiếng Anh trong đời thực.</p>
+          <p class="hero-desc">Bỏ lại flashcard truyền thống. FlashDay xây dựng hệ thống thần kinh ngôn ngữ qua 4 kỹ năng thực chiến Nghe - Nói - Đọc - Viết.</p>
           <div class="hero-actions">
-            <a class="btn-primary" href="/app/">Bắt đầu học ngay</a>
+            <a class="btn-primary" href="/app/">Bắt đầu thuật toán</a>
+            <a class="btn-secondary" href="#story">Khám phá công nghệ</a>
           </div>
         </div>
         
         <!-- Custom Visualization of Spaced Repetition instead of standard mockup -->
         <div class="hero-bespoke__visual">
            <div class="sr-visualization">
-             <div class="sr-card sr-card--1">
+             <div class="sr-card sr-card--1 glass-panel">
                <span class="sr-badge">Ôn tập</span>
                <div class="sr-text">I will send you the report...</div>
              </div>
-             <div class="sr-card sr-card--2">
+             <div class="sr-card sr-card--2 glass-panel">
                <span class="sr-badge">Ghi nhớ</span>
                <div class="sr-text">I will send you the report...</div>
              </div>
-             <div class="sr-card sr-card--3">
-               <span class="sr-badge">Phản xạ</span>
+             <div class="sr-card sr-card--3 glass-panel">
+               <span class="sr-badge glow-badge">Phản xạ</span>
                <div class="sr-text">I will send you the report...</div>
              </div>
            </div>
@@ -52,24 +57,24 @@
       </section>
 
       <!-- STICKY SCROLLYTELLING SECTION -->
-      <section class="story-section">
+      <section id="story" class="story-section">
         <div class="story-container">
           <div class="story-sticky">
-            <h2>Học qua sự gợi nhớ, <br>không phải sự nhận diện.</h2>
+            <h2 class="section-title">Học qua sự gợi nhớ, <br>không phải sự nhận diện.</h2>
             <p>Nhìn đáp án rồi gật đầu tạo cảm giác quen thuộc ảo. Giao tiếp thực tế đòi hỏi bạn tự kéo câu chữ ra khỏi vỏ não đúng lúc.</p>
           </div>
           <div class="story-scroll">
-            <div class="story-card">
+            <div class="story-card glass-panel">
               <div class="story-icon">01</div>
               <h3>Gợi nhớ Chủ động</h3>
               <p>Hệ thống giấu đi đáp án, ép não bộ bạn phải nỗ lực tư duy trước khi được phép xem kết quả.</p>
             </div>
-            <div class="story-card">
+            <div class="story-card glass-panel">
               <div class="story-icon">02</div>
               <h3>Ngữ cảnh Thực tế</h3>
               <p>Mỗi từ vựng được gắn chặt vào một câu hoàn chỉnh, đi kèm ý định giao tiếp thực tế.</p>
             </div>
-            <div class="story-card">
+            <div class="story-card glass-panel">
               <div class="story-icon">03</div>
               <h3>Thuật toán Bespoke</h3>
               <p>Không hứa hẹn viển vông. Thuật toán Spaced Repetition cá nhân hóa theo từng kỹ năng Nghe, Nói, Đọc, Viết của riêng bạn.</p>
@@ -81,12 +86,12 @@
       <!-- ASYMMETRICAL BENTO GRID FOR SKILLS -->
       <section class="bento-section">
         <div class="bento-header">
-          <h2>4 kỹ năng. 1 vòng lặp hoàn hảo.</h2>
-          <p>Thuật toán tự động chọn chế độ ôn tập phù hợp nhất với trí nhớ của bạn.</p>
+          <h2 class="section-title">Vòng lặp Kỹ năng Hoàn hảo</h2>
+          <p>4 mô-đun được điều phối tự động bởi thuật toán học tập.</p>
         </div>
         <div class="bento-grid">
           
-          <div class="bento-box bento-large bento-listen">
+          <div class="bento-box bento-large bento-listen glass-panel">
             <div class="bento-content">
               <h3>Kỹ năng Nghe</h3>
               <p>Luyện đôi tai phản xạ với tốc độ nói thực tế. Nghe hiểu toàn bộ câu trước khi nhìn thấy mặt chữ.</p>
@@ -98,27 +103,33 @@
             </div>
           </div>
 
-          <div class="bento-box bento-speak">
+          <div class="bento-box bento-speak glass-panel">
             <div class="bento-content">
+              <div class="icon-glow">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2a3 3 0 0 0-3 3v7a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3Z"></path><path d="M19 10v2a7 7 0 0 1-14 0v-2"></path><line x1="12" x2="12" y1="19" y2="22"></line></svg>
+              </div>
               <h3>Kỹ năng Nói</h3>
-              <p>Nhìn ý định giao tiếp, tự phát âm thành tiếng trước khi đối chiếu.</p>
+              <p>Phát âm thành tiếng theo ý định giao tiếp.</p>
             </div>
           </div>
 
-          <div class="bento-box bento-read">
+          <div class="bento-box bento-read glass-panel">
             <div class="bento-content">
+              <div class="icon-glow icon-glow-alt">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path></svg>
+              </div>
               <h3>Kỹ năng Đọc</h3>
-              <p>Hiểu sâu ngữ nghĩa qua việc diễn giải ý bằng ngôn ngữ của bạn.</p>
+              <p>Giải mã ngữ nghĩa và cú pháp nâng cao.</p>
             </div>
           </div>
 
-          <div class="bento-box bento-large bento-write">
+          <div class="bento-box bento-large bento-write glass-panel">
             <div class="bento-visual">
               <div class="cursor-typing">I will send the report by 5PM|</div>
             </div>
             <div class="bento-content">
               <h3>Kỹ năng Viết</h3>
-              <p>Biến ý tưởng tiếng Việt thành câu tiếng Anh chuẩn xác. Rèn luyện cấu trúc ngữ pháp tự nhiên.</p>
+              <p>Biến ý tưởng thành câu chữ chuẩn xác. Rèn luyện cấu trúc ngữ pháp tự nhiên.</p>
             </div>
           </div>
 
@@ -126,14 +137,18 @@
       </section>
 
       <section class="final-cta">
-        <h2>Xây dựng bộ nhớ ngôn ngữ của riêng bạn.</h2>
+        <h2 class="section-title">Sẵn sàng để bắt đầu?</h2>
+        <p>Xây dựng hệ thống ngôn ngữ không thể phá vỡ.</p>
         <a class="btn-primary" href="/app/">Mở Ứng dụng ngay</a>
       </section>
     </main>
 
     <footer class="site-footer">
       <div class="site-footer__inner">
-        <span class="brand">FlashDay</span>
+        <span class="brand">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+          FlashDay
+        </span>
         <span>Hệ thống Ôn tập Ngắt quãng Đa kỹ năng.</span>
       </div>
     </footer>
