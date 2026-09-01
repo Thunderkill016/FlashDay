@@ -110,7 +110,7 @@ a { text-decoration: none; color: inherit; }
 .memory-node { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%) rotateY(15deg) rotateX(-65deg); font-family: var(--font-mono); font-size: 16px; font-weight: 700; color: var(--ink-950); background: var(--paper-50); padding: 14px 32px; border-radius: var(--radius-pill); box-shadow: 0 20px 40px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(255,255,255,0.5); white-space: nowrap; transition: 0.4s cubic-bezier(.22,1,.36,1); cursor: pointer; }
 
 /* The orbits lie flat on the tilted plane */
-.orbit { position: absolute; top: 50%; left: 50%; border: 1px solid rgba(255,255,255,0.06); border-radius: 50%; transform-style: preserve-3d; transition: border-color 0.4s, background 0.4s; cursor: crosshair; }
+.orbit { position: absolute; top: 50%; left: 50%; border: 1px solid rgba(255,255,255,0.15); box-shadow: 0 0 15px rgba(255,255,255,0.02); border-radius: 50%; transform-style: preserve-3d; transition: border-color 0.4s, background 0.4s; cursor: crosshair; }
 .satellite { position: absolute; top: 0; left: 50%; transform-style: preserve-3d; }
 
 .sat-billboard {
@@ -161,7 +161,7 @@ a { text-decoration: none; color: inherit; }
 }
 
 /* HOVER EFFECTS */
-.orbit:hover { border-color: rgba(255,255,255,0.3); background: radial-gradient(circle at center, rgba(255,255,255,0.03), transparent); }
+.orbit:hover { border-color: rgba(255,255,255,0.5); box-shadow: 0 0 30px rgba(255,255,255,0.05); background: radial-gradient(circle at center, rgba(255,255,255,0.03), transparent); }
 .orbit:hover .sat-dot { transform: scale(1.8); }
 .orbit:hover .sat-label { opacity: 1; transform: translateY(0); }
 .orbit-system:hover .memory-node { border: 1px solid var(--flash); color: var(--flash); background: var(--ink-950); box-shadow: 0 0 60px rgba(232,255,101,0.25); transform: translate(-50%, -50%) rotateY(15deg) rotateX(-65deg) translateZ(40px) scale(1.05); }
