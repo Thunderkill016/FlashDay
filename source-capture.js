@@ -18,8 +18,12 @@
   'use strict';
   if(!CI)throw new Error('BespokeCardIndex is required');
 
+  const SOURCE_KINDS=new Set(['youtube','article','audio','transcript','manual']);
+  const CEFR_LEVELS=new Set(['A1','A2','B1','B2','C1','C2']);
+
   function text(v){return String(v??'').trim();}
   function finite(v,fallback=0){const n=Number(v);return Number.isFinite(n)?n:fallback;}
+  function uniqueStrings(values){return [...new Set((Array.isArray(values)?values:[]).map(text).filter(Boolean))];}
 
   function stableId(prefix,value){
     const s=String(value||'');let h=2166136261;
@@ -73,6 +77,16 @@
     return {name,playbackRate:Number.isFinite(Number(raw.playbackRate))?Number(raw.playbackRate):undefined,audioTrack:text(raw.audioTrack)||undefined};
   }
 
+  function normalizeSourceKind(value){
+    const kind=text(value).toLowerCase();
+    return SOURCE_KINDS.has(kind)?kind:'transcript';
+  }
+
+  function normalizeLevel(value){
+    const level=text(value).toUpperCase();
+    return CEFR_LEVELS.has(level)?level:undefined;
+  }
+
   function normalizeCapture(raw={}){
     const sentence=text(raw.sentence||raw.subtitle?.text);
     const nativeSentence=text(raw.nativeSentence||raw.native_sentence||raw.translation);
@@ -90,6 +104,10 @@
       subtitleFileName,url:sourceUrl,mediaTimestamp,
       audio:normalizeAudio(raw.audio),image:normalizeImage(raw.image),file:normalizeFile(raw.file),
       word:text(raw.word)||undefined,definition:text(raw.definition)||undefined,note:text(raw.note)||undefined,capturedAt,
+      sourceKind:normalizeSourceKind(raw.sourceKind||raw.kind),
+      sourceTitle:text(raw.sourceTitle||raw.title)||undefined,
+      estimatedLevel:normalizeLevel(raw.estimatedLevel||raw.contentLevel),
+      linkedUnitIds:uniqueStrings(raw.linkedUnitIds||raw.unitIds),
     };
   }
 
@@ -100,7 +118,8 @@
 
   function sourceSnapshot(c){
     return {
-      type:'captured-source',label:c.subtitleFileName||c.file?.name||'Nguồn đã capture',
+      type:'captured-source',label:c.sourceTitle||c.subtitleFileName||c.file?.name||'Nguồn đã capture',
+      sourceKind:c.sourceKind,estimatedLevel:c.estimatedLevel,linkedUnitIds:c.linkedUnitIds,
       sentence:c.sentence,native_sentence:c.nativeSentence,pronunciation:c.pronunciation,
       url:c.url||undefined,mediaTimestamp:c.mediaTimestamp,subtitleFileName:c.subtitleFileName||undefined,
       subtitle:c.subtitle,surroundingSubtitles:c.surroundingSubtitles,audio:c.audio,image:c.image,file:c.file,capturedAt:c.capturedAt,
@@ -141,5 +160,5 @@
     db.captures.push(capture);return capture;
   }
 
-  return {normalizeSubtitle,normalizeCapture,isCardReady,toBespokeCard,cardsFromCaptures,addCapture,sourceSnapshot,stableId};
+  return {normalizeSubtitle,normalizeCapture,isCardReady,toBespokeCard,cardsFromCaptures,addCapture,sourceSnapshot,stableId,normalizeSourceKind,normalizeLevel};
 });
