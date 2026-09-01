@@ -1,8 +1,22 @@
 # Third-party notices
 
+## open-spaced-repetition/ts-fsrs
+
+FlashDay uses the upstream `ts-fsrs` package directly for memory timing:
+
+- Repository: `open-spaced-repetition/ts-fsrs`
+- Package version pinned: `5.4.2`
+- Algorithm advertised by upstream: FSRS v6
+- License: MIT
+- Runtime package: `ts-fsrs`
+
+FlashDay does **not** reimplement the FSRS equations. `fsrs-scheduler.mjs` is an application adapter around upstream `createEmptyCard`, `fsrs`, `Rating`, `State`, `next()` and `get_retrievability()` APIs.
+
+The FSRS state is keyed by `Unit × Mode` (`unitId::listen|speak|read|write`), not by sentence card. Review events remain the durable history; serialized FSRS cards are a rebuildable cache. `enable_fuzz` is intentionally disabled so replaying the same append-only event history produces deterministic due dates.
+
 ## google/bespoke
 
-This branch contains JavaScript ports/adaptations based on:
+This repository contains JavaScript ports/adaptations based on:
 
 - Repository: `google/bespoke`
 - Upstream commit inspected: `67b1eda5b28f7a69be20561014255cdc81110a3e`
@@ -34,13 +48,13 @@ Behavior checks were translated from:
 - `android/app/src/test/java/com/google/bespoke/DeckEngineTest.kt`
 - `android/app/src/test/java/com/google/bespoke/EngineStressTest.kt`
 
-`bespoke-engine.js` preserves upstream scheduling constants, state transitions, urgency calculation, task selection, card scoring, usage penalty and serialization behavior.
+`bespoke-engine.js` remains a faithful port of upstream scheduling/state/card-scoring behavior for regression comparison. In the FlashDay hybrid runtime, Bespoke's long-term urgency does not decide when a `Unit × Mode` is due; FSRS owns that boundary. FlashDay keeps Bespoke's language-specific Unit/mode model, CardIndex, multi-unit cards, card-usage history and non-timing context signals. New-task gating and cross-skill introduction continuity live in the FlashDay adapter rather than being written back into the upstream port.
 
 `bespoke-card-index.js` preserves the core `unit_id -> card_ids` indexing behavior and support for cards containing multiple `UnitTag`s. Its deterministic FlashDay importer is an adaptation and is clearly marked as such.
 
-`bespoke-adapter.js` is intentionally thin: it converts FlashDay's local data to Bespoke units/cards and persists progress. FlashDay-specific behavior must stay out of `bespoke-engine.js`.
+`bespoke-adapter.js` is the product boundary that combines the two upstream systems. In hybrid mode its card scorer intentionally removes Bespoke memory urgency while retaining reported-card penalty, recent-card rotation, unknown-extra-unit avoidance and content-difficulty compatibility.
 
-Google's upstream README explicitly describes Bespoke as experimental. This branch therefore treats it as an implementation baseline with source and tests, not as scientifically validated ground truth.
+Google's upstream README explicitly describes Bespoke as experimental. FlashDay therefore treats it as an implementation baseline with source and tests, not as scientifically validated ground truth.
 
 ## asbplayer/asbplayer
 

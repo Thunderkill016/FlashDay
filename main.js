@@ -8,6 +8,7 @@ import './bespoke-engine.js';
 import './bespoke-card-index.js';
 import './source-capture.js';
 import './transcript-import.js';
+import './fsrs-scheduler.mjs';
 import './bespoke-adapter.js';
 import './flashday-product.js';
 import './flashday-cloud.js';

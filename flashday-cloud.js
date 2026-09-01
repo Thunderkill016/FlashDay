@@ -8,6 +8,9 @@
 })(typeof globalThis !== 'undefined' ? globalThis : this, function() {
   'use strict';
 
+  const HYBRID_SCHEDULER = 'bespoke-language-policy+fsrs6';
+  const HYBRID_SOURCE = 'open-spaced-repetition/ts-fsrs@v5.4.2 + google/bespoke@67b1eda5b28f7a69be20561014255cdc81110a3e';
+
   function clone(value) {
     return value == null ? value : JSON.parse(JSON.stringify(value));
   }
@@ -119,17 +122,18 @@
       .sort((a, b) => Number(a.answeredAt || 0) - Number(b.answeredAt || 0));
 
     return {
-      version: String(localDb.version || progressPayload.version || 'repo-driven-1'),
+      version: String(localDb.version || progressPayload.version || 'repo-driven-2'),
       createdAt: Number(localDb.createdAt || Date.now()),
       items: mergeById(remoteItems, localDb.items || []),
       bespokeCards: mergeById(remoteCards, localDb.bespokeCards || []),
       captures: mergeById(remoteCaptures, localDb.captures || []),
       events,
-      // Review events are the durable history. Progress is only a cache; rebuild
-      // it after a merge. Preserve a legacy cache only when there is no history.
+      // Review events are durable history. Both scheduler objects are caches and
+      // must be rebuilt after a multi-device merge whenever history exists.
       bespokeProgress: events.length ? null : clone(progressPayload.bespokeProgress || localDb.bespokeProgress || null),
-      scheduler: String(progressPayload.scheduler || localDb.scheduler || 'google-bespoke-port'),
-      schedulerSource: String(progressPayload.schedulerSource || localDb.schedulerSource || 'google/bespoke@67b1eda5b28f7a69be20561014255cdc81110a3e')
+      fsrsProgress: events.length ? null : clone(progressPayload.fsrsProgress || localDb.fsrsProgress || null),
+      scheduler: String(progressPayload.scheduler || localDb.scheduler || HYBRID_SCHEDULER),
+      schedulerSource: String(progressPayload.schedulerSource || localDb.schedulerSource || HYBRID_SOURCE)
     };
   }
 
