@@ -4,6 +4,7 @@
  * after Vite bundles the app for deployment.
  */
 import './flashday-data.js';
+import './learning-entry.js';
 import './bespoke-engine.js';
 import './bespoke-card-index.js';
 import './source-capture.js';
