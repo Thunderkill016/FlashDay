@@ -189,6 +189,17 @@ a { text-decoration: none; color: inherit; }
 .memory-word span:not([class*="delay"]) {  }
 
 
+
+.run-anim .delay-1 { animation: decay1 10s forwards; }
+.run-anim .delay-2 { animation: decay2 10s forwards; }
+.run-anim .delay-3 { animation: decay3 10s forwards; }
+.run-anim .delay-4 { animation: decay4 10s forwards; }
+.run-anim .memory-word span:not([class*="delay"]) { animation: decay0 10s forwards; }
+.run-anim .timeline-progress { animation: timeDrain 10s forwards; }
+.run-anim .flash-ping { animation: pingPulse 10s forwards; }
+.run-anim .flash-ping::after { animation: pingRing 10s forwards; }
+.run-anim .recovery-sweep { animation: sweep 10s forwards; }
+
 @keyframes decay1 {
   0%, 25% { opacity: 1; filter: blur(0); transform: translateY(0) rotate(0); }
   35%, 82% { opacity: 0.12; filter: blur(6px); transform: translateY(8px) rotate(3deg); }
