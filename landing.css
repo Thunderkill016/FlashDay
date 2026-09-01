@@ -221,8 +221,7 @@ a { text-decoration: none; color: inherit; }
 }
 @keyframes pingPulse { 0%, 78% { transform: scale(1); box-shadow: none; } 82% { transform: scale(1.5); box-shadow: 0 0 20px var(--flash); } 85%, 100% { transform: scale(1); box-shadow: none; } }
 @keyframes pingRing { 0%, 80% { opacity: 0; transform: scale(0.5); } 82% { opacity: 1; transform: scale(1.5); } 100% { opacity: 0; transform: scale(2.5); } }
-@keyframes sweep { 0%, 82% { transform: translateX(-100%) skewX(-15deg); } 86% { transform: translateX(200%) skewX(-15deg); } 100% { transform: translateX(200%) skewX(-15deg); } }
- 85% { transform: translateX(200%) skewX(-15deg); } 100% { transform: translateX(200%) skewX(-15deg); } }
+@keyframes sweep { 0%, 82% { transform: translateX(-100%) skewX(-15deg); } 86%, 100% { transform: translateX(200%) skewX(-15deg); } }
 
 /* 03 FOUR PATHS */
 .four-paths { padding: 160px 40px; background: var(--ink-950); }
