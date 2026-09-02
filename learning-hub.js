@@ -2,6 +2,7 @@
   'use strict';
 
   const D=window.FlashDayData;
+  const S=window.FlashDayStore;
   const L=window.FlashDayLearningEntry;
   const TI=window.FlashDayTranscriptImport;
   const KEY='flashday-memory-engine-repo-driven';
@@ -9,24 +10,18 @@
   const $=(id)=>document.getElementById(id);
   const PROFILE_INPUTS={listen:'profileListen',speak:'profileSpeak',read:'profileRead',write:'profileWrite'};
 
-  if(!D||!L||!TI)return;
+  if(!D||!S||!L||!TI)return;
 
-  let db=loadDb();
+  const store=S.createPersistentStore({
+    storage:localStorage,
+    key:KEY,
+    hydrate:(raw)=>D.migrateDb(raw),
+    fallback:()=>D.createInitialDb()
+  });
+
   let supabaseClient=null;
   let learner=null;
   let profileSyncTimer=null;
-
-  function loadDb(){
-    try{
-      const raw=localStorage.getItem(KEY);
-      if(raw)return D.migrateDb(JSON.parse(raw));
-    }catch(_error){}
-    return D.createInitialDb();
-  }
-
-  function saveDb(){
-    localStorage.setItem(KEY,JSON.stringify(db));
-  }
 
   function esc(value){
     return String(value??'').replace(/[&<>'"]/g,(char)=>({
@@ -53,6 +48,7 @@
   }
 
   function renderProfile(){
+    const db=store.refresh();
     const profile=L.ensureProfile(db);
     for(const [skill,id] of Object.entries(PROFILE_INPUTS)){
       const select=$(id);if(select)select.value=profile.skills?.[skill]?.level||'';
@@ -71,14 +67,18 @@
 
   async function saveProfile(){
     const now=Date.now();
-    for(const [skill,id] of Object.entries(PROFILE_INPUTS))L.setSkillLevel(db,skill,$(id)?.value||'',{basis:'self-reported',now});
-    saveDb();
+    store.transact((db)=>{
+      for(const [skill,id] of Object.entries(PROFILE_INPUTS)){
+        L.setSkillLevel(db,skill,$(id)?.value||'',{basis:'self-reported',now});
+      }
+    });
     await pushProfile().catch(()=>undefined);
     reloadHub({message:'Đã lưu profile theo 4 kỹ năng.'});
   }
 
   function renderGuidedModules(){
     const root=$('guidedModules');if(!root)return;
+    const db=store.refresh();
     root.innerHTML=L.GUIDED_MODULES.map(module=>{
       const state=L.moduleState(db,module.id);
       const installed=state.complete;
@@ -97,8 +97,7 @@
 
   function installModule(moduleId){
     try{
-      const result=L.installGuidedModule(db,moduleId,D);
-      saveDb();
+      const {result}=store.transact((db)=>L.installGuidedModule(db,moduleId,D));
       const message=result.added.length
         ? `Đã thêm ${result.added.length} Unit mới; ${result.reused.length} Unit có sẵn được dùng chung.`
         : 'Module này đã dùng toàn bộ Unit có sẵn, không tạo bản sao.';
@@ -127,27 +126,29 @@
     const button=$('importTranscriptBtn');
     if(button)button.disabled=true;
     try{
-      db=loadDb();
       const raw=await file.text();
       const isJson=file.name.toLowerCase().endsWith('.json')||file.type.includes('json');
       const segments=isJson?TI.parseJson(raw):TI.parseSrt(raw);
       const sourceLevel=$('importSourceLevel')?.value||'';
       const sourceTitle=$('importSourceTitle')?.value.trim()||file.name;
-      const result=TI.importIntoDb(db,segments,{
-        sourceId:$('importUrlInput')?.value.trim()||file.name,
-        sourceKind:'youtube',
-        sourceTitle,
-        estimatedLevel:sourceLevel,
-        url:$('importUrlInput')?.value.trim()||'',
-        fileName:$('importMediaNameInput')?.value.trim()||file.name,
-        subtitleFileName:file.name,
-        audioBasePath:$('importAudioBaseInput')?.value.trim()||'',
-        contextRadius:1,
-        paddingMs:200,
-        resolveUnitIds:(sentence)=>L.matchUnitsInText(db.items||[],sentence).map(match=>match.unitId)
+      const {result:transactionResult}=store.transact((db)=>{
+        const result=TI.importIntoDb(db,segments,{
+          sourceId:$('importUrlInput')?.value.trim()||file.name,
+          sourceKind:'youtube',
+          sourceTitle,
+          estimatedLevel:sourceLevel,
+          url:$('importUrlInput')?.value.trim()||'',
+          fileName:$('importMediaNameInput')?.value.trim()||file.name,
+          subtitleFileName:file.name,
+          audioBasePath:$('importAudioBaseInput')?.value.trim()||'',
+          contextRadius:1,
+          paddingMs:200,
+          resolveUnitIds:(sentence)=>L.matchUnitsInText(db.items||[],sentence).map(match=>match.unitId)
+        });
+        const suitability=L.assessContent(db.learningProfile,{skill:sourceSkill(),contentLevel:sourceLevel});
+        return {result,suitability};
       });
-      saveDb();
-      const suitability=L.assessContent(db.learningProfile,{skill:sourceSkill(),contentLevel:sourceLevel});
+      const {result,suitability}=transactionResult;
       const message=`${result.total} segments · ${result.added} mới · ${result.ready} có translation · ${result.linkedSegments} segment gặp lại ${result.linkedUnitIds.length} Unit đã có.`;
       reloadHub({message,suitability});
     }catch(error){
@@ -172,12 +173,12 @@
     if(!supabaseClient||!learner)return;
     const {data,error}=await supabaseClient.from(PROFILE_TABLE).select('payload,updated_at').eq('owner_id',learner.id).maybeSingle();
     if(error)throw error;
-    const local=L.normalizeProfile(loadDb().learningProfile||{});
+    const local=L.normalizeProfile(store.refresh().learningProfile||{});
     const remote=L.normalizeProfile(data?.payload||{});
     const localAt=Number(local.updatedAt||0),remoteAt=Number(remote.updatedAt||0);
-    db=loadDb();
     if(data&&remoteAt>=localAt){
-      db.learningProfile=remote;saveDb();renderProfile();
+      store.transact((db)=>{db.learningProfile=remote;});
+      renderProfile();
     }else if(localAt>0){
       await pushProfile();
     }
@@ -185,8 +186,7 @@
 
   async function pushProfile(){
     if(!supabaseClient||!learner)return;
-    db=loadDb();
-    const profile=L.normalizeProfile(db.learningProfile||{});
+    const profile=L.normalizeProfile(store.refresh().learningProfile||{});
     if(!profile.updatedAt)return;
     const {error}=await supabaseClient.from(PROFILE_TABLE).upsert({owner_id:learner.id,payload:profile,updated_at:new Date(profile.updatedAt).toISOString()},{onConflict:'owner_id'});
     if(error)throw error;
