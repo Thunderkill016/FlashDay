@@ -128,6 +128,10 @@
     const remoteEvents = (remote.events || []).map(eventFromRow);
     const events = mergeById(remoteEvents, localDb.events || [])
       .sort((a, b) => Number(a.answeredAt || 0) - Number(b.answeredAt || 0));
+    // Transfer attempts live beside scheduler caches in learning_progress. They
+    // are learner-owned observations, not review events and never affect FSRS.
+    const transferAttempts = mergeById(progressPayload.transferAttempts || [], localDb.transferAttempts || [])
+      .sort((a, b) => Number(a.submittedAt || 0) - Number(b.submittedAt || 0));
 
     return {
       version: String(localDb.version || progressPayload.version || 'repo-driven-2'),
@@ -136,6 +140,7 @@
       bespokeCards: mergeById(remoteCards, localDb.bespokeCards || []),
       captures: mergeById(remoteCaptures, localDb.captures || []),
       events,
+      transferAttempts,
       learningProfile: mergeLearningProfile(localDb.learningProfile, progressPayload.learningProfile),
       // Review events are durable history. Both scheduler objects are caches and
       // must be rebuilt after a multi-device merge whenever history exists.

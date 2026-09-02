@@ -53,6 +53,33 @@ const C=require('../flashday-cloud.js');
 }
 
 {
+  const db=D.createInitialDb(undefined,1000);
+  const before=db.items.length;
+  const stateBefore=L.clusterState(db,'a1-meeting-change');
+  assert.equal(stateBefore.total,20, 'the meeting-change pilot must be a complete 20-Unit situation cluster');
+  assert.equal(stateBefore.installed,3, 'shared seed Units should count as available without being duplicated');
+  const result=L.installGuidedCluster(db,'a1-meeting-change',D);
+  assert.equal(result.added.length,17);
+  assert.equal(result.reused.length,3);
+  assert.equal(db.items.length,before+17);
+  assert.equal(result.state.complete,true);
+  assert.equal(L.modulesForCluster('a1-meeting-change').length,5);
+}
+
+{
+  const db=D.createInitialDb([],1000);
+  assert.throws(()=>L.submitTransferAttempt(db,{missionId:'a1-meeting-change-transfer'}),/viết câu trả lời|nói thành tiếng/i);
+  const attempt=L.submitTransferAttempt(db,{
+    id:'transfer-1',missionId:'a1-meeting-change-transfer',responseText:'No problem. See you at seven.',selfReviewed:true
+  },2000);
+  assert.equal(attempt.submittedAt,2000);
+  assert.equal(db.transferAttempts.length,1);
+  const state=L.missionState(db,'a1-meeting-change-transfer');
+  assert.equal(state.attempts,1);
+  assert.equal(state.hasSelfReview,true);
+}
+
+{
   const db=D.createInitialDb([],1000);
   D.addItem(db,{id:'way',target:"I'm on my way.",meaning:'đang trên đường',forms:['I am on my way.'],exampleSentence:"I'm on my way.",exampleTranslation:'Tôi đang trên đường.'});
   const segments=[{start:5,end:7,text:"I'm on my way.",translation:'Tôi đang trên đường.'}];
@@ -96,4 +123,4 @@ const C=require('../flashday-cloud.js');
   assert.equal(migrated.learningProfile.overallLevel,'A1');
 }
 
-console.log('FlashDay learning entry: 31 guided/personal bridge checks passed');
+console.log('FlashDay learning entry: 33 guided/personal/transfer checks passed');

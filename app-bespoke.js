@@ -602,6 +602,8 @@
       payload: {
         version: db.version,
         bespokeProgress: db.bespokeProgress,
+        fsrsProgress: db.fsrsProgress,
+        transferAttempts: db.transferAttempts || [],
         scheduler: db.scheduler,
         schedulerSource: db.schedulerSource
       },
@@ -891,6 +893,11 @@
 
   window.addEventListener('flashday:supabase-ready', (event) => {
     connectCloud(event.detail);
+  });
+  window.addEventListener('flashday:learning-state-changed', () => {
+    db = loadDb();
+    renderMemory();
+    requestCloudSync('learning-state');
   });
 
   setAuthMode('signin');

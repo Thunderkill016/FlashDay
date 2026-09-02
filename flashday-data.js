@@ -27,7 +27,7 @@
 
   function createInitialDb(items=SEED_ITEMS,now=Date.now()){
     return {
-      version:'repo-driven-2',createdAt:now,items:clone(items),events:[],captures:[],bespokeCards:[],
+      version:'repo-driven-2',createdAt:now,items:clone(items),events:[],captures:[],bespokeCards:[],transferAttempts:[],
       bespokeProgress:null,fsrsProgress:null,learningProfile:null,
       scheduler:HYBRID_SCHEDULER,schedulerSource:HYBRID_SOURCE
     };
@@ -40,6 +40,7 @@
       events:Array.isArray(raw.events)?clone(raw.events):[],
       captures:Array.isArray(raw.captures)?clone(raw.captures):[],
       bespokeCards:Array.isArray(raw.bespokeCards)?clone(raw.bespokeCards):[],
+      transferAttempts:Array.isArray(raw.transferAttempts)?clone(raw.transferAttempts):[],
       bespokeProgress:raw.bespokeProgress?clone(raw.bespokeProgress):null,
       fsrsProgress:raw.fsrsProgress?clone(raw.fsrsProgress):null,
       learningProfile:raw.learningProfile?clone(raw.learningProfile):null,
@@ -70,7 +71,7 @@
 
   function isPristineDb(db){
     if(!db||!Array.isArray(db.items))return true;
-    if((db.events||[]).length||(db.captures||[]).length||(db.bespokeCards||[]).length||db.bespokeProgress||db.fsrsProgress)return false;
+    if((db.events||[]).length||(db.captures||[]).length||(db.bespokeCards||[]).length||(db.transferAttempts||[]).length||db.bespokeProgress||db.fsrsProgress)return false;
     if(db.items.length!==SEED_ITEMS.length)return false;
     const expected=new Map(SEED_ITEMS.map(item=>[item.id,normalizeKey(item.target)]));
     return db.items.every(item=>expected.get(item.id)===normalizeKey(item.target));

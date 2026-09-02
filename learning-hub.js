@@ -79,29 +79,95 @@
   function renderGuidedModules(){
     const root=$('guidedModules');if(!root)return;
     const db=store.refresh();
-    root.innerHTML=L.GUIDED_MODULES.map(module=>{
-      const state=L.moduleState(db,module.id);
-      const installed=state.complete;
-      return `<article class="guided-module">
-        <div class="guided-module-top">
-          <div><h4>${esc(module.level)} · ${esc(module.title)}</h4><p>${esc(module.canDo)}</p></div>
-          <button class="module-action" type="button" data-guided-module="${esc(module.id)}" ${installed?'disabled':''}>${installed?'Đã thêm':'Thêm vào bộ học'}</button>
+    root.innerHTML=L.GUIDED_CLUSTERS.map(cluster=>{
+      const state=L.clusterState(db,cluster.id);
+      const modules=L.modulesForCluster(cluster.id);
+      const remaining=Math.max(0,state.total-state.installed);
+      const buttonLabel=state.complete?'Đã thêm vào bộ học':remaining===state.total?`Thêm ${state.total} Unit vào bộ học`:`Thêm ${remaining} Unit còn lại`;
+      const example=(cluster.workedExample?.turns||[]).map(turn=>`<li><b>${esc(turn.speaker)}:</b> ${esc(turn.text)}<small>${esc(turn.translation)}</small></li>`).join('');
+      return `<article class="guided-cluster">
+        <div class="guided-cluster-head">
+          <div><span class="eyebrow">${esc(cluster.level)} · SITUATION CLUSTER</span><h4>${esc(cluster.title)}</h4><p>${esc(cluster.canDo)}</p></div>
+          <span class="cluster-progress">${state.practiced}/${state.total} đã từng ôn</span>
         </div>
-        <div class="guided-module-meta"><span>${state.installed}/${state.total} Unit có sẵn</span><span>${state.practiced}/${state.total} Unit đã từng ôn</span></div>
+        <details class="guided-example">
+          <summary>${esc(cluster.workedExample?.label||'Xem ví dụ')}</summary>
+          <ol>${example}</ol>
+        </details>
+        <details class="guided-steps">
+          <summary>5 bước nhỏ · ${state.installed}/${state.total} Unit có sẵn</summary>
+          <ol>${modules.map(module=>`<li><strong>${esc(module.title)}</strong><span>${esc(module.canDo)}</span></li>`).join('')}</ol>
+        </details>
+        <p class="cluster-note">${esc(cluster.audioNote||'')}</p>
+        <button class="module-action" type="button" data-guided-cluster="${esc(cluster.id)}" ${state.complete?'disabled':''}>${esc(buttonLabel)}</button>
       </article>`;
     }).join('');
-    root.querySelectorAll('[data-guided-module]').forEach(button=>{
-      button.onclick=()=>installModule(button.dataset.guidedModule);
+    root.querySelectorAll('[data-guided-cluster]').forEach(button=>{
+      button.onclick=()=>installCluster(button.dataset.guidedCluster);
     });
   }
 
-  function installModule(moduleId){
+  function installCluster(clusterId){
     try{
-      const {result}=store.transact((db)=>L.installGuidedModule(db,moduleId,D));
+      const {result}=store.transact((db)=>L.installGuidedCluster(db,clusterId,D));
       const message=result.added.length
         ? `Đã thêm ${result.added.length} Unit mới; ${result.reused.length} Unit có sẵn được dùng chung.`
-        : 'Module này đã dùng toàn bộ Unit có sẵn, không tạo bản sao.';
+        : 'Lộ trình này đã dùng toàn bộ Unit có sẵn, không tạo bản sao.';
       reloadHub({message});
+    }catch(error){
+      showInlineMessage(error.message,true);
+    }
+  }
+
+  function formatAttempt(attempt){
+    if(!attempt)return 'Chưa có lần thử.';
+    const date=new Date(Number(attempt.submittedAt));
+    const when=Number.isNaN(date.getTime())?'vừa xong':date.toLocaleDateString('vi-VN');
+    return `${attempt.selfReviewed?'Đã tự đối chiếu mẫu':'Đã thử'} · ${when}`;
+  }
+
+  function renderTransferMissions(){
+    const root=$('transferMissions');if(!root)return;
+    const db=store.refresh();
+    root.innerHTML=L.TRANSFER_MISSIONS.map(mission=>{
+      const cluster=L.clusterById(mission.clusterId);
+      const clusterState=L.clusterState(db,mission.clusterId);
+      const state=L.missionState(db,mission.id);
+      const isReady=clusterState.complete;
+      return `<article class="transfer-mission" data-transfer-mission="${esc(mission.id)}">
+        <div class="transfer-heading"><div><span class="eyebrow">TRANSFER · ${esc(mission.level)}</span><h4>${esc(mission.title)}</h4><p>${esc(mission.canDo)}</p></div><span class="transfer-status">${esc(formatAttempt(state.latest))}</span></div>
+        ${isReady?`<p class="mission-setup">${esc(mission.setup)}</p><blockquote>${esc(mission.incomingMessage)}</blockquote><p class="mission-instructions">${esc(mission.instructions)}</p><label class="field transfer-field" for="transferResponse-${esc(mission.id)}">Câu trả lời của bạn<textarea id="transferResponse-${esc(mission.id)}" maxlength="1600" placeholder="Write 2–3 short sentences in English…"></textarea></label><label class="transfer-check"><input type="checkbox" data-transfer-spoke="${esc(mission.id)}"> Tôi đã nói câu trả lời thành tiếng</label><button class="module-action transfer-reveal" type="button" data-transfer-reveal="${esc(mission.id)}" disabled>Xem mẫu sau khi đã thử</button><div class="transfer-model hidden" id="transferModel-${esc(mission.id)}"><strong>Mẫu để đối chiếu</strong>${mission.modelAnswer.map(line=>`<p>${esc(line)}</p>`).join('')}<ul>${mission.selfCheck.map(item=>`<li>${esc(item)}</li>`).join('')}</ul><label class="transfer-check"><input type="checkbox" data-transfer-self-review="${esc(mission.id)}"> Tôi đã so sánh lần thử với mẫu</label><button class="primary-btn transfer-save" type="button" data-transfer-save="${esc(mission.id)}">Lưu lần thử</button></div>`:`<p class="mission-locked">Thêm đủ ${clusterState.total} Unit của “${esc(cluster?.title||'lộ trình này')}” trước. Nhiệm vụ này không dùng để chấm điểm card.</p>`}
+      </article>`;
+    }).join('');
+    root.querySelectorAll('[data-transfer-mission]').forEach(card=>bindTransferMission(card));
+  }
+
+  function bindTransferMission(card){
+    const missionId=card.dataset.transferMission;
+    const response=card.querySelector(`[id="transferResponse-${missionId}"]`);
+    const spoke=card.querySelector('[data-transfer-spoke]');
+    const reveal=card.querySelector('[data-transfer-reveal]');
+    if(!response||!spoke||!reveal)return;
+    const updateReveal=()=>{reveal.disabled=!response.value.trim()&&!spoke.checked;};
+    response.oninput=updateReveal;
+    spoke.onchange=updateReveal;
+    reveal.onclick=()=>{
+      card.querySelector('[data-transfer-save]')?.focus();
+      card.querySelector('.transfer-model')?.classList.remove('hidden');
+      reveal.classList.add('hidden');
+    };
+    card.querySelector('[data-transfer-save]')?.addEventListener('click',()=>saveTransferMission(missionId,card));
+  }
+
+  function saveTransferMission(missionId,card){
+    try{
+      const responseText=card.querySelector(`[id="transferResponse-${missionId}"]`)?.value||'';
+      const spoke=Boolean(card.querySelector('[data-transfer-spoke]')?.checked);
+      const selfReviewed=Boolean(card.querySelector('[data-transfer-self-review]')?.checked);
+      const {result:attempt}=store.transact((db)=>L.submitTransferAttempt(db,{missionId,responseText,spoke,selfReviewed}));
+      window.dispatchEvent(new CustomEvent('flashday:learning-state-changed'));
+      renderTransferMissions();
+      showInlineMessage(attempt.selfReviewed?'Đã lưu lần thử và việc tự đối chiếu mẫu.':'Đã lưu lần thử. Bạn có thể quay lại tự đối chiếu mẫu sau.',false);
     }catch(error){
       showInlineMessage(error.message,true);
     }
@@ -206,6 +272,7 @@
 
   renderProfile();
   renderGuidedModules();
+  renderTransferMissions();
   if($('importTranscriptBtn'))$('importTranscriptBtn').onclick=importPersonalTranscript;
   restoreUi();
   window.addEventListener('flashday:supabase-ready',(event)=>connectProfileCloud(event.detail));

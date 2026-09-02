@@ -334,6 +334,43 @@ svg { display: block; }
 
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; transform: none !important; } }
 
+/* Guided situation cluster and cold-transfer practice. The task stays in the
+   learning flow so the learner meets the outcome before optional source import. */
+.guided-cluster, .transfer-mission { padding: 20px; border: 1px solid var(--fd-border); border-radius: var(--fd-radius-lg); background: var(--fd-surface-2); }
+.guided-cluster-head, .transfer-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; }
+.guided-cluster h4, .transfer-mission h4 { margin: 2px 0 6px; font-size: 20px; line-height: 1.25; }
+.guided-cluster p, .transfer-mission p { color: var(--fd-text-secondary); }
+.cluster-progress, .transfer-status { flex: 0 0 auto; max-width: 156px; color: var(--fd-text-secondary); font-size: 12px; font-weight: 700; line-height: 1.4; text-align: right; }
+.guided-example, .guided-steps { margin: 14px 0 0; padding: 14px 0 0; border-top: 1px solid var(--fd-border); }
+.guided-example summary, .guided-steps summary { color: var(--fd-text-primary); cursor: pointer; font-size: 14px; font-weight: 800; }
+.guided-example ol, .guided-steps ol { display: grid; gap: 10px; margin: 14px 0 0; padding-left: 22px; color: var(--fd-text-secondary); font-size: 14px; }
+.guided-example li { padding-left: 2px; }
+.guided-example li b { color: var(--fd-text-primary); }
+.guided-example li small, .guided-steps li span { display: block; margin-top: 2px; color: var(--fd-text-tertiary); }
+.guided-steps li strong { display: block; color: var(--fd-text-primary); }
+.cluster-note { margin: 16px 0; color: var(--fd-text-tertiary) !important; font-size: 13px; }
+.transfer-missions { display: grid; gap: 12px; margin-top: 16px; }
+.transfer-mission { background: var(--fd-canvas); }
+.transfer-mission h4 { font-size: 18px; }
+.transfer-mission blockquote { margin: 16px 0; padding: 14px 16px; border-left: 3px solid var(--fd-primary); border-radius: 0 var(--fd-radius-sm) var(--fd-radius-sm) 0; background: var(--fd-surface); color: var(--fd-text-primary); font-weight: 700; }
+.mission-setup, .mission-instructions { margin: 14px 0; font-size: 14px; }
+.transfer-field { margin: 18px 0 10px; }
+.transfer-field textarea { min-height: 112px; }
+.transfer-check { display: flex; align-items: center; gap: 9px; color: var(--fd-text-secondary); font-size: 14px; }
+.transfer-check input { width: 18px; height: 18px; accent-color: var(--fd-primary); }
+.transfer-reveal { width: 100%; margin-top: 16px; }
+.transfer-model { margin-top: 16px; padding: 18px; border: 1px solid var(--fd-border-interactive); border-radius: var(--fd-radius-md); background: var(--fd-surface); }
+.transfer-model strong { color: var(--fd-text-primary); }
+.transfer-model p { margin: 8px 0; color: var(--fd-text-primary); }
+.transfer-model ul { margin: 14px 0 18px; padding-left: 20px; color: var(--fd-text-secondary); font-size: 14px; }
+.transfer-save { width: 100%; margin-top: 16px; }
+.mission-locked { margin: 16px 0 0; padding: 14px; border: 1px dashed var(--fd-border-interactive); border-radius: var(--fd-radius-md); font-size: 14px; }
+
+@media (max-width: 520px) {
+  .guided-cluster-head, .transfer-heading { display: grid; }
+  .cluster-progress, .transfer-status { max-width: none; text-align: left; }
+}
+
 
 .word-chip {
   background: var(--fd-surface);

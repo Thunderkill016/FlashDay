@@ -208,11 +208,43 @@ and retain failure reasons: missing vocabulary, comprehension, form,
 pronunciation intelligibility, turn-taking, or confidence. That diagnosis tells
 us what to improve; a streak does not.
 
+## Implemented A1 pilot: meeting plans that change
+
+The first product slice now implements one A1 situation cluster, **Hẹn gặp và
+đổi kế hoạch**. It has one observable outcome: a learner can understand a
+simple plan, propose a time, report a change, and reconfirm it. The cluster
+contains five short learning steps and 20 curated Units:
+
+```text
+ask for clarification
+  -> state a simple plan
+  -> propose a time
+  -> reschedule when something changes
+  -> confirm the revised plan
+```
+
+Three Units already in the starter set are reused; installing the cluster adds
+the remaining 17 Units. The worked dialogue and its five steps stay collapsed
+until the learner asks for them, so they support understanding without turning
+the learning screen into a word-list dashboard.
+
+After all 20 Units are available, FlashDay unlocks one changed-detail transfer
+mission: Alex moves a 6pm café meeting to 7pm. The learner must either type an
+English reply or explicitly confirm that they spoke one before a model reply is
+shown. They can then self-review and save the attempt. That attempt is stored
+separately from card reviews and never changes FSRS/Bespoke scheduling.
+
+This is an integrity baseline, not a proficiency assessment. The current
+mission does **not** yet require a delayed date, validate pronunciation,
+evaluate open-ended English automatically, or replace a human/partner-reviewed
+exchange. This first pilot also has text and browser-TTS practice only; it does
+not claim verified source audio or listening evidence.
+
 ## Product decisions this design makes now
 
-- **Do next:** define the communicative Unit/card/deck contract; build a small,
-  human-reviewed situation cluster; make each existing Bespoke mode ask for a
-  mode-appropriate response; persist response evidence and delayed checks.
+- **Do next:** run the implemented A1 cluster with learners, record the
+  obstacle behind each failed can-do, and add a delayed changed-detail check
+  only after the pilot establishes that it is useful and understandable.
 - **Treat media as optional quality infrastructure:** imported/source audio can
   create stronger listening cards, but learner-created and curated text cards
   remain first-class. Raw-media transcription is not the next prerequisite.

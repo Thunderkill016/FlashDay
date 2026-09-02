@@ -7,8 +7,10 @@ const D=require('../flashday-data.js');
   assert.strictEqual(db.items.length,5);
   assert.deepStrictEqual(db.events,[]);
   assert.deepStrictEqual(db.captures,[]);
+  assert.deepStrictEqual(db.transferAttempts,[]);
   assert.strictEqual(db.scheduler,'bespoke-language-policy+fsrs6');
   assert.strictEqual(db.fsrsProgress,null);
+  assert.deepStrictEqual(db.transferAttempts,[]);
 }
 
 {
