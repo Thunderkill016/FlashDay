@@ -1,212 +1,114 @@
 # FlashDay: Production-Ready UI/UX & Design System
 
-Tài liệu này là nguồn sự thật (source of truth) cho UI/UX của FlashDay, được thiết kế với triết lý **"Quiet Confidence"** — một không gian học bình tĩnh, đáng tin cậy.
-*Tài liệu được cập nhật dựa trên [Web Design Manifesto](file:///home/thunder/.gemini/antigravity/brain/af2acef4-81f4-4a62-8862-90a37571b868/Web_Design_Manifesto.md) (tổng hợp tinh hoa từ Apple, Google, Linear).*
+Tài liệu này là nguồn sự thật (source of truth) cho UI/UX của FlashDay, được thiết kế với triết lý đa tầng nhằm tối ưu hóa từng giai đoạn trải nghiệm của người dùng. Hệ thống UI của FlashDay được chia thành 3 phân lớp (Tiered Design Architecture) rõ rệt:
+
+1. **Neo-Brutalism (Marketing & Auth Flow)**: Dành cho Landing Page và trang Đăng nhập. Gây ấn tượng mạnh, phá cách, thu hút sự chú ý.
+2. **Quiet Confidence (App Core)**: Dành cho không gian quản lý hệ thống (Learning Hub, Memory, Settings). Sáng sủa, đáng tin cậy, bình tĩnh.
+3. **Monastic (Focus Chamber / Review Tab)**: Dành riêng cho màn hình ôn tập thẻ. Tối màu, tĩnh lặng tuyệt đối, loại bỏ mọi yếu tố thị giác gây nhiễu để tối đa hóa sự tập trung.
 
 ---
 
-## 1. HỆ THỐNG THỊ GIÁC (VISUAL SYSTEM & TOKENS)
+## 1. HỆ THỐNG ĐA TẦNG (THREE-TIERED ARCHITECTURE)
 
-### 1.1. Color Tokens & Contrast Audit
-Tuyệt đối không sử dụng mã hex trực tiếp trong component. Chỉ sử dụng các semantic token dưới đây.
+### 1.1. Tầng 1: Neo-Brutalism (Landing Page & Login)
+**Mục đích:** Thu hút, hiện đại, thể hiện cá tính của sản phẩm.
+- **Background:** Đen sâu (`--ink-950: #090B0D`).
+- **Surface (Card/Box):** Trắng tinh (`#FFFFFF`) với viền rõ nét.
+- **Accent/CTA:** Vàng chanh (`--flash: #E8FF65`).
+- **Shadows:** Đổ bóng đặc, không nhòe (Solid drop shadows - ví dụ: `4px 4px 0 var(--ink-950)`).
+- **Typography:** 
+  - Display/Heading: `Bricolage Grotesque` (dày, ấn tượng).
+  - Body/Form: `Be Vietnam Pro` hoặc `IBM Plex Mono`.
 
+### 1.2. Tầng 2: Quiet Confidence (App Core / Hub)
+**Mục đích:** Một không gian làm việc sáng sủa, sạch sẽ, tạo cảm giác đáng tin cậy như các công cụ năng suất (Apple, Linear).
+- **Background (Canvas):** Off-white ấm (`#F7F7F3`).
+- **Surface (Card/Dropdown):** Trắng (`#FFFFFF`).
+- **Primary Accent:** Xanh ngọc bích đậm (`#18553C`).
+- **Shadows:** Rất mềm, khuếch tán rộng (Soft shadows - ví dụ: `0 4px 20px rgba(0,0,0,0.05)`).
+- **Typography:** 
+  - Toàn hệ thống: `Inter` hoặc `system-ui`. Trọng tâm vào tính dễ đọc cao nhất với dữ liệu nhiều.
+
+### 1.3. Tầng 3: Monastic (Review Tab / Focus Chamber)
+**Mục đích:** Không gian "thiền định" để ôn tập. Không brand, không màu mè, không bóng đổ gây nhiễu. Trọng tâm 100% vào việc truy xuất trí nhớ.
+- **Background (Canvas):** Đen sâu (`#090B0D`).
+- **Surface (Study Card):** Xám siêu tối (`#111417`), tạo chiều sâu lõm nhẹ so với viền.
+- **Borders:** Mờ ảo, trong suốt (`rgba(255,255,255,0.1)`).
+- **Shadows:** Không sử dụng brutalist shadow, chỉ dùng inner shadow hoặc drop shadow cực kỳ tự nhiên.
+- **Typography:** 
+  - Prompt/Cues: `Bricolage Grotesque` (to, rõ ràng).
+  - Body/Instructions: `Be Vietnam Pro`.
+
+---
+
+## 2. COLOR TOKENS CỤ THỂ
+
+### 2.1. Tokens cho App Core (Quiet Confidence - Light Mode)
 | Token | Hex | Role & Usage |
 | :--- | :--- | :--- |
-| `canvas` | `#F7F7F3` | Nền chính của ứng dụng (App background). |
-| `surface` | `#FFFFFF` | Nền của thẻ học (Study card), modal, dropdown, input. |
-| `text-primary` | `#172019` | Chữ chính, tiêu đề, nội dung thẻ. |
-| `text-secondary` | `#59645C` | Chữ phụ, caption, placeholder, inactive icon. |
-| `primary` | `#18553C` | Primary button, active states, progress bar, link. |
+| `canvas` | `#F7F7F3` | Nền chính của ứng dụng. |
+| `surface` | `#FFFFFF` | Nền của danh sách, modal, input. |
+| `text-primary` | `#172019` | Chữ chính, tiêu đề. |
+| `text-secondary` | `#59645C` | Chữ phụ, placeholder. |
+| `primary` | `#18553C` | Primary button, progress bar. |
 | `primary-hover` | `#123D2C` | Hover state cho primary button. |
-| `primary-soft` | `#DCECE4` | Nền phụ cho badge, active tab, hoặc selected rating. |
-| `focus` | `#0A66C2` | Focus ring bao quanh mọi interactive element khi navigate bằng phím. |
-| `error` | `#9A4038` | Validation lỗi, thông báo lỗi, icon báo lỗi. |
-| `warning` | `#7A4C00` | Thông báo cảnh báo. |
-| `border-interactive`| `#7A847C` | Viền input, button secondary, tab active. |
-| `border-decorative` | `#D9DED8` | Đường phân cách (divider), viền thẻ tĩnh. |
-| `surface-hover` | `#F2F4F3` | Hover nền nhẹ cho secondary control. |
-| `surface-disabled` | `#E2E5E3` | Nền control disabled, không dùng cho content. |
-| `text-disabled` | `#9AA29D` | Chữ control disabled, không dùng cho nội dung cần đọc. |
+| `border-interactive`| `#7A847C` | Viền input, button secondary. |
+| `border-decorative` | `#D9DED8` | Đường phân cách tĩnh. |
 
-**Bảng Kiểm Định Độ Tương Phản (Contrast Audit):**
+### 2.2. Tokens cho Focus Chamber (Monastic - Dark Mode)
+| Token | Hex/RGBA | Role & Usage |
+| :--- | :--- | :--- |
+| `fd-canvas` | `#090B0D` | Không gian tối bao quanh thẻ học. |
+| `fd-surface` | `#111417` | Nền thẻ học (Study Card). |
+| `fd-primary-text` | `#F1F5F9` | Chữ chính của câu hỏi/đáp án. |
+| `fd-secondary-text`| `#94A3B8` | Chữ phụ, hướng dẫn, gợi ý. |
+| `fd-border` | `rgba(255,255,255,0.1)` | Viền thẻ, viền nút bấm tĩnh. |
+| `fd-border-hover` | `rgba(255,255,255,0.2)` | Viền thẻ khi hover (nếu có tương tác). |
 
-| Cặp màu (Foreground / Background) | Tỉ lệ tương phản | Tiêu chuẩn WCAG (AA) | Kết quả |
-| :--- | :--- | :--- | :--- |
-| `text-primary` / `surface` | 16.71:1 | >= 4.5:1 (Text) | ✅ PASS |
-| `text-primary` / `canvas` | 15.60:1 | >= 4.5:1 (Text) | ✅ PASS |
-| `text-secondary` / `surface` | 6.17:1 | >= 4.5:1 (Text) | ✅ PASS |
-| `surface` (Text) / `primary` | 8.74:1 | >= 4.5:1 (Text) | ✅ PASS |
-| `primary` / `primary-soft` | 7.14:1 | >= 4.5:1 (Text) | ✅ PASS |
-| `focus` (Outline) / `surface` | 5.69:1 | >= 3.0:1 (UI Component) | ✅ PASS |
-| `surface` (Text) / `error` | 6.64:1 | >= 4.5:1 (Text) | ✅ PASS |
-| `surface` (Text) / `warning` | 7.34:1 | >= 4.5:1 (Text) | ✅ PASS |
-| `border-interactive` / `surface` | 3.88:1 | >= 3.0:1 (UI Component) | ✅ PASS |
+---
 
-### 1.2. Typography Tokens
-Font family: `Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif`
+## 3. SPACING, GRID & RADIUS (Áp dụng chung)
 
-| Token | Kích thước (Size/Line height) | Weight | Letter Spacing | Áp dụng cho |
-| :--- | :--- | :--- | :--- | :--- |
-| `display-desktop` | 40px / 48px | 700 (Bold) | -0.03em | Heading màn trống, greeting (Tablet/Desktop) |
-| `display-mobile` | 32px / 40px | 700 (Bold) | -0.025em | Heading màn trống, greeting (Mobile) |
-| `h2` | 24px / 32px | 700 (Bold) | Normal | Tiêu đề card, Tiêu đề modal |
-| `body` | 16px / 24px | 400 (Regular) | Normal | Nội dung câu, ý nghĩa, text nhập liệu |
-| `button` | 16px / 20px | 700 (Bold) | Normal | Label của nút bấm chính |
-| `label` | 14px / 20px | 600 (Semibold)| Normal | Label input, tab active, trạng thái card |
-| `metadata` | 12px / 16px | 600 (Semibold)| Normal | Source chip, badge kỹ năng, caption phụ |
-
-*(Không sử dụng bất kỳ text nào nhỏ hơn 12px)*
-
-### 1.3. Spacing, Grid & Radius
 - **Base Grid:** 4px. Hệ thống spacing chuẩn: `4, 8, 12, 16, 20, 24, 32, 40, 48` (px).
-- **Radius:**
-  - `radius-sm`: 8px (Source chip, badge, input)
-  - `radius-md`: 14px (Secondary button, Rating button)
-  - `radius-lg`: 16px (Primary CTA button)
-  - `radius-xl-mob`: 20px (Study card trên Mobile)
-  - `radius-xl-desk`: 24px (Study card trên Tablet/Desktop)
-- **Motion:** `duration-fast`: 160ms, `duration-base`: 200ms. Chỉ dùng hiệu ứng opacity hoặc transform nhẹ. Phải tuân thủ `prefers-reduced-motion`.
-
----
-
-## 2. COMPONENT ANATOMY & STATES
-
-### 2.1. Buttons & CTAs
-- **Primary CTA:**
-  - Default: Nền `primary`, Chữ `surface` (`button` token), Cao 56px, Radius 16px, Padding ngang 24px.
-  - Hover: Nền `primary-hover`.
-  - Disabled: Nền `surface-disabled`, Chữ `text-disabled`. Disabled state không
-    được là nơi duy nhất truyền đạt một điều kiện bắt buộc: đặt hướng dẫn hoặc
-    lỗi ngay cạnh control.
-- **Secondary Button:**
-  - Default: Nền trong suốt, Viền 1px solid `border-interactive`, Chữ `text-primary`, Cao 48px, Radius 14px.
-  - Hover: Nền `surface-hover`.
-- **Rating Button:**
-  - Default: Nền `surface`, Viền 1px solid `border-interactive`, Chữ `text-primary`, Cao 48px, Radius 14px. Label rõ ràng (VD: "Không nhớ", "Nhớ mang máng", "Nhớ rõ").
-  - Selected: Nền `primary-soft`, Viền 1px solid `primary`, Chữ `primary`.
-- **Icon Button (VD: Speaker):**
-  - Chỉ dùng SVG outline 20px; riêng loa phát âm thanh chính giữa dùng SVG 28px trong vùng bấm `64x64px`. Các icon button khác có target tối thiểu `48x48px`. Chứa thuộc tính `aria-label`.
-- **Focus State (Cho tất cả Interactive):**
-  - Outline `2px solid focus`, `outline-offset: 2px`. Không bị che lấp bởi phần tử khác.
-
-### 2.2. Inputs & Textareas
-- **Textarea (Người học nhập ý hiểu):**
-  - Default: Viền `1px solid border-interactive`, Nền `surface`, Chữ `body` `text-primary`. Padding 16px. Border-radius 12px. Min-height: 120px.
-  - Focus: Viền `2px solid primary` (không dùng xanh dương cho viền input, xanh dương chỉ cho accessibility focus ring bao ngoài).
-  - Error: Viền `2px solid error`. Dòng text báo lỗi (`label` token màu `error`) nằm ngay dưới input, cách 4px, mô tả rõ lỗi (VD: *"Bạn chưa viết ý hiểu của mình"*).
-
-### 2.3. Tabs (Navigation)
-- **Container:** Cao 48px. Nền trong suốt.
-- **Active Tab:** Text `label`, màu `text-primary`, nền `surface`, radius 8px, shadow siêu nhẹ `0 1px 2px rgba(0,0,0,0.05)`. Padding 8px 16px.
-- **Inactive Tab:** Text `label`, màu `text-secondary`, nền trong suốt.
-*(Không dùng gạch chân mỏng để báo active)*
-
-### 2.4. Skill Badge & Source Chip
-- **Skill Badge (Góc trái thẻ học):**
-  - Text `metadata` (Uppercase), Nền `canvas`, Chữ `text-secondary`. Padding 4px 8px. Radius 6px.
-- **Source Chip (Góc phải thẻ học):**
-  - Text `metadata`, Nền trong suốt, Viền 1px solid `border-interactive`, Chữ `text-secondary`, Icon info nhỏ kế bên. Padding 4px 8px. Radius 6px. Bấm vào sẽ mở Source Panel.
-
----
-
-## 3. RESPONSIVE REDLINES (3 ARTBOARDS)
-
-Kiến trúc tổng thể: Màu nền toàn app là `canvas`. Nội dung chính nằm gọn trong App Shell (căn giữa).
-
-### 3.1. Mobile (390 x 844)
-- **App Shell:** Rộng 100%, không giới hạn max-width nhưng có padding ngang `16px`.
-- **Header:** Cao `56px`. Logo trái; trên mobile ưu tiên action Đăng nhập và Reset ở phải. Status chip được ẩn để không ép header tràn ngang.
-- **Thanh Progress:** Đặt sát dưới Header, dài 100% width màn hình (trừ padding), cao `6px`, nền rãnh `border-decorative`, thanh chạy màu `primary`, bo tròn `3px`. Có text ẩn cho screen reader.
-- **Study Card:** Rộng `calc(100vw - 32px)`. Background `surface`. Padding `20px`. Border-radius `20px`. Border `1px solid border-decorative`. Shadow: `0 4px 12px rgba(0,0,0,0.03)`.
-- **Prompt Zone:** Min-height `248px`. Cao động (hug contents) nếu nội dung câu dài để không bao giờ bị cắt chữ.
-- **Source Panel:** Mở dạng Bottom Sheet từ dưới lên, có nút Đóng và phím Escape.
-
-### 3.2. Tablet (768 x 1024) & Desktop (1440 x 1024)
-- **App Shell:** Căn giữa màn hình. Max-width `760px`. Padding ngang `24px`. KHÔNG thiết kế 2 cột cho màn Ôn, giữ nguyên Single Column Layout để tập trung 100% vào card.
-- **Header:** Cao `64px`. Logo "FlashDay" bên trái. Subline `"Ôn để dùng được"` kế bên logo (màu `text-secondary`). Status chip bên phải.
-- **Study Card:** Rộng 100% của App Shell (`712px`). Padding `24px`. Border-radius `24px`.
-- **Prompt Zone:** Min-height `296px`.
-- **Source Panel:** Mở dạng Popover/Tooltip Panel thả xuống ngay dưới Source Chip, có shadow `0 8px 24px rgba(0,0,0,0.08)`.
+- **Radius (Neo-Brutalism & Monastic):**
+  - Thường sử dụng bo góc lớn cho mảng khối (Card/Modal): `24px`.
+  - Nút bấm chính: `12px` - `16px`.
+- **Radius (Quiet Confidence):**
+  - Card/Bảng: `16px`.
+  - Nút bấm, Input: `8px`.
 
 ---
 
 ## 4. SCREEN ARCHITECTURES (CẤU TRÚC MÀN HÌNH)
 
-### 4.1. Màn Ôn Tập (Study Screen) - Luồng Cốt Lõi
+### 4.1. Màn Ôn Tập (Focus Chamber) - Luồng Cốt Lõi
 Quy tắc: 1 thẻ học, 1 hành động chính. Không hiển thị metadata thừa. Người dùng **bắt buộc phải thực hiện attempt có thể quan sát** trước khi lật thẻ.
-
-#### A. Mặt Trước (Front Card) - Trạng thái "Attempt"
 - **Top Bar của Card:** [Badge Kỹ Năng] ở trái (VD: "NÓI"). [Source Chip] ở phải.
 - **Vùng Prompt (Căn giữa theo chiều dọc):**
-  - **Mode ĐỌC:** Hiển thị câu tiếng Anh (display token, `text-primary`). Bên dưới là Textarea placeholder: *"Bạn hiểu câu này thế nào?"*.
-  - **Mode VIẾT:** Hiển thị tình huống/ý tiếng Việt (display token, `text-primary`). Bên dưới là Textarea bắt buộc nhập tiếng Anh.
-  - **Mode NGHE:** Ban đầu KHÔNG CÓ TEXT. Chỉ có một icon Speaker lớn (vùng bấm 64x64px, màu `primary`, nằm chính giữa). Bên dưới là dòng hướng dẫn `body` màu `text-secondary`: *"Nghe trước, rồi ghi ý bạn hiểu."* Kèm theo Textarea.
-  - **Mode NÓI:** Hiển thị ý tiếng Việt. Có dòng Privacy note (`metadata`, `text-secondary`): *"Bản ghi chỉ ở tab này; không được tải lên hoặc đồng bộ."* Hai nút hành động ngang hàng: `[ Ghi âm trên máy ]` (Secondary) và `[ Tôi đã tự nói xong ]` (Secondary).
-- **Vùng Đáy Card:**
-  - Nút Primary CTA: `[ Xem đáp án ]`. Nút này dùng token disabled nếu user chưa type vào Textarea (đối với Đọc/Viết/Nghe) hoặc chưa click xác nhận nói (đối với Nói); hint cạnh input nêu rõ điều kiện đó.
+  - Focus vào chữ to (`Bricolage Grotesque`). Textarea/Input dùng màu nền `fd-canvas` để tạo độ lõm so với thẻ học (`fd-surface`).
+- **Mặt Sau (Back Card):**
+  - Giữ hành vi Bespoke hiện tại: bấm từng Unit để chuyển trạng thái `Chưa chấm` / `Nhớ` / `Sai`. Tránh việc tự động diễn giải điểm thành thạo.
 
-#### B. Mặt Sau (Back Card) - Trạng thái "Self-Rating"
-- **Top Bar:** Giữ nguyên Badge và Source. Bổ sung Heading `label` màu `text-secondary` ở trên cùng: *"Đáp án và tự chấm"*.
-- **Vùng Nội Dung:**
-  - Câu tiếng Anh chuẩn (`h2`, `text-primary`).
-  - Nút Speaker nhỏ (48x48px) bên cạnh câu tiếng Anh.
-  - Câu dịch/Ngữ cảnh (`body`, `text-secondary`).
-  - Divider (`1px solid border-decorative`).
-  - Label *"Bạn vừa trả lời:"* + Câu user đã gõ (hoặc trạng thái đã phát âm), màu `text-secondary`.
-- **Vùng Rating (Tự chấm):**
-  - Card có thể chứa nhiều Unit. Mỗi Unit phải là một rating button riêng, hiển thị target và trạng thái `Chưa chấm` / `Nhớ` / `Sai`; không được giản lược thành một điểm chung cho cả card.
-  - Giữ hành vi Bespoke hiện tại: bấm từng Unit để chuyển trạng thái; `[ Tất cả nhớ ]` đánh dấu toàn bộ Unit trong card. Đây là rating state của scheduler, không phải điểm thành thạo.
-- **Vùng Đáy Card:**
-  - Nút Primary CTA: `[ Lưu lần ôn ]` giữ luồng Bespoke hiện tại. Khi còn Unit chưa chấm, hiển thị nhắc nhở rõ ràng thay vì âm thầm diễn giải là đã nhớ.
-  - Nút Text/Link ở dưới cùng: `[ Báo card lỗi ]`.
+### 4.2. Màn Bộ Nhớ (Memory Screen) - Dùng Quiet Confidence
+- Layout danh sách, background `canvas` (sáng). 
+- Các thẻ nhớ hiển thị dưới dạng hàng ngang gọn gàng, nền `surface` (trắng), chữ rõ ràng dễ quét thông tin.
 
-### 4.2. Màn Bộ Nhớ (Memory Screen)
-- Layout danh sách, background `canvas`. Max-width 760px.
-- **List Item (Card nằm ngang):** Padding 16px. Border-radius 12px. Nền `surface`.
-  - Hàng trên: Target English (`label`, `text-primary`), Trạng thái Scheduler (Chip nhỏ xíu VD: "Đang học", "Quen", "Vững" - dùng text, không dùng màu xanh lá báo thành thạo).
-  - Hàng dưới: Nghĩa tiếng Việt cắt ngắn (`metadata`, `text-secondary`).
-  - Bên dưới: bốn status chip có text cho Nghe/Nói/Đọc/Viết. Không dùng chấm hoặc màu đơn lẻ để truyền trạng thái.
-- **Empty State:** Hình minh họa outline tĩnh (không mascot/3D). Heading `h2` *"Chưa có thẻ học nào"*. Dòng giải thích `body` *"Thêm các câu tiếng Anh bạn thực sự cần dùng vào bộ nhớ để FlashDay giúp bạn ôn tập."* Primary CTA `[ Thêm unit đầu tiên ]`.
-
-### 4.3. Màn Thêm & Import (Progressive Disclosure)
-- **Cấu trúc:** Giữ trong tab cấp cao `Thêm`; phần thêm thủ công đi trước, Import File là section thứ hai, không tạo cấp điều hướng mới nếu không cần thiết.
-- **Thêm thủ công (Manual):**
-  - **Nhóm bắt buộc (Luôn mở):**
-    - Input: "Câu tiếng Anh cần nhớ" (Focus mặc định).
-    - Input: "Ý nghĩa / Tình huống sử dụng".
-  - **Nhóm mở rộng (Expandable Accordion):** "Ngữ cảnh và nguồn (Tuỳ chọn)"
-    - Khi bấm mở ra: Câu nguồn English, bản dịch câu nguồn, URL, timestamp, subtitle/file name và ghi chú. (Dữ liệu nguồn được giữ nguyên vẹn, không cắt xén).
-  - CTA đáy: `[ Thêm vào bộ nhớ ]` (Primary).
-- **Import File (JSON/SRT):**
-  - Khu vực Drag & Drop vuông vức (nền `canvas`, viền dashed `border-interactive`).
-  - Trạng thái: Default (Biểu tượng tài liệu), Hover (Nền `primary-soft`), Uploading (Spinner), Success (Tên file + Dấu tick), Error (Viền `error`, Text màu `error` + Nút Thử lại).
-  - Copy giải thích rõ: *"Hỗ trợ JSON hoặc SRT chứa transcript."* (Không hiển thị lược đồ schema kỹ thuật ra UI).
-
-### 4.4. Auth & System States
-- **Login Dialog:** Modal phủ mờ nền (Overlay rgba 0,0,0, 0.4). Căn giữa. Tiêu đề "Đăng nhập". Subline: "Đồng bộ tiến độ học của bạn". Giữ hai mode Email/password hiện có: `Đăng nhập` và `Tạo tài khoản`; không mô tả Google OAuth khi hệ thống chưa có provider đó.
-- **Empty Queue (Màn Ôn):** Khi hết thẻ. Heading *"Hoàn tất hôm nay"*. Subline *"Bạn đã ôn xong tất cả các thẻ tới hạn."*. Secondary CTA `[ Xem bộ nhớ ]`.
-- **Offline / Syncing:** Một indicator nhỏ (Status chip) góc phải Header. "Đang đồng bộ..." hoặc "Ngoại tuyến (đã lưu tạm)". Không block luồng học.
+### 4.3. Landing Page & Auth Flow - Dùng Neo-Brutalism
+- **Auth Box:** Form Đăng nhập/Đăng ký nằm gọn trong hộp trắng tinh. Đổ bóng đen cứng (`box-shadow: 4px 4px 0 #090B0D`). Căn giữa trên nền tối của Landing Page.
+- **Button:** Sử dụng màu Vàng (`#E8FF65`), viền đen, hiệu ứng nhấp nhô mượt mà nhưng góc cạnh.
 
 ---
 
 ## 5. HANDOFF NOTES FOR DEVELOPERS
 
-1. **Accessibility (A11y):**
-   - Mọi thẻ `<button>` và `<a>` phải có `:focus-visible` trỏ tới CSS variable của `focus` token.
-   - Các biểu tượng loa phát âm thanh phải bao bọc bởi `<button aria-label="Nghe âm thanh">`.
+1. **Tuân thủ đúng Ngữ Cảnh (Context-Aware UI):**
+   - Không dùng component/CSS của hệ thống "Quiet Confidence" nhúng vào màn hình Review (Monastic). 
+   - Landing/Auth và App có file CSS độc lập (`landing.css` vs `app.css`) để đảm bảo không rò rỉ token.
+2. **Accessibility (A11y):**
+   - Mọi thẻ `<button>` và `<a>` phải có `:focus-visible`.
    - Các field lỗi phải dùng `aria-invalid="true"` và liên kết `aria-describedby` tới thẻ span chứa text báo lỗi.
-2. **State Logic Cốt Lõi:**
-   - **Engine State & Debug Metadata:** Developer lưu ý tuyệt đối không render JSON raw hay debug metrics (như hệ số FSRS, difficulty) ra UI của Learner. Nếu cần debug, hãy thiết kế một toggle ẩn (VD: gõ konami code hoặc `?debug=1` trên URL) để hiện thẻ `<pre>` riêng biệt.
-   - **Progressive Disclosure:** Trong màn Thêm, form mở rộng bằng HTML `<details>` và `<summary>` hoặc state tương đương để giữ DOM gọn gàng.
-3. **Data Model Integrity:**
-   - Khi render Source Chip, dùng object `card.source` của runtime. Có thể chứa URL, timestamp, subtitle/file name, surrounding subtitles và context. Nếu URL rỗng nhưng có context, vẫn render context; không giả định có field backend tên `provenance`.
-4. **CSS & Token Mapping:**
-   - Developer cần thiết lập biến CSS (CSS Variables) map chuẩn xác theo bảng Token ở phần 1.1. Ví dụ: `--fd-primary: #18553C;`
-5. **Breakpoints:**
-   - Mobile: `< 600px`.
-   - Tablet: `>= 600px` và `< 1024px`.
-   - Desktop: `>= 1024px`.
-   - Lưu ý padding của App shell sẽ snap từ 16px lên 24px khi vượt qua 600px.
+3. **State Logic Cốt Lõi:**
+   - **Engine State & Debug Metadata:** Developer lưu ý tuyệt đối không render JSON raw hay debug metrics (như hệ số FSRS, difficulty) ra UI của Learner.
 
 ---
-*Tài liệu này là handoff có thể triển khai. Nó không thay thế kiểm thử browser ở ba viewport, keyboard/focus audit, hoặc kiểm tra các state thật sau khi code.*
+*Tài liệu này là sự quy hoạch rõ ràng về 3 Pattern Design của ứng dụng, tránh sự nhầm lẫn giữa các luồng trải nghiệm.*
