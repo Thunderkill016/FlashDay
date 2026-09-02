@@ -94,7 +94,7 @@ function setMode(nextMode) {
   if (isPasswordUpdate) {
     $('auth-sub').textContent = 'Chọn một mật khẩu mới cho tài khoản của bạn.';
   } else if (mode === AUTH_MODE.SIGN_UP) {
-    $('auth-sub').textContent = 'Tạo tài khoản để đồng bộ đa nền tảng. Không quảng cáo. Không bullshit.';
+    $('auth-sub').textContent = 'Tham gia FlashDay để lưu trữ thẻ học của bạn.';
   } else if (mode === AUTH_MODE.SIGN_IN) {
     $('auth-sub').textContent = 'Đăng nhập để tiếp tục quá trình ôn tập hôm nay.';
   } else if (mode === AUTH_MODE.RECOVERY) {
