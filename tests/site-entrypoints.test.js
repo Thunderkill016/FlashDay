@@ -5,16 +5,17 @@ const { join } = require('path');
 const root = join(__dirname, '..');
 const landing = readFileSync(join(root, 'index.html'), 'utf8');
 const app = readFileSync(join(root, 'app', 'index.html'), 'utf8');
+const login = readFileSync(join(root, 'login', 'index.html'), 'utf8');
 const viteConfig = readFileSync(join(root, 'vite.config.mjs'), 'utf8');
 const productBootstrap = readFileSync(join(root, 'product-bootstrap.js'), 'utf8');
 
 assert.match(landing, /href="landing\.css"/);
-assert.match(landing, /class="btn-flash mt-8 auth-trigger" href="#" data-auth="signup"/);
-assert.match(landing, /id="auth-form" novalidate/);
-[
-  'auth-providers', 'auth-tabs', 'auth-divider', 'email-field', 'password-field',
-  'password-confirm-field', 'forgot-password', 'return-to-signin', 'auth-status'
-].forEach((id) => assert.match(landing, new RegExp(`id="${id}"`)));
+assert.match(landing, /href="\/login\/#signin">Log in/);
+assert.match(landing, /href="\/login\/#signup" class="btn-start">START/);
+assert.match(landing, /class="btn-flash mt-8" href="\/login\/#signup">/);
+assert.match(landing, /class="text-link-flash mt-4" href="\/login\/#signup">/);
+assert.match(landing, /href="\/login\/#signup" class="btn-flash-large"/);
+assert.doesNotMatch(landing, /auth-trigger|landing-auth\.mjs|id="auth-form"/);
 assert.doesNotMatch(landing, /cdn\.tailwindcss\.com/);
 // The Recall Observatory landing intentionally uses its selected display/body/mono
 // web fonts. The old "no Google Fonts" assertion belonged to the previous landing.
@@ -25,12 +26,14 @@ assert.doesNotMatch(landing, /<script type="module">\s*import \{ createClient \}
 
 assert.match(app, /href="\.\.\/styles\.css"/);
 assert.match(app, /src="\.\.\/main\.js"/);
+assert.match(login, /href="data:,"/);
+assert.match(login, /src="login\.js"/);
 assert.match(viteConfig, /const landingEntry = resolve\(import\.meta\.dirname, 'index\.html'\)/);
 assert.match(viteConfig, /landing: landingEntry/);
 assert.match(viteConfig, /app: resolve\(import\.meta\.dirname, 'app\/index\.html'\)/);
-assert.match(viteConfig, /transformIndexHtml/);
-assert.match(viteConfig, /landing-auth\.mjs/);
+assert.match(viteConfig, /login: resolve\(import\.meta\.dirname, 'login\/index\.html'\)/);
+assert.doesNotMatch(viteConfig, /transformIndexHtml|landing-auth\.mjs/);
 assert.match(productBootstrap, /event === 'INITIAL_SESSION'/);
 assert.doesNotMatch(productBootstrap, /auth\.getSession\(\)/);
 
-console.log('FlashDay entrypoint contract: 26 checks passed');
+console.log('FlashDay entrypoint contract: 30 checks passed');
