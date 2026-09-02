@@ -1,0 +1,37 @@
+.login-page {
+  margin: 0;
+  padding: 24px;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--ink-950);
+  background-image: 
+    radial-gradient(circle at 15% 50%, rgba(232, 255, 101, 0.03), transparent 25%),
+    radial-gradient(circle at 85% 30%, rgba(255, 255, 255, 0.02), transparent 25%);
+  font-family: var(--font-body);
+}
+
+.auth-box-modern.standalone {
+  margin: 0 auto;
+  transform: none !important;
+}
+
+@media (max-width: 480px) {
+  .login-page {
+    padding: 16px;
+    background-color: #ffffff; /* On mobile, the card takes full screen */
+  }
+  .auth-box-modern.standalone {
+    box-shadow: none;
+    border-radius: 0;
+    max-width: 100%;
+    height: 100%;
+    justify-content: center;
+  }
+  .auth-close {
+    top: 16px;
+    right: 16px;
+  }
+}

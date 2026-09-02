@@ -6,29 +6,13 @@ export default defineConfig(({ mode }) => {
   const landingEntry = resolve(import.meta.dirname, 'index.html');
   return {
     base: './',
-    plugins: [
-      {
-        name: 'flashday-landing-auth-entry',
-        transformIndexHtml(html, ctx) {
-          if (ctx?.filename !== landingEntry || html.includes('landing-auth.mjs')) return html;
-          return {
-            html,
-            tags: [
-              {
-                tag: 'script',
-                attrs: { type: 'module', src: './landing-auth.mjs' },
-                injectTo: 'body'
-              }
-            ]
-          };
-        }
-      }
-    ],
+    plugins: [],
     build: {
       rolldownOptions: {
         input: {
           landing: landingEntry,
-          app: resolve(import.meta.dirname, 'app/index.html')
+          app: resolve(import.meta.dirname, 'app/index.html'),
+          login: resolve(import.meta.dirname, 'login/index.html')
         }
       }
     },

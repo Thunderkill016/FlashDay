@@ -124,17 +124,7 @@
       </section>
     </main>
 
-    <dialog id="authDialog" class="auth-dialog" aria-labelledby="authTitle">
-      <form id="authForm" method="dialog">
-        <div class="dialog-head"><div><h2 id="authTitle">Lưu bộ nhớ học</h2><p id="authHint">Đăng nhập để đồng bộ bộ thẻ và lịch ôn của riêng bạn.</p></div><button id="closeAuthBtn" class="icon-btn" type="button" aria-label="Đóng">×</button></div>
-        <div class="auth-modes"><button id="signInMode" class="auth-mode active" type="button">Đăng nhập</button><button id="signUpMode" class="auth-mode" type="button">Tạo tài khoản</button></div>
-        <div class="field"><label for="authEmail">Email</label><input id="authEmail" type="email" autocomplete="email" required placeholder="you@example.com"></div>
-        <div class="field"><label for="authPassword">Mật khẩu</label><input id="authPassword" type="password" autocomplete="current-password" minlength="8" required placeholder="Ít nhất 8 ký tự"></div>
-        <p id="authError" class="auth-error hidden" role="alert"></p>
-        <button id="authSubmit" class="primary-btn" type="submit">Đăng nhập</button>
-        <p class="dialog-note">FlashDay chỉ dùng dữ liệu học để đồng bộ cho chính tài khoản này.</p>
-      </form>
-    </dialog>
+    
     <div id="toast" class="toast hidden" role="status"></div>
     <script type="module" src="../main.js"></script>
   </body>
