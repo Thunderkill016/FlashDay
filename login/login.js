@@ -75,7 +75,7 @@ function setMode(nextMode) {
   const enforcesNewPasswordPolicy = requiresNewPasswordPolicy(mode);
 
   $('auth-title').textContent = copy.title;
-  $('auth-submit-label').textContent = copy.submit;
+  $('auth-submit-btn').textContent = copy.submit;
   $('password').autocomplete = copy.passwordAutocomplete || 'off';
   $('password').required = needsPassword;
   $('password').minLength = enforcesNewPasswordPolicy ? MIN_PASSWORD_LENGTH : 0;
@@ -94,16 +94,12 @@ function setMode(nextMode) {
   if (isPasswordUpdate) {
     $('auth-sub').textContent = 'Chọn một mật khẩu mới cho tài khoản của bạn.';
   } else if (mode === AUTH_MODE.SIGN_UP) {
-    $('auth-sub').textContent = 'Tham gia FlashDay để lưu trữ thẻ học của bạn.';
+    $('auth-sub').textContent = 'Tạo tài khoản để đồng bộ đa nền tảng. Không quảng cáo. Không bullshit.';
   } else if (mode === AUTH_MODE.SIGN_IN) {
     $('auth-sub').textContent = 'Đăng nhập để tiếp tục quá trình ôn tập hôm nay.';
   } else if (mode === AUTH_MODE.RECOVERY) {
     $('auth-sub').textContent = 'Nhập email của bạn để nhận liên kết đặt lại mật khẩu.';
   }
-
-  
-  const signupOnly = document.querySelectorAll('.signup-only');
-  signupOnly.forEach(el => el.classList.toggle('hidden', mode !== AUTH_MODE.SIGN_UP));
 
   tabs.forEach((tab) => tab.classList.toggle('active', tab.dataset.tab === mode));
   clearStatus();
