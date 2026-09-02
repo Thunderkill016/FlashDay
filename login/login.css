@@ -1,7 +1,4 @@
-/* 
-  The login page uses landing.css for all neo-brutalist components. 
-  This file just centers the auth box for a standalone page experience.
-*/
+/* NEO-BRUTALIST LOGIN PAGE */
 .login-page {
   margin: 0;
   padding: 24px;
@@ -10,50 +7,346 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  /* Use landing.css variables */
   background-color: var(--ink-950);
   background-image: 
-    radial-gradient(circle at 15% 50%, rgba(232, 255, 101, 0.03), transparent 25%),
-    radial-gradient(circle at 85% 30%, rgba(255, 255, 255, 0.02), transparent 25%);
+    radial-gradient(circle at 15% 50%, rgba(232, 255, 101, 0.05), transparent 25%),
+    radial-gradient(circle at 85% 30%, rgba(255, 255, 255, 0.03), transparent 25%);
   position: relative;
+  font-family: var(--font-body);
 }
 
-/* Ensure the standalone box isn't hidden or transformed by modal logic */
-.auth-box-modern.standalone {
-  margin: 0 auto;
-  transform: none !important;
-  opacity: 1 !important;
+.noise-overlay {
+  position: fixed; inset: 0;
+  background: url('data:image/svg+xml;utf8,%3Csvg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg"%3E%3Cfilter id="noiseFilter"%3E%3CfeTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch"/%3E%3C/filter%3E%3Crect width="100%25" height="100%25" filter="url(%23noiseFilter)"/%3E%3C/svg%3E');
+  opacity: 0.03;
+  mix-blend-mode: soft-light;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.auth-box-brutal {
   position: relative;
   z-index: 2;
+  background: #ffffff;
+  width: 100%;
+  max-width: 440px;
+  border-radius: 16px;
+  border: 3px solid var(--ink-950);
+  box-shadow: 12px 12px 0 var(--ink-950);
+  padding: 48px 40px;
+  display: flex;
+  flex-direction: column;
 }
 
 .auth-close {
-  display: flex;
   position: absolute;
-  top: 24px;
-  left: 24px;
-  right: auto;
-  opacity: 0.6;
+  top: -24px;
+  left: -24px;
+  width: 48px;
+  height: 48px;
+  background: #ffffff;
+  border: 3px solid var(--ink-950);
+  box-shadow: 4px 4px 0 var(--ink-950);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--ink-950);
+  cursor: pointer;
+  transition: 0.2s;
+  z-index: 10;
 }
 .auth-close:hover {
-  opacity: 1;
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 var(--ink-950);
+  background: var(--flash);
+}
+.auth-close:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 var(--ink-950);
+}
+
+.auth-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+.auth-logo {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+.logo-circle {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--flash);
+  border: 3px solid var(--ink-950);
+  box-shadow: 4px 4px 0 var(--ink-950);
+}
+.auth-title {
+  font-family: var(--font-display);
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--ink-950);
+  margin: 0 0 8px;
+  letter-spacing: -0.03em;
+  text-transform: uppercase;
+}
+.auth-sub {
+  font-size: 16px;
+  color: var(--ink-800);
+  font-weight: 500;
+  margin: 0;
+}
+
+.auth-tabs {
+  display: flex;
+  margin-bottom: 32px;
+  border: 2px solid var(--ink-950);
+  border-radius: 12px;
+  overflow: hidden;
+}
+.auth-tab {
+  flex: 1;
+  background: #f7f5ef;
+  border: none;
+  border-right: 2px solid var(--ink-950);
+  padding: 14px 0;
+  color: var(--ink-950);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 15px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.auth-tab:last-child {
+  border-right: none;
+}
+.auth-tab:hover {
+  background: #eeeae0;
+}
+.auth-tab.active {
+  background: var(--flash);
+}
+
+.btn-provider {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  background: #ffffff;
+  color: var(--ink-950);
+  border: 2px solid var(--ink-950);
+  box-shadow: 4px 4px 0 var(--ink-950);
+  padding: 14px;
+  border-radius: 12px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: 16px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.btn-provider:hover {
+  background: #f7f5ef;
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 var(--ink-950);
+}
+.btn-provider:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 var(--ink-950);
+}
+.icon-provider { width: 22px; height: 22px; }
+.auth-providers.hidden { display: none; }
+
+.auth-divider {
+  margin: 24px 0;
+  position: relative;
+  text-align: center;
+}
+.auth-divider::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 100%;
+  height: 2px;
+  background: var(--ink-950);
+  z-index: 1;
+}
+.auth-divider span {
+  position: relative;
+  z-index: 2;
+  background: #ffffff;
+  padding: 0 16px;
+  color: var(--ink-950);
+  font-family: var(--font-display);
+  font-size: 13px;
+  font-weight: 800;
+}
+.auth-divider.hidden { display: none; }
+
+.auth-form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.input-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  position: relative;
+}
+.input-group.hidden { display: none; }
+.label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.input-group label {
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--ink-950);
+  text-transform: uppercase;
+}
+.input-wrapper {
+  position: relative;
+  display: flex;
+}
+.input-wrapper input {
+  width: 100%;
+  background: #ffffff;
+  border: 2px solid var(--ink-950);
+  color: var(--ink-950);
+  padding: 14px 16px;
+  border-radius: 10px;
+  font-size: 16px;
+  font-family: var(--font-body);
+  transition: 0.2s;
+}
+.input-wrapper input:focus {
+  outline: none;
+  box-shadow: 4px 4px 0 var(--ink-950);
+  transform: translate(-2px, -2px);
+}
+.input-wrapper input::placeholder {
+  color: var(--muted-dark);
+}
+
+.password-toggle {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: var(--ink-950);
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+}
+.password-toggle:hover {
+  background: #f7f5ef;
+}
+.icon-eye-off { display: none; }
+.password-toggle[aria-pressed="true"] .icon-eye { display: none; }
+.password-toggle[aria-pressed="true"] .icon-eye-off { display: block; }
+
+.btn-submit {
+  background: var(--flash);
+  color: var(--ink-950);
+  border: 3px solid var(--ink-950);
+  box-shadow: 6px 6px 0 var(--ink-950);
+  padding: 16px;
+  border-radius: 12px;
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 800;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: 0.2s;
+  margin-top: 12px;
+}
+.btn-submit:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 8px 8px 0 var(--ink-950);
+}
+.btn-submit:active {
+  transform: translate(2px, 2px);
+  box-shadow: 4px 4px 0 var(--ink-950);
+}
+.btn-submit:disabled {
+  background: var(--paper-100);
+  color: var(--muted-light);
+  box-shadow: none;
+  transform: none;
+  cursor: not-allowed;
+}
+
+.auth-link {
+  background: none;
+  border: none;
+  color: var(--ink-800);
+  font-size: 13px;
+  font-weight: 600;
+  text-decoration: underline;
+  cursor: pointer;
+  padding: 0;
+}
+.auth-link:hover { color: var(--ink-950); }
+.auth-link.hidden { display: none; }
+
+.auth-link-alt {
+  background: none;
+  border: none;
+  color: var(--ink-800);
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: underline;
+  cursor: pointer;
+  text-align: center;
+  margin-top: 16px;
+}
+.auth-link-alt:hover { color: var(--ink-950); }
+.auth-link-alt.hidden { display: none; }
+
+.auth-status {
+  text-align: center;
+  font-size: 14px;
+  font-weight: 700;
+  margin-top: 12px;
+  padding: 12px;
+  border-radius: 8px;
+  border: 2px solid var(--ink-950);
+}
+.auth-status.hidden { display: none; }
+.auth-status.error {
+  background: #FF6A5E; /* --speak color */
+  color: var(--ink-950);
+}
+.auth-status.success {
+  background: #C7F45B; /* --read color */
+  color: var(--ink-950);
 }
 
 @media (max-width: 480px) {
   .login-page {
     padding: 16px;
-    background-color: #ffffff;
-    background-image: none;
   }
-  .auth-box-modern.standalone {
-    box-shadow: none;
-    border-radius: 0;
-    max-width: 100%;
-    height: 100%;
-    justify-content: center;
+  .auth-box-brutal {
+    padding: 40px 24px;
+    box-shadow: 8px 8px 0 var(--ink-950);
   }
   .auth-close {
-    top: 16px;
-    left: 16px;
+    top: -16px;
+    left: -16px;
+    width: 40px;
+    height: 40px;
   }
 }

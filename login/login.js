@@ -245,3 +245,16 @@ if (!supabase) {
     if (event === 'PASSWORD_RECOVERY') setMode(AUTH_MODE.UPDATE_PASSWORD);
   });
 }
+
+document.addEventListener('DOMContentLoaded', () => {
+  const togglePasswordBtn = document.getElementById('toggle-password');
+  const passwordInput = document.getElementById('password');
+  if (togglePasswordBtn && passwordInput) {
+    togglePasswordBtn.addEventListener('click', () => {
+      const isPassword = passwordInput.type === 'password';
+      passwordInput.type = isPassword ? 'text' : 'password';
+      togglePasswordBtn.setAttribute('aria-pressed', isPassword ? 'true' : 'false');
+      togglePasswordBtn.setAttribute('aria-label', isPassword ? 'Ẩn mật khẩu' : 'Hiện mật khẩu');
+    });
+  }
+});
